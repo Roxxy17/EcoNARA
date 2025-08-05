@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion, useScroll, useTransform, useInView } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { useState, useEffect } from "react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Wheat,
   Users,
@@ -25,9 +25,9 @@ import {
   CheckCircle,
   TrendingUp,
   Target,
-} from "lucide-react"
-import Link from "next/link"
-import { useRef } from "react"
+} from "lucide-react";
+import Link from "next/link";
+import { useRef } from "react";
 
 const navigationItems = [
   { name: "Beranda", href: "/" },
@@ -35,19 +35,21 @@ const navigationItems = [
   { name: "Fitur", href: "/features" },
   { name: "Komunitas", href: "/community" },
   { name: "Kontak", href: "/contact" },
-]
+];
 
 const features = [
   {
     icon: <Zap className="w-8 h-8" />,
     title: "AI-Powered Analytics",
-    description: "Analisis cerdas untuk optimasi distribusi pangan dan pengelolaan sampah komunitas",
+    description:
+      "Analisis cerdas untuk optimasi distribusi pangan dan pengelolaan sampah komunitas",
     color: "from-yellow-500 to-orange-500",
   },
   {
     icon: <Globe className="w-8 h-8" />,
     title: "Community Network",
-    description: "Jaringan komunitas terintegrasi untuk kolaborasi dan berbagi sumber daya",
+    description:
+      "Jaringan komunitas terintegrasi untuk kolaborasi dan berbagi sumber daya",
     color: "from-green-500 to-emerald-500",
   },
   {
@@ -59,10 +61,11 @@ const features = [
   {
     icon: <Award className="w-8 h-8" />,
     title: "Impact Tracking",
-    description: "Pelacakan dampak real-time untuk mengukur kontribusi komunitas",
+    description:
+      "Pelacakan dampak real-time untuk mengukur kontribusi komunitas",
     color: "from-purple-500 to-pink-500",
   },
-]
+];
 
 const stats = [
   {
@@ -93,7 +96,7 @@ const stats = [
     icon: <Target className="w-8 h-8" />,
     color: "from-pink-500 to-rose-500",
   },
-]
+];
 
 const testimonials = [
   {
@@ -115,11 +118,12 @@ const testimonials = [
   {
     name: "Maya Sari",
     role: "Ibu Rumah Tangga, Jakarta",
-    content: "Fitur Food Rescue AI sangat membantu! Saya bisa masak makanan lezat dari bahan sisa tanpa boros.",
+    content:
+      "Fitur Food Rescue AI sangat membantu! Saya bisa masak makanan lezat dari bahan sisa tanpa boros.",
     avatar: "MS",
     rating: 5,
   },
-]
+];
 
 const benefits = [
   "Mengurangi food waste hingga 80%",
@@ -128,15 +132,34 @@ const benefits = [
   "Membangun ekonomi sirkular lokal",
   "Memberdayakan masyarakat",
   "Teknologi AI yang mudah digunakan",
-]
+];
 
 // Floating Particle Component
-const FloatingParticle = ({ delay = 0, size = "small" }: { delay?: number; size?: "small" | "medium" | "large" }) => {
+const FloatingParticle = ({
+  delay = 0,
+  size = "small",
+}: {
+  delay?: number;
+  size?: "small" | "medium" | "large";
+}) => {
   const sizeClasses = {
     small: "w-1 h-1",
     medium: "w-2 h-2",
     large: "w-3 h-3",
-  }
+  };
+
+  // Generate random position only on client
+  const [position, setPosition] = useState<{ left: string; top: string }>({
+    left: "50%",
+    top: "50%", 
+  });
+
+  useEffect(() => {
+    setPosition({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+    });
+  }, []);
 
   return (
     <motion.div
@@ -144,8 +167,8 @@ const FloatingParticle = ({ delay = 0, size = "small" }: { delay?: number; size?
       style={{
         background:
           "radial-gradient(circle, rgba(139, 92, 246, 0.8) 0%, rgba(236, 72, 153, 0.6) 50%, rgba(59, 130, 246, 0.4) 100%)",
-        left: `${Math.random() * 100}%`,
-        top: `${Math.random() * 100}%`,
+        left: position.left,
+        top: position.top,
       }}
       animate={{
         y: [0, -30, 0],
@@ -160,33 +183,39 @@ const FloatingParticle = ({ delay = 0, size = "small" }: { delay?: number; size?
         ease: "easeInOut",
       }}
     />
-  )
-}
+  );
+};
 
 export default function HomePage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const { scrollY } = useScroll()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollY } = useScroll();
 
-  const heroRef = useRef(null)
-  const featuresRef = useRef(null)
-  const statsRef = useRef(null)
-  const testimonialsRef = useRef(null)
+  const heroRef = useRef(null);
+  const featuresRef = useRef(null);
+  const statsRef = useRef(null);
+  const testimonialsRef = useRef(null);
 
-  const isFeaturesInView = useInView(featuresRef, { once: true, margin: "-100px" })
-  const isStatsInView = useInView(statsRef, { once: true, margin: "-100px" })
-  const isTestimonialsInView = useInView(testimonialsRef, { once: true, margin: "-100px" })
+  const isFeaturesInView = useInView(featuresRef, {
+    once: true,
+    margin: "-100px",
+  });
+  const isStatsInView = useInView(statsRef, { once: true, margin: "-100px" });
+  const isTestimonialsInView = useInView(testimonialsRef, {
+    once: true,
+    margin: "-100px",
+  });
 
-  const heroY = useTransform(scrollY, [0, 500], [0, -100])
-  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0])
+  const heroY = useTransform(scrollY, [0, 500], [0, -100]);
+  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -358,14 +387,19 @@ export default function HomePage() {
 
         {/* Particle system */}
         {Array.from({ length: 30 }).map((_, i) => (
-          <FloatingParticle key={i} delay={i * 0.2} size={i % 3 === 0 ? "large" : i % 2 === 0 ? "medium" : "small"} />
+          <FloatingParticle
+            key={i}
+            delay={i * 0.2}
+            size={i % 3 === 0 ? "large" : i % 2 === 0 ? "medium" : "small"}
+          />
         ))}
 
         {/* Enhanced shimmer waves */}
         <motion.div
           className="absolute inset-0 opacity-15"
           style={{
-            background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
+            background:
+              "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
             transform: "skewX(-12deg)",
           }}
           animate={{
@@ -381,7 +415,8 @@ export default function HomePage() {
         <motion.div
           className="absolute inset-0 opacity-10"
           style={{
-            background: "linear-gradient(45deg, transparent, rgba(139, 92, 246, 0.4), transparent)",
+            background:
+              "linear-gradient(45deg, transparent, rgba(139, 92, 246, 0.4), transparent)",
             transform: "skewX(12deg)",
           }}
           animate={{
@@ -399,7 +434,8 @@ export default function HomePage() {
         <motion.div
           className="absolute inset-0 opacity-12"
           style={{
-            background: "linear-gradient(-45deg, transparent, rgba(236, 72, 153, 0.4), transparent)",
+            background:
+              "linear-gradient(-45deg, transparent, rgba(236, 72, 153, 0.4), transparent)",
             transform: "skewY(-8deg)",
           }}
           animate={{
@@ -445,13 +481,18 @@ export default function HomePage() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6 }}
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          scrolled ? "bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/50" : "bg-transparent"
+          scrolled
+            ? "bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/50"
+            : "bg-transparent"
         }`}
       >
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <motion.div className="flex items-center space-x-3" whileHover={{ scale: 1.02 }}>
+            <motion.div
+              className="flex items-center space-x-3"
+              whileHover={{ scale: 1.02 }}
+            >
               <div className="relative">
                 <motion.div
                   className="absolute -inset-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 rounded-xl opacity-30 blur-sm"
@@ -470,7 +511,9 @@ export default function HomePage() {
               </div>
               <div>
                 <span className="text-2xl font-bold text-white">ECONARA</span>
-                <div className="text-xs text-slate-400 font-medium">Sustainable Platform</div>
+                <div className="text-xs text-slate-400 font-medium">
+                  Sustainable Platform
+                </div>
               </div>
             </motion.div>
 
@@ -490,7 +533,11 @@ export default function HomePage() {
 
             {/* Action Buttons */}
             <div className="hidden lg:flex items-center space-x-4">
-              <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50" asChild>
+              <Button
+                variant="ghost"
+                className="text-slate-300 hover:text-white hover:bg-slate-800/50"
+                asChild
+              >
                 <Link href="/login">Masuk</Link>
               </Button>
               <Button
@@ -512,7 +559,11 @@ export default function HomePage() {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 text-slate-300 hover:text-white"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
 
@@ -538,10 +589,17 @@ export default function HomePage() {
                 </Link>
               ))}
               <div className="pt-4 space-y-3">
-                <Button variant="ghost" className="w-full justify-start" asChild>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start"
+                  asChild
+                >
                   <Link href="/login">Masuk</Link>
                 </Button>
-                <Button className="w-full bg-gradient-to-r from-purple-500 to-blue-500" asChild>
+                <Button
+                  className="w-full bg-gradient-to-r from-purple-500 to-blue-500"
+                  asChild
+                >
                   <Link href="/register">Bergabung</Link>
                 </Button>
               </div>
@@ -562,7 +620,11 @@ export default function HomePage() {
               style={{ y: heroY, opacity: heroOpacity }}
               className="space-y-8"
             >
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
                 <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 px-4 py-2 text-sm font-medium backdrop-blur-sm">
                   <Sparkles className="w-4 h-4 mr-2" />
                   Platform Keberlanjutan Terdepan
@@ -601,8 +663,9 @@ export default function HomePage() {
                 transition={{ delay: 0.4 }}
                 className="text-xl text-slate-300 leading-relaxed max-w-lg"
               >
-                Platform AI-powered yang menghubungkan komunitas untuk mengatasi food waste, mengoptimalkan distribusi
-                pangan, dan membangun ekonomi sirkular.
+                Platform AI-powered yang menghubungkan komunitas untuk mengatasi
+                food waste, mengoptimalkan distribusi pangan, dan membangun
+                ekonomi sirkular.
               </motion.p>
 
               <motion.div
@@ -669,13 +732,20 @@ export default function HomePage() {
                           <Users className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                          <h3 className="text-white font-semibold">Dashboard Komunitas</h3>
-                          <p className="text-white/80 text-sm">RT 05, Kelurahan Maju</p>
+                          <h3 className="text-white font-semibold">
+                            Dashboard Komunitas
+                          </h3>
+                          <p className="text-white/80 text-sm">
+                            RT 05, Kelurahan Maju
+                          </p>
                         </div>
                       </div>
                       <motion.div
                         animate={{ scale: [1, 1.1, 1] }}
-                        transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                        transition={{
+                          duration: 2,
+                          repeat: Number.POSITIVE_INFINITY,
+                        }}
                       >
                         <Badge className="bg-white/20 text-white border-0 backdrop-blur-sm">
                           <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse" />
@@ -694,9 +764,13 @@ export default function HomePage() {
                       >
                         <div className="flex items-center space-x-2 mb-2">
                           <Wheat className="w-5 h-5 text-green-400" />
-                          <span className="text-sm font-medium text-slate-300">Makanan Diselamatkan</span>
+                          <span className="text-sm font-medium text-slate-300">
+                            Makanan Diselamatkan
+                          </span>
                         </div>
-                        <div className="text-2xl font-bold text-white">24.5kg</div>
+                        <div className="text-2xl font-bold text-white">
+                          24.5kg
+                        </div>
                         <div className="text-xs text-green-400 flex items-center">
                           <TrendingUp className="w-3 h-3 mr-1" />
                           +12% minggu ini
@@ -709,9 +783,13 @@ export default function HomePage() {
                       >
                         <div className="flex items-center space-x-2 mb-2">
                           <Recycle className="w-5 h-5 text-blue-400" />
-                          <span className="text-sm font-medium text-slate-300">Sampah Didaur Ulang</span>
+                          <span className="text-sm font-medium text-slate-300">
+                            Sampah Didaur Ulang
+                          </span>
                         </div>
-                        <div className="text-2xl font-bold text-white">18.2kg</div>
+                        <div className="text-2xl font-bold text-white">
+                          18.2kg
+                        </div>
                         <div className="text-xs text-blue-400 flex items-center">
                           <TrendingUp className="w-3 h-3 mr-1" />
                           +8% minggu ini
@@ -721,26 +799,42 @@ export default function HomePage() {
 
                     {/* Activity Feed */}
                     <div className="space-y-3">
-                      <h4 className="font-semibold text-white">Aktivitas Terbaru</h4>
+                      <h4 className="font-semibold text-white">
+                        Aktivitas Terbaru
+                      </h4>
                       <div className="space-y-2">
                         {[
-                          { action: "Bu Sari mendonasikan 5kg beras", time: "2 menit lalu", color: "bg-green-500" },
+                          {
+                            action: "Bu Sari mendonasikan 5kg beras",
+                            time: "2 menit lalu",
+                            color: "bg-green-500",
+                          },
                           {
                             action: "Pak Joko menggunakan Food Rescue AI",
                             time: "15 menit lalu",
                             color: "bg-blue-500",
                           },
-                          { action: "RT 03 mencapai target daur ulang", time: "1 jam lalu", color: "bg-purple-500" },
+                          {
+                            action: "RT 03 mencapai target daur ulang",
+                            time: "1 jam lalu",
+                            color: "bg-purple-500",
+                          },
                         ].map((activity, i) => (
                           <motion.div
                             key={i}
                             className="flex items-center space-x-3 p-3 bg-slate-800/40 backdrop-blur-sm rounded-lg shadow-lg border border-slate-700/20"
                             whileHover={{ x: 5 }}
                           >
-                            <div className={`w-2 h-2 rounded-full ${activity.color} shadow-lg`}></div>
+                            <div
+                              className={`w-2 h-2 rounded-full ${activity.color} shadow-lg`}
+                            ></div>
                             <div className="flex-1">
-                              <p className="text-sm font-medium text-white">{activity.action}</p>
-                              <p className="text-xs text-slate-400">{activity.time}</p>
+                              <p className="text-sm font-medium text-white">
+                                {activity.action}
+                              </p>
+                              <p className="text-xs text-slate-400">
+                                {activity.time}
+                              </p>
                             </div>
                           </motion.div>
                         ))}
@@ -755,7 +849,11 @@ export default function HomePage() {
                     y: [0, -15, 0],
                     rotate: [0, 5, 0],
                   }}
-                  transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                  transition={{
+                    duration: 4,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "easeInOut",
+                  }}
                   className="absolute -top-4 -right-4 bg-gradient-to-r from-orange-400 to-pink-500 p-3 rounded-xl shadow-lg"
                 >
                   <Sparkles className="w-6 h-6 text-white" />
@@ -766,7 +864,11 @@ export default function HomePage() {
                     y: [0, 15, 0],
                     rotate: [0, -5, 0],
                   }}
-                  transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                  transition={{
+                    duration: 5,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "easeInOut",
+                  }}
                   className="absolute -bottom-4 -left-4 bg-gradient-to-r from-purple-400 to-indigo-500 p-3 rounded-xl shadow-lg"
                 >
                   <Heart className="w-6 h-6 text-white" />
@@ -778,7 +880,10 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section ref={featuresRef} className="py-20 bg-slate-900/20 backdrop-blur-sm relative z-10">
+      <section
+        ref={featuresRef}
+        className="py-20 bg-slate-900/20 backdrop-blur-sm relative z-10"
+      >
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -796,8 +901,9 @@ export default function HomePage() {
               </span>
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Solusi terintegrasi yang menggabungkan kecerdasan buatan, analitik data, dan platform komunitas untuk
-              menciptakan dampak positif yang terukur.
+              Solusi terintegrasi yang menggabungkan kecerdasan buatan, analitik
+              data, dan platform komunitas untuk menciptakan dampak positif yang
+              terukur.
             </p>
           </motion.div>
 
@@ -818,8 +924,12 @@ export default function HomePage() {
                     >
                       {feature.icon}
                     </div>
-                    <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-                    <p className="text-slate-300 leading-relaxed">{feature.description}</p>
+                    <h3 className="text-xl font-semibold text-white mb-3">
+                      {feature.title}
+                    </h3>
+                    <p className="text-slate-300 leading-relaxed">
+                      {feature.description}
+                    </p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -847,8 +957,8 @@ export default function HomePage() {
               </span>
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Data real-time menunjukkan bagaimana ECONARA membantu komunitas di seluruh Indonesia membangun ekosistem
-              yang lebih berkelanjutan.
+              Data real-time menunjukkan bagaimana ECONARA membantu komunitas di
+              seluruh Indonesia membangun ekosistem yang lebih berkelanjutan.
             </p>
           </motion.div>
 
@@ -869,9 +979,15 @@ export default function HomePage() {
                     >
                       {stat.icon}
                     </div>
-                    <div className="text-4xl font-bold text-white mb-2">{stat.number}</div>
-                    <div className="text-lg font-semibold text-slate-300 mb-2">{stat.label}</div>
-                    <div className="text-sm text-slate-400">{stat.description}</div>
+                    <div className="text-4xl font-bold text-white mb-2">
+                      {stat.number}
+                    </div>
+                    <div className="text-lg font-semibold text-slate-300 mb-2">
+                      {stat.label}
+                    </div>
+                    <div className="text-sm text-slate-400">
+                      {stat.description}
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -881,7 +997,10 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials Section */}
-      <section ref={testimonialsRef} className="py-20 bg-slate-900/20 backdrop-blur-sm relative z-10">
+      <section
+        ref={testimonialsRef}
+        className="py-20 bg-slate-900/20 backdrop-blur-sm relative z-10"
+      >
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -913,17 +1032,26 @@ export default function HomePage() {
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-1 mb-4">
                       {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                        <Star
+                          key={i}
+                          className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                        />
                       ))}
                     </div>
-                    <p className="text-slate-300 leading-relaxed mb-6 italic">"{testimonial.content}"</p>
+                    <p className="text-slate-300 leading-relaxed mb-6 italic">
+                      "{testimonial.content}"
+                    </p>
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
                         {testimonial.avatar}
                       </div>
                       <div>
-                        <div className="font-semibold text-white">{testimonial.name}</div>
-                        <div className="text-sm text-slate-400">{testimonial.role}</div>
+                        <div className="font-semibold text-white">
+                          {testimonial.name}
+                        </div>
+                        <div className="text-sm text-slate-400">
+                          {testimonial.role}
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -937,7 +1065,11 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-purple-900/50 to-blue-900/50 backdrop-blur-sm relative z-10">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
             <h2 className="text-4xl lg:text-6xl font-bold text-white mb-8">
               Siap Membangun
               <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
@@ -945,8 +1077,9 @@ export default function HomePage() {
               </span>
             </h2>
             <p className="text-xl text-slate-300 mb-12 max-w-3xl mx-auto">
-              Bergabunglah dengan ribuan komunitas di Indonesia yang sudah merasakan dampak positif ECONARA. Mulai
-              perjalanan menuju masa depan yang lebih berkelanjutan hari ini.
+              Bergabunglah dengan ribuan komunitas di Indonesia yang sudah
+              merasakan dampak positif ECONARA. Mulai perjalanan menuju masa
+              depan yang lebih berkelanjutan hari ini.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
@@ -1003,12 +1136,15 @@ export default function HomePage() {
                 </div>
                 <div>
                   <span className="text-2xl font-bold">ECONARA</span>
-                  <div className="text-sm text-slate-400">Sustainable Platform</div>
+                  <div className="text-sm text-slate-400">
+                    Sustainable Platform
+                  </div>
                 </div>
               </div>
               <p className="text-slate-300 leading-relaxed max-w-md mb-6">
-                Membangun masa depan berkelanjutan melalui teknologi AI, pemberdayaan komunitas, dan kolaborasi untuk
-                ketahanan pangan serta pengelolaan sampah yang cerdas.
+                Membangun masa depan berkelanjutan melalui teknologi AI,
+                pemberdayaan komunitas, dan kolaborasi untuk ketahanan pangan
+                serta pengelolaan sampah yang cerdas.
               </p>
               <div className="flex space-x-4">
                 {["📧", "📱", "🐦"].map((icon, i) => (
@@ -1027,22 +1163,34 @@ export default function HomePage() {
               <h3 className="font-semibold mb-6">Platform</h3>
               <ul className="space-y-3 text-slate-400">
                 <li>
-                  <Link href="/features" className="hover:text-white transition-colors">
+                  <Link
+                    href="/features"
+                    className="hover:text-white transition-colors"
+                  >
                     Fitur Utama
                   </Link>
                 </li>
                 <li>
-                  <Link href="/pricing" className="hover:text-white transition-colors">
+                  <Link
+                    href="/pricing"
+                    className="hover:text-white transition-colors"
+                  >
                     Harga
                   </Link>
                 </li>
                 <li>
-                  <Link href="/api" className="hover:text-white transition-colors">
+                  <Link
+                    href="/api"
+                    className="hover:text-white transition-colors"
+                  >
                     API
                   </Link>
                 </li>
                 <li>
-                  <Link href="/integrations" className="hover:text-white transition-colors">
+                  <Link
+                    href="/integrations"
+                    className="hover:text-white transition-colors"
+                  >
                     Integrasi
                   </Link>
                 </li>
@@ -1053,22 +1201,34 @@ export default function HomePage() {
               <h3 className="font-semibold mb-6">Perusahaan</h3>
               <ul className="space-y-3 text-slate-400">
                 <li>
-                  <Link href="/about" className="hover:text-white transition-colors">
+                  <Link
+                    href="/about"
+                    className="hover:text-white transition-colors"
+                  >
                     Tentang Kami
                   </Link>
                 </li>
                 <li>
-                  <Link href="/blog" className="hover:text-white transition-colors">
+                  <Link
+                    href="/blog"
+                    className="hover:text-white transition-colors"
+                  >
                     Blog
                   </Link>
                 </li>
                 <li>
-                  <Link href="/careers" className="hover:text-white transition-colors">
+                  <Link
+                    href="/careers"
+                    className="hover:text-white transition-colors"
+                  >
                     Karir
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:text-white transition-colors">
+                  <Link
+                    href="/contact"
+                    className="hover:text-white transition-colors"
+                  >
                     Kontak
                   </Link>
                 </li>
@@ -1078,16 +1238,26 @@ export default function HomePage() {
 
           <div className="border-t border-slate-800/50 pt-8 flex flex-col md:flex-row justify-between items-center">
             <div className="text-slate-400 mb-4 md:mb-0">
-              © 2024 ECONARA. Membangun komunitas berkelanjutan untuk masa depan yang lebih baik.
+              © 2024 ECONARA. Membangun komunitas berkelanjutan untuk masa depan
+              yang lebih baik.
             </div>
             <div className="flex space-x-8 text-slate-400">
-              <Link href="/privacy" className="hover:text-white transition-colors">
+              <Link
+                href="/privacy"
+                className="hover:text-white transition-colors"
+              >
                 Kebijakan Privasi
               </Link>
-              <Link href="/terms" className="hover:text-white transition-colors">
+              <Link
+                href="/terms"
+                className="hover:text-white transition-colors"
+              >
                 Syarat & Ketentuan
               </Link>
-              <Link href="/cookies" className="hover:text-white transition-colors">
+              <Link
+                href="/cookies"
+                className="hover:text-white transition-colors"
+              >
                 Cookies
               </Link>
             </div>
@@ -1095,5 +1265,5 @@ export default function HomePage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
