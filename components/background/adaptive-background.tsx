@@ -7,7 +7,7 @@ import type { PerformanceLevel } from "@/hooks/use-device-performance"
 
 interface AdaptiveBackgroundProps {
   performanceLevel: PerformanceLevel
-  variant?: "default" | "aurora" | "waves" | "geometric" | "nebula"
+  variant?: "default" | "aurora" | "night" | "geometric" | "nebula"
 }
 
 export const AdaptiveBackground = ({ performanceLevel, variant = "default" }: AdaptiveBackgroundProps) => {
@@ -38,14 +38,6 @@ export const AdaptiveBackground = ({ performanceLevel, variant = "default" }: Ad
           base: "from-slate-950 via-green-950/20 to-slate-950",
           gradient: "from-green-500/10 via-transparent to-blue-500/10",
         }
-      case "waves":
-        return {
-          primary: "rgba(59, 130, 246, 0.4)",
-          secondary: "rgba(16, 185, 129, 0.3)",
-          accent: "rgba(6, 182, 212, 0.3)",
-          base: "from-slate-950 via-blue-950/20 to-slate-950",
-          gradient: "from-blue-500/10 via-transparent to-cyan-500/10",
-        }
       case "geometric":
         return {
           primary: "rgba(245, 101, 101, 0.4)",
@@ -62,13 +54,22 @@ export const AdaptiveBackground = ({ performanceLevel, variant = "default" }: Ad
           base: "from-slate-950 via-purple-950/40 to-slate-900",
           gradient: "from-purple-500/10 via-transparent to-pink-500/10",
         }
-      default:
+      case "night":
         return {
-          primary: "rgba(139, 92, 246, 0.4)",
-          secondary: "rgba(236, 72, 153, 0.3)",
-          accent: "rgba(59, 130, 246, 0.2)",
-          base: "from-slate-950 via-purple-950/40 to-slate-900",
-          gradient: "from-purple-500/10 via-transparent to-blue-500/10",
+          primary: "rgba(59, 130, 246, 0.35)",        // biru
+          secondary: "rgba(6, 182, 212, 0.25)",       // cyan
+          accent: "rgba(30, 64, 175, 0.25)",          // biru navy
+          base: "from-slate-950 via-blue-950/40 to-slate-900",
+          gradient: "from-blue-500/10 via-transparent to-cyan-500/10",
+        }
+      default:
+        // Default sekarang adalah warna biru/teal (waves lama)
+        return {
+          primary: "rgba(59, 130, 246, 0.4)",
+          secondary: "rgba(16, 185, 129, 0.3)",
+          accent: "rgba(6, 182, 212, 0.3)",
+          base: "from-slate-950 via-blue-950/20 to-slate-950",
+          gradient: "from-blue-500/10 via-transparent to-cyan-500/10",
         }
     }
   }
