@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,6 +29,7 @@ import {
   Phone,
 } from "lucide-react"
 import Link from "next/link"
+import { Navbar } from "@/components/navigation/nav-dashboard" // Import Navbar
 
 const donationRequests = [
   {
@@ -172,8 +172,9 @@ export default function DonationsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+      <Navbar /> {/* Tambahkan Navbar di sini */}
       {/* Header */}
-      <header className="bg-white/90 backdrop-blur-lg border-b sticky top-0 z-40 shadow-sm">
+      <header className="bg-white/90 backdrop-blur-lg border-b sticky top-[56px] z-40 shadow-sm"> {/* Sesuaikan top */}
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">

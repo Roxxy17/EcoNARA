@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -16,14 +16,16 @@ import {
   Clock,
   Star,
   Heart,
-  ArrowLeft,
+  // ArrowLeft, // Dihapus karena tombol "Kembali" tidak diperlukan lagi
   Users,
   Package,
   TrendingUp,
   Eye,
   MessageCircle,
+  Leaf, // Diperlukan untuk logo di header
 } from "lucide-react"
 import Link from "next/link"
+import { Navbar } from "@/components/navigation/nav-dashboard" // Import Navbar yang baru
 
 const categories = [
   { id: "all", name: "Semua", icon: "🏪" },
@@ -47,7 +49,7 @@ const marketplaceItems = [
     seller: "Bu Sari",
     location: "RT 03, 0.5 km",
     category: "vegetables",
-    image: "/placeholder.svg?height=200&width=300&text=Sayuran+Organik",
+    image: "https://placehold.co/300x200/A855F7/FFFFFF?text=Sayuran+Organik",
     rating: 4.8,
     reviews: 12,
     timePosted: "2 jam lalu",
@@ -63,7 +65,7 @@ const marketplaceItems = [
     seller: "Pak Budi",
     location: "RT 05, 0.2 km",
     category: "books",
-    image: "/placeholder.svg?height=200&width=300&text=Buku+Pelajaran",
+    image: "https://placehold.co/300x200/22C55E/FFFFFF?text=Buku+Pelajaran",
     rating: 4.9,
     reviews: 8,
     timePosted: "5 jam lalu",
@@ -79,7 +81,7 @@ const marketplaceItems = [
     seller: "Ibu Rina",
     location: "RT 02, 0.8 km",
     category: "handicrafts",
-    image: "/placeholder.svg?height=200&width=300&text=Tas+Daur+Ulang",
+    image: "https://placehold.co/300x200/F97316/FFFFFF?text=Tas+Daur+Ulang",
     rating: 4.7,
     reviews: 15,
     timePosted: "1 hari lalu",
@@ -96,7 +98,7 @@ const marketplaceItems = [
     seller: "Andi",
     location: "RT 01, 1.2 km",
     category: "electronics",
-    image: "/placeholder.svg?height=200&width=300&text=iPhone+12",
+    image: "https://placehold.co/300x200/6B7280/FFFFFF?text=iPhone+12",
     rating: 4.6,
     reviews: 3,
     timePosted: "3 hari lalu",
@@ -111,7 +113,7 @@ const marketplaceItems = [
     seller: "Bu Maya",
     location: "RT 04, 0.6 km",
     category: "clothes",
-    image: "/placeholder.svg?height=200&width=300&text=Pakaian+Anak",
+    image: "https://placehold.co/300x200/EF4444/FFFFFF?text=Pakaian+Anak",
     rating: 4.8,
     reviews: 6,
     timePosted: "1 minggu lalu",
@@ -126,7 +128,7 @@ const marketplaceItems = [
     seller: "Pak Joko",
     location: "RT 06, 1.0 km",
     category: "fruits",
-    image: "/placeholder.svg?height=200&width=300&text=Mangga+Manis",
+    image: "https://placehold.co/300x200/FACC15/000000?text=Mangga+Manis",
     rating: 4.9,
     reviews: 20,
     timePosted: "4 jam lalu",
@@ -160,28 +162,24 @@ export default function MarketplacePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
-      {/* Header */}
-      <header className="bg-white/90 backdrop-blur-lg border-b sticky top-0 z-40 shadow-sm">
+      <Navbar /> {/* Navbar ditambahkan di sini */}
+
+      {/* Header (Diperbarui) */}
+      <header className="bg-white/90 backdrop-blur-lg border-b sticky top-0 z-30 shadow-sm"> {/* Z-index disesuaikan */}
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
+            {/* Logo dan Judul Halaman */}
             <div className="flex items-center space-x-4">
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Kembali
-                </Button>
-              </Link>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
-                  <ShoppingCart className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-800">Pasar Komunitas</h1>
-                  <p className="text-sm text-gray-600">Jual, beli, dan donasi dengan tetangga</p>
-                </div>
+              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+                <ShoppingCart className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-800">Pasar Komunitas</h1>
+                <p className="text-sm text-gray-600">Jual, beli, dan donasi dengan tetangga</p>
               </div>
             </div>
 
+            {/* Tombol Aksi */}
             <div className="flex items-center space-x-3">
               <Button variant="outline" size="sm">
                 <Heart className="w-4 h-4 mr-2" />

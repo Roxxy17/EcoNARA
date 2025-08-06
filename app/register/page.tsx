@@ -9,50 +9,61 @@ import { Label } from "@/components/ui/label"
 import { Leaf, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase" // <--- Baris ini yang perlu ditambahkan
+import { supabase } from "@/lib/supabase"
+import { useToast } from "@/components/ui/use-toast"
 
-// Pastikan Anda sudah menginisialisasi Supabase client di sini atau di file lain
-// Contoh:
-// import { createClient } from "@supabase/supabase-js"
-// const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-// const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-// const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-export default function LoginPage() {
+export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false)
+  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState(null)
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const { toast } = useToast()
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setError(null) // Reset error state
+    setError(null)
 
-    // Integrasi dengan Supabase Auth
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) {
-      // Menampilkan pesan error dari Supabase
-      setError(error.message)
+    if (password !== confirmPassword) {
+      setError("Password tidak cocok.")
       setIsLoading(false)
       return
     }
 
-    // Jika login berhasil, Anda bisa mendapatkan role dari data user (jika disimpan)
-    // atau mengambilnya dari tabel lain.
-    // Contoh ini mengasumsikan role disimpan di metadata pengguna.
-    const user = data?.user
-    const userRole = user?.user_metadata?.role
+    // Integrasi dengan Supabase Auth
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        // Asumsi nama disimpan di user_metadata
+        data: {
+          name: name,
+        },
+      },
+    })
 
-    if (userRole === "admin") {
-      router.push("/admin")
-    } else {
-      router.push("/dashboard")
+    if (signUpError) {
+      setError(signUpError.message)
+      setIsLoading(false)
+      toast({
+        title: "Pendaftaran Gagal",
+        description: signUpError.message,
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (data.user) {
+      // Jika pendaftaran berhasil
+      toast({
+        title: "Pendaftaran Berhasil!",
+        description: "Akun Anda telah dibuat. Silakan cek email untuk verifikasi.",
+        variant: "default",
+      })
+      router.push("/login")
     }
 
     setIsLoading(false)
@@ -67,9 +78,9 @@ export default function LoginPage() {
         className="w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2 text-gray-600 hover:text-gray-800 mb-4">
+          <Link href="/login" className="inline-flex items-center space-x-2 text-gray-600 hover:text-gray-800 mb-4">
             <ArrowLeft className="w-4 h-4" />
-            <span>Kembali ke Beranda</span>
+            <span>Kembali ke Halaman Masuk</span>
           </Link>
 
           <div className="flex items-center justify-center space-x-2 mb-4">
@@ -80,16 +91,27 @@ export default function LoginPage() {
               ECONARA
             </span>
           </div>
-          <p className="text-gray-600">Masuk ke akun Anda</p>
+          <p className="text-gray-600">Daftar akun baru Anda</p>
         </div>
 
         <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle>Masuk</CardTitle>
-            <CardDescription>Masukkan email dan password Anda untuk melanjutkan</CardDescription>
+            <CardTitle>Daftar</CardTitle>
+            <CardDescription>Buat akun untuk memulai perjalanan keberlanjutan Anda</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleLogin} className="space-y-6">
+            <form onSubmit={handleRegister} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="name">Nama Lengkap</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Nama Anda"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -111,20 +133,30 @@ export default function LoginPage() {
                   required
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Ulangi Password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button
                 className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 transition-colors duration-200"
                 type="submit"
                 disabled={isLoading}
               >
-                {isLoading ? "Memproses..." : "Masuk"}
+                {isLoading ? "Memproses..." : "Daftar"}
               </Button>
             </form>
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Belum punya akun?{" "}
-                <Link href="/register" className="text-green-600 hover:underline">
-                  Daftar di sini
+                Sudah punya akun?{" "}
+                <Link href="/login" className="text-green-600 hover:underline">
+                  Masuk di sini
                 </Link>
               </p>
             </div>
