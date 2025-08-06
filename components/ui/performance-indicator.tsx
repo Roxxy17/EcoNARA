@@ -1,95 +1,129 @@
-"use client"
+"use client";
 
-import { motion, AnimatePresence } from "framer-motion"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { Cpu, Monitor, Smartphone, Zap, Gauge, HardDrive, Wifi } from 'lucide-react'
-import type { PerformanceLevel } from "@/hooks/use-device-performance"
+import { motion, AnimatePresence } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Cpu,
+  Monitor,
+  Smartphone,
+  Zap,
+  Gauge,
+  HardDrive,
+  Wifi,
+} from "lucide-react";
+import type { PerformanceLevel } from "@/hooks/use-device-performance";
+import { useState } from "react";
 
 interface PerformanceIndicatorProps {
-  performanceLevel: PerformanceLevel
+  performanceLevel: PerformanceLevel;
   capabilities: {
-    cores: number
-    memory: number
-    connection: string
-    gpu: string
-    isMobile: boolean
-  } | null
-  isLoading: boolean
+    cores: number;
+    memory: number;
+    connection: string;
+    gpu: string;
+    isMobile: boolean;
+  } | null;
+  isLoading: boolean;
 }
 
-export const PerformanceIndicator = ({ performanceLevel, capabilities, isLoading }: PerformanceIndicatorProps) => {
+export const PerformanceIndicator = ({
+  performanceLevel,
+  capabilities,
+  isLoading,
+}: PerformanceIndicatorProps) => {
+  const [expanded, setExpanded] = useState(false);
+
   const getPerformanceColor = () => {
     switch (performanceLevel) {
       case "high":
-        return "text-green-400 border-green-500/30 bg-green-500/20"
+        return "text-green-400 border-green-500/30 bg-green-500/20";
       case "medium":
-        return "text-yellow-400 border-yellow-500/30 bg-yellow-500/20"
+        return "text-yellow-400 border-yellow-500/30 bg-yellow-500/20";
       case "low":
-        return "text-red-400 border-red-500/30 bg-red-500/20"
+        return "text-red-400 border-red-500/30 bg-red-500/20";
       default:
-        return "text-slate-400 border-slate-500/30 bg-slate-500/20"
+        return "text-slate-400 border-slate-500/30 bg-slate-500/20";
     }
-  }
+  };
 
   const getPerformanceIcon = () => {
     switch (performanceLevel) {
       case "high":
-        return Zap
+        return Zap;
       case "medium":
-        return Gauge
+        return Gauge;
       case "low":
-        return Monitor
+        return Monitor;
       default:
-        return Cpu
+        return Cpu;
     }
-  }
+  };
 
-  const PerformanceIcon = getPerformanceIcon()
+  const PerformanceIcon = getPerformanceIcon();
 
-  if (isLoading) {
+  // Mini icon only (collapsed)
+  if (!expanded) {
     return (
-      <div className="fixed top-4 left-4 z-50">
-        <Card className="bg-slate-900/80 backdrop-blur-sm border-slate-700/50">
-          <CardContent className="p-3">
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-slate-600 rounded animate-pulse" />
-              <span className="text-slate-400 text-sm">Detecting...</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+      <motion.div
+        className="fixed bottom-6 left-6 z-50 cursor-pointer flex items-center justify-center"
+        style={{ opacity: 0.12, transition: "opacity 0.3s" }}
+        initial={{ opacity: 0, scale: 0.7 }}
+        animate={{ opacity: 0.12, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.7 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        tabIndex={0}
+        onClick={() => setExpanded(true)}
+        onFocus={() => setExpanded(true)}
+        title="Show performance details"
+      >
+        <div className="rounded-full bg-slate-900/80 p-2 shadow-lg border border-slate-700/50">
+          <PerformanceIcon className={`w-6 h-6 ${getPerformanceColor().split(" ")[0]}`} />
+        </div>
+      </motion.div>
+    );
   }
 
+  // Expanded view
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed top-4 left-4 z-50"
+        className="fixed bottom-6 left-6 z-50 cursor-pointer"
+        style={{ opacity: 1, transition: "opacity 0.3s" }}
         initial={{ opacity: 0, scale: 0.8, x: -20 }}
         animate={{ opacity: 1, scale: 1, x: 0 }}
         exit={{ opacity: 0, scale: 0.8, x: -20 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        tabIndex={0}
+        onBlur={() => setExpanded(false)}
       >
-        <Card className="bg-slate-900/80 backdrop-blur-sm border-slate-700/50 hover:bg-slate-900/90 transition-all duration-300 shadow-lg">
+        <div onClick={() => setExpanded(false)} className="absolute inset-0 z-0" tabIndex={-1} aria-label="Close" />
+        <Card className="bg-slate-900/80 backdrop-blur-sm border-slate-700/50 hover:bg-slate-900/90 transition-all duration-300 shadow-lg relative z-10">
           <CardContent className="p-3">
             <div className="flex items-center space-x-3">
               <div className="flex items-center space-x-2">
                 <motion.div
-                  animate={{ rotate: performanceLevel === "high" ? [0, 360] : 0 }}
-                  transition={{ 
+                  animate={{
+                    rotate: performanceLevel === "high" ? [0, 360] : 0,
+                  }}
+                  transition={{
                     duration: performanceLevel === "high" ? 2 : 0,
-                    repeat: performanceLevel === "high" ? Number.POSITIVE_INFINITY : 0,
-                    ease: "linear"
+                    repeat:
+                      performanceLevel === "high"
+                        ? Number.POSITIVE_INFINITY
+                        : 0,
+                    ease: "linear",
                   }}
                 >
-                  <PerformanceIcon className={`w-4 h-4 ${getPerformanceColor().split(' ')[0]}`} />
+                  <PerformanceIcon
+                    className={`w-4 h-4 ${getPerformanceColor().split(" ")[0]}`}
+                  />
                 </motion.div>
                 <Badge className={`text-xs ${getPerformanceColor()}`}>
                   {performanceLevel.toUpperCase()}
                 </Badge>
               </div>
-              
+
               {capabilities && (
                 <div className="flex items-center space-x-2 text-xs text-slate-400">
                   <div className="flex items-center space-x-1">
@@ -113,9 +147,17 @@ export const PerformanceIndicator = ({ performanceLevel, capabilities, isLoading
                 </div>
               )}
             </div>
+            <button
+              className="absolute top-2 right-2 text-xs text-slate-400 hover:text-white"
+              onClick={() => setExpanded(false)}
+              tabIndex={0}
+              aria-label="Close"
+            >
+              ✕
+            </button>
           </CardContent>
         </Card>
       </motion.div>
     </AnimatePresence>
-  )
-}
+  );
+};
