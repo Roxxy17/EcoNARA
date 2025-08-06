@@ -27,6 +27,7 @@ import {
   MapPin,
 } from "lucide-react"
 import Link from "next/link"
+import { Navbar } from "@/components/navigation/nav-dashboard" // Import Navbar
 
 const individualLeaderboard = [
   {
@@ -165,8 +166,9 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50">
+      <Navbar /> {/* Tambahkan Navbar di sini */}
       {/* Header */}
-      <header className="bg-white/90 backdrop-blur-lg border-b sticky top-0 z-40 shadow-sm">
+      <header className="bg-white/90 backdrop-blur-lg border-b sticky top-[56px] z-40 shadow-sm"> {/* Sesuaikan top */}
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">

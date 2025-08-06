@@ -1,6 +1,7 @@
+// app/profile/page.tsx
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -30,6 +31,21 @@ import {
   Globe,
 } from "lucide-react"
 import Link from "next/link"
+import { useUser } from "@/contexts/UserContext" // Mengimpor hook useUser
+import { supabase } from "@/lib/supabase" // Import supabase client untuk mendapatkan token
+
+// Definisi data mock awal
+const initialMockProfile = {
+  name: "Pengguna ECONARA",
+  email: "email@example.com",
+  phone: "+62 8xx xxxx xxxx", // Ini adalah mock karena tidak ada di tabel users
+  location: "RT 00, Kelurahan Maju, Indonesia", // Ini adalah mock
+  bio: "Bio belum diisi.", // Ini adalah mock
+  joinDate: "Belum Ditemukan",
+  level: "Warga Baru",
+  totalPoints: 0,
+  rank: 0,
+};
 
 const achievements = [
   {
@@ -75,20 +91,96 @@ const stats = [
   { label: "Sampah Didaur Ulang", value: "89kg", icon: Trophy, color: "text-blue-500" },
 ]
 
+// --- Komponen Skeleton Loading ---
+function ProfilePageSkeleton() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 p-4">
+      <header className="bg-white/90 backdrop-blur-lg border-b sticky top-0 z-40 shadow-sm">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-24 h-8 bg-gray-200 rounded-md animate-pulse"></div> {/* Back button */}
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gray-200 rounded-lg animate-pulse"></div> {/* Icon */}
+                <div>
+                  <div className="w-32 h-6 bg-gray-200 rounded-md animate-pulse"></div> {/* Title */}
+                  <div className="w-48 h-4 mt-1 bg-gray-200 rounded-md animate-pulse"></div> {/* Description */}
+                </div>
+              </div>
+            </div>
+            <div className="w-28 h-10 bg-gray-200 rounded-md animate-pulse"></div> {/* Edit button */}
+          </div>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sidebar Skeleton */}
+          <div className="lg:col-span-1">
+            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+              <CardContent className="p-6 text-center">
+                <div className="w-24 h-24 mx-auto rounded-full bg-gray-200 animate-pulse mb-4"></div> {/* Avatar */}
+                <div className="w-3/4 h-6 mx-auto bg-gray-200 rounded-md animate-pulse mb-2"></div> {/* Name */}
+                <div className="w-1/2 h-4 mx-auto bg-gray-200 rounded-md animate-pulse mb-4"></div> {/* Badge */}
+                <div className="space-y-2">
+                  <div className="w-2/3 h-4 mx-auto bg-gray-200 rounded-md animate-pulse"></div> {/* Rank */}
+                  <div className="w-2/3 h-4 mx-auto bg-gray-200 rounded-md animate-pulse"></div> {/* Join Date */}
+                </div>
+                <Separator className="my-4 bg-gray-200" />
+                <div className="grid grid-cols-2 gap-4">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="text-center space-y-1">
+                      <div className="w-8 h-8 mx-auto bg-gray-200 rounded-full animate-pulse"></div>
+                      <div className="w-full h-4 bg-gray-200 rounded-md animate-pulse"></div>
+                      <div className="w-3/4 h-3 mx-auto bg-gray-200 rounded-md animate-pulse"></div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content Skeleton */}
+          <div className="lg:col-span-3 space-y-6">
+            <div className="grid w-full grid-cols-4 gap-2">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="w-full h-10 bg-gray-200 rounded-md animate-pulse"></div>
+              ))}
+            </div>
+            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+              <CardHeader>
+                <div className="w-1/2 h-6 bg-gray-200 rounded-md animate-pulse"></div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <div className="w-1/3 h-4 bg-gray-200 rounded-md animate-pulse"></div>
+                    <div className="w-full h-10 bg-gray-200 rounded-md animate-pulse"></div>
+                  </div>
+                ))}
+                <div className="w-full h-24 bg-gray-200 rounded-md animate-pulse"></div> {/* Bio textarea */}
+                <div className="flex space-x-3">
+                    <div className="w-32 h-10 bg-gray-200 rounded-md animate-pulse"></div>
+                    <div className="w-24 h-10 bg-gray-200 rounded-md animate-pulse"></div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Repeat for other tabs if needed, or just show one main content skeleton */}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// --- Komponen Halaman Profil Utama ---
 export default function ProfilePage() {
+  const { userProfile, loadingUser, setUserProfile } = useUser();
   const [isEditing, setIsEditing] = useState(false)
   const [activeTab, setActiveTab] = useState("overview")
-  const [profile, setProfile] = useState({
-    name: "Sari Wijaya",
-    email: "sari.wijaya@email.com",
-    phone: "+62 812 3456 7890",
-    location: "RT 05, Kelurahan Maju, Jakarta",
-    bio: "Ibu rumah tangga yang peduli lingkungan dan aktif dalam kegiatan komunitas berkelanjutan.",
-    joinDate: "Januari 2024",
-    level: "Eco Champion",
-    totalPoints: 2450,
-    rank: 15,
-  })
+  const [profile, setProfile] = useState(initialMockProfile)
+  const [initialProfile, setInitialProfile] = useState({ ...initialMockProfile });
+  const [isSaving, setIsSaving] = useState(false); // Mengganti isLoading untuk operasi simpan
 
   const [notifications, setNotifications] = useState({
     donations: true,
@@ -97,10 +189,110 @@ export default function ProfilePage() {
     marketing: false,
   })
 
-  const handleSaveProfile = () => {
-    setIsEditing(false)
-    // Here you would typically save to backend
+  // Efek untuk mengisi data profil dari UserContext
+  useEffect(() => {
+    if (!loadingUser && userProfile) {
+      const fetchedProfile = {
+        name: userProfile.name || initialMockProfile.name,
+        email: userProfile.email || initialMockProfile.email,
+        phone: initialMockProfile.phone, // Tetap mock
+        location: initialMockProfile.location, // Tetap mock
+        bio: initialMockProfile.bio, // Tetap mock
+        joinDate: userProfile.created_at ? new Date(userProfile.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long' }) : initialMockProfile.joinDate,
+        level: userProfile.role || initialMockProfile.level,
+        totalPoints: userProfile.poin_komunitas || initialMockProfile.totalPoints,
+        rank: initialMockProfile.rank, // Rank masih mock
+      };
+      setProfile(fetchedProfile);
+      setInitialProfile(fetchedProfile);
+    } else if (!loadingUser && !userProfile) {
+      // Jika tidak ada userProfile (misal: belum login), gunakan mock data
+      setProfile(initialMockProfile);
+      setInitialProfile(initialMockProfile);
+    }
+  }, [userProfile, loadingUser]);
+
+  const handleSaveProfile = async () => {
+    setIsSaving(true); // Menggunakan isSaving
+    if (!userProfile || !userProfile.id) {
+      console.error("No user logged in to save profile.");
+      setIsSaving(false);
+      return;
+    }
+    
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+
+      if (!token) {
+        console.error("No access token found for updating profile.");
+        setIsSaving(false);
+        return;
+      }
+
+      const response = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          nama: profile.name,
+          // Tambahkan kolom lain yang ingin diupdate ke DB di sini, misalnya:
+          // phone: profile.phone,
+          // bio: profile.bio,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Profile updated successfully:", data);
+        
+        // Perbarui UserContext dengan data terbaru dari API
+        setUserProfile(prev => prev ? {
+            ...prev,
+            name: data.nama || prev.name, // Gunakan data.nama yang diperbarui
+            email: data.email || prev.email,
+            role: data.role || prev.role,
+            poin_komunitas: data.poin_komunitas || prev.poin_komunitas,
+            updated_at: data.updated_at || prev.updated_at,
+            desa_id: data.desa_id || prev.desa_id,
+            created_at: data.created_at || prev.created_at,
+        } : null);
+
+        const updatedMergedProfile = {
+            ...profile,
+            name: data.nama || profile.name,
+            email: data.email || profile.email,
+            level: data.role || profile.level,
+            totalPoints: data.poin_komunitas || profile.totalPoints,
+            joinDate: data.created_at ? new Date(data.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long' }) : profile.joinDate,
+        };
+        setProfile(updatedMergedProfile);
+        setInitialProfile(updatedMergedProfile);
+        setIsEditing(false);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to update profile via API:", errorData.error || response.statusText);
+      }
+    } catch (error) {
+      console.error("Error calling update profile API:", error);
+    } finally {
+      setIsSaving(false); // Menggunakan isSaving
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setProfile(initialProfile);
+  };
+
+  // Tampilkan skeleton loading jika data pengguna sedang dimuat dari konteks
+  if (loadingUser) {
+    return <ProfilePageSkeleton />;
   }
+
+  const userInitial = profile.name.charAt(0).toUpperCase();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
@@ -126,13 +318,15 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <Button
-              onClick={() => setIsEditing(!isEditing)}
-              className={isEditing ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"}
-            >
-              {isEditing ? <X className="w-4 h-4 mr-2" /> : <Edit3 className="w-4 h-4 mr-2" />}
-              {isEditing ? "Batal" : "Edit Profil"}
-            </Button>
+            {isEditing ? (
+                <Button onClick={handleCancelEdit} className="bg-red-500 hover:bg-red-600" disabled={isSaving}>
+                    <X className="w-4 h-4 mr-2" /> Batal
+                </Button>
+            ) : (
+                <Button onClick={() => setIsEditing(true)} className="bg-blue-500 hover:bg-blue-600" disabled={isSaving}>
+                    <Edit3 className="w-4 h-4 mr-2" /> Edit Profil
+                </Button>
+            )}
           </div>
         </div>
       </header>
@@ -148,7 +342,7 @@ export default function ProfilePage() {
                     <Avatar className="w-24 h-24 mx-auto">
                       <AvatarImage src="/placeholder.svg?height=96&width=96&text=SW" />
                       <AvatarFallback className="text-2xl font-bold bg-gradient-to-r from-green-500 to-blue-500 text-white">
-                        SW
+                        {userInitial}
                       </AvatarFallback>
                     </Avatar>
                     {isEditing && (
@@ -189,7 +383,7 @@ export default function ProfilePage() {
                         className="text-center"
                       >
                         <stat.icon className={`w-6 h-6 ${stat.color} mx-auto mb-1`} />
-                        <div className="font-bold text-gray-800">{stat.value}</div>
+                        <div className="font-bold text-gray-800">{profile.totalPoints.toLocaleString()}</div> {/* Menggunakan totalPoints dari profile state */}
                         <div className="text-xs text-gray-600">{stat.label}</div>
                       </motion.div>
                     ))}
@@ -229,7 +423,7 @@ export default function ProfilePage() {
                           <Input
                             value={profile.name}
                             onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                            disabled={!isEditing}
+                            disabled={!isEditing || isSaving}
                             className={!isEditing ? "bg-gray-50" : ""}
                           />
                         </div>
@@ -238,8 +432,8 @@ export default function ProfilePage() {
                           <Input
                             value={profile.email}
                             onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                            disabled={!isEditing}
-                            className={!isEditing ? "bg-gray-50" : ""}
+                            disabled={true} // Email biasanya tidak bisa diubah langsung dari sini
+                            className={"bg-gray-50"} // Selalu disabled dan berwarna abu-abu
                           />
                         </div>
                         <div>
@@ -247,7 +441,7 @@ export default function ProfilePage() {
                           <Input
                             value={profile.phone}
                             onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                            disabled={!isEditing}
+                            disabled={!isEditing || isSaving}
                             className={!isEditing ? "bg-gray-50" : ""}
                           />
                         </div>
@@ -256,7 +450,7 @@ export default function ProfilePage() {
                           <Input
                             value={profile.location}
                             onChange={(e) => setProfile({ ...profile, location: e.target.value })}
-                            disabled={!isEditing}
+                            disabled={!isEditing || isSaving}
                             className={!isEditing ? "bg-gray-50" : ""}
                           />
                         </div>
@@ -267,7 +461,7 @@ export default function ProfilePage() {
                         <textarea
                           value={profile.bio}
                           onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                          disabled={!isEditing}
+                          disabled={!isEditing || isSaving}
                           className={`w-full p-3 border rounded-lg resize-none h-24 ${!isEditing ? "bg-gray-50" : ""}`}
                         />
                       </div>
@@ -278,11 +472,11 @@ export default function ProfilePage() {
                           animate={{ opacity: 1, y: 0 }}
                           className="flex space-x-3"
                         >
-                          <Button onClick={handleSaveProfile} className="bg-green-500 hover:bg-green-600">
+                          <Button onClick={handleSaveProfile} className="bg-green-500 hover:bg-green-600" disabled={isSaving}>
                             <Save className="w-4 h-4 mr-2" />
-                            Simpan Perubahan
+                            {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
                           </Button>
-                          <Button variant="outline" onClick={() => setIsEditing(false)}>
+                          <Button variant="outline" onClick={handleCancelEdit} disabled={isSaving}>
                             Batal
                           </Button>
                         </motion.div>
@@ -314,6 +508,7 @@ export default function ProfilePage() {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: index * 0.1 }}
                             whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.95 }}
                             className={`p-4 rounded-lg border-2 transition-all ${
                               achievement.earned
                                 ? "bg-green-50 border-green-200 shadow-lg"

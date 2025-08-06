@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Camera, Upload, Recycle, Leaf, AlertCircle, ArrowLeft, CheckCircle, Info, Trash2 } from "lucide-react"
 import Link from "next/link"
+import { Navbar } from "@/components/navigation/nav-dashboard" // Import Navbar
 
 const wasteCategories = {
   organic: {
@@ -100,8 +101,9 @@ export default function TrashClassifierPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-green-50">
+      <Navbar /> {/* Tambahkan Navbar di sini */}
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-40">
+      <header className="bg-white/80 backdrop-blur-md border-b sticky top-[56px] z-40"> {/* Sesuaikan top */}
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center space-x-4">
             <Link href="/dashboard">

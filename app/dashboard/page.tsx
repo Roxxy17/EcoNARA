@@ -21,13 +21,12 @@ import {
   Target,
   ShoppingCart,
   BookOpen,
-  Bell,
-  Settings,
   Calendar,
   Activity,
   Globe,
 } from "lucide-react"
 import Link from "next/link"
+import { Navbar } from "@/components/navigation/nav-dashboard" // Mengimpor komponen Navbar
 
 const quickActions = [
   {
@@ -122,8 +121,10 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+      <Navbar /> {/* Menggunakan komponen Navbar */}
+      
       {/* Enhanced Header */}
-      <header className="bg-white/90 backdrop-blur-lg border-b sticky top-0 z-40 shadow-sm">
+      <header className="bg-white/90 backdrop-blur-lg border-b sticky top-[56px] z-40 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
@@ -146,17 +147,7 @@ export default function DashboardPage() {
                 <Badge className="bg-orange-100 text-orange-800">🔥 {userStats.streak} hari</Badge>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Button variant="ghost" size="sm">
-                  <Bell className="w-4 h-4" />
-                  {notifications.length > 0 && (
-                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                  )}
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <Settings className="w-4 h-4" />
-                </Button>
-              </div>
+              {/* Tombol Bell dan Settings dipindahkan ke komponen Navbar */}
             </div>
           </div>
 
@@ -352,7 +343,7 @@ export default function DashboardPage() {
             <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Bell className="w-5 h-5 text-orange-500" />
+                  <Globe className="w-5 h-5 text-orange-500" /> {/* Menggunakan ikon Globe karena Bell sudah di navbar */}
                   <span>Notifikasi</span>
                 </CardTitle>
               </CardHeader>
