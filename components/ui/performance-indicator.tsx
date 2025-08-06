@@ -11,6 +11,7 @@ import {
   Gauge,
   HardDrive,
   Wifi,
+  X,
 } from "lucide-react";
 import type { PerformanceLevel } from "@/hooks/use-device-performance";
 import { useState } from "react";
@@ -67,9 +68,8 @@ export const PerformanceIndicator = ({
     return (
       <motion.div
         className="fixed bottom-6 left-6 z-50 cursor-pointer flex items-center justify-center"
-        style={{ opacity: 0.12, transition: "opacity 0.3s" }}
         initial={{ opacity: 0, scale: 0.7 }}
-        animate={{ opacity: 0.12, scale: 1 }}
+        animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.7 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         tabIndex={0}
@@ -89,7 +89,6 @@ export const PerformanceIndicator = ({
     <AnimatePresence>
       <motion.div
         className="fixed bottom-6 left-6 z-50 cursor-pointer"
-        style={{ opacity: 1, transition: "opacity 0.3s" }}
         initial={{ opacity: 0, scale: 0.8, x: -20 }}
         animate={{ opacity: 1, scale: 1, x: 0 }}
         exit={{ opacity: 0, scale: 0.8, x: -20 }}
@@ -148,12 +147,12 @@ export const PerformanceIndicator = ({
               )}
             </div>
             <button
-              className="absolute top-2 right-2 text-xs text-slate-400 hover:text-white"
+              className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full bg-slate-800/70 hover:bg-slate-700/90 transition text-slate-300 hover:text-white shadow"
               onClick={() => setExpanded(false)}
               tabIndex={0}
               aria-label="Close"
             >
-              ✕
+              <X className="w-4 h-4" />
             </button>
           </CardContent>
         </Card>

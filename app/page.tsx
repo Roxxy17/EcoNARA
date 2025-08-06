@@ -1,98 +1,133 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { Palette, Shuffle, Settings, Volume2, VolumeX } from 'lucide-react'
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Palette, Shuffle, Settings, Volume2, VolumeX } from "lucide-react";
 
-import { useDevicePerformance } from "@/hooks/use-device-performance"
-import { AdaptiveBackground } from "@/components/background/adaptive-background"
-import { Navbar } from "@/components/navigation/navbar"
-import { HeroSection } from "@/components/sections/hero-section"
-import { FeaturesSection } from "@/components/sections/features-section"
-import { StatsSection } from "@/components/sections/stats-section"
-import { TestimonialsSection } from "@/components/sections/testimonials-section"
-import { CTASection } from "@/components/sections/cta-section"
-import { Footer } from "@/components/sections/footer"
-import { PerformanceIndicator } from "@/components/ui/performance-indicator"
+import { useDevicePerformance } from "@/hooks/use-device-performance";
+import { AdaptiveBackground } from "@/components/background/adaptive-background";
+import { Navbar } from "@/components/navigation/navbar";
+import { HeroSection } from "@/components/sections/hero-section";
+import { FeaturesSection } from "@/components/sections/features-section";
+import { ImpactSection } from "@/components/sections/stats-section";
+import { TestimonialsSection } from "@/components/sections/testimonials-section";
+import { CTASection } from "@/components/sections/cta-section";
+import { Footer } from "@/components/sections/footer";
+import { PerformanceIndicator } from "@/components/ui/performance-indicator";
 
 const backgroundVariants = [
-  { name: "Default", value: "default", description: "Classic purple & blue theme", emoji: "🌌" },
-  { name: "Aurora", value: "aurora", description: "Northern lights inspired", emoji: "🌅" },
-  { name: "Ocean Waves", value: "waves", description: "Flowing blue & teal waves", emoji: "🌊" },
-  { name: "Geometric", value: "geometric", description: "Sharp orange & red patterns", emoji: "🔶" },
-  { name: "Nebula", value: "nebula", description: "Deep space purple & pink", emoji: "🌠" },
-]
+  {
+    name: "Ocean",
+    value: "default",
+    description: "Flowing blue & teal waves",
+    emoji: "🌊",
+  },
+  {
+    name: "Aurora",
+    value: "aurora",
+    description: "Northern lights inspired",
+    emoji: "🌅",
+  },
+  {
+    name: "Geometric",
+    value: "geometric",
+    description: "Sharp orange & red patterns",
+    emoji: "🔶",
+  },
+  {
+    name: "Nebula",
+    value: "nebula",
+    description: "Deep space purple & pink",
+    emoji: "🌠",
+  },
+  {
+    name: "Night",
+    value: "night",
+    description: "Blue & cyan night theme",
+    emoji: "🌙",
+  },
+];
 
 // Sound effects (using Web Audio API)
 const playSound = (frequency: number, duration = 100) => {
-  if (typeof window === "undefined") return
+  if (typeof window === "undefined") return;
 
   try {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
-    const oscillator = audioContext.createOscillator()
-    const gainNode = audioContext.createGain()
+    const audioContext = new (window.AudioContext ||
+      (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
 
-    oscillator.connect(gainNode)
-    gainNode.connect(audioContext.destination)
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
 
-    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime)
-    oscillator.type = "sine"
+    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+    oscillator.type = "sine";
 
-    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000)
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.01,
+      audioContext.currentTime + duration / 1000
+    );
 
-    oscillator.start(audioContext.currentTime)
-    oscillator.stop(audioContext.currentTime + duration / 1000)
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + duration / 1000);
   } catch (error) {
     // Silently fail if Web Audio API is not supported
   }
-}
+};
 
 export default function HomePage() {
-  const { performanceLevel, capabilities, isLoading } = useDevicePerformance()
-  const [backgroundVariant, setBackgroundVariant] = useState<"default" | "aurora" | "waves" | "geometric" | "nebula">(
-    "default",
-  )
-  const [showVariantSelector, setShowVariantSelector] = useState(false)
-  const [soundEnabled, setSoundEnabled] = useState(false)
-  const [isPageLoaded, setIsPageLoaded] = useState(false)
+  const { performanceLevel, capabilities, isLoading } = useDevicePerformance();
+  const [backgroundVariant, setBackgroundVariant] = useState<
+    "default" | "aurora" | "geometric" | "nebula" | "night"
+  >("default");
+  const [showVariantSelector, setShowVariantSelector] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
 
   useEffect(() => {
-    setIsPageLoaded(true)
-  }, [])
+    setIsPageLoaded(true);
+  }, []);
 
   useEffect(() => {
     // Hapus semua class theme-* yang mungkin sudah ada
     document.body.classList.remove(
       "theme-default",
       "theme-aurora",
-      "theme-waves",
       "theme-geometric",
-      "theme-nebula"
-    )
+      "theme-nebula",
+      "theme-night"
+    );
     // Tambahkan class sesuai backgroundVariant aktif
-    document.body.classList.add(`theme-${backgroundVariant}`)
-  }, [backgroundVariant])
+    document.body.classList.add(`theme-${backgroundVariant}`);
+  }, [backgroundVariant]);
 
   const animationSettings = {
-    duration: performanceLevel === "high" ? 0.6 : performanceLevel === "medium" ? 0.8 : 1.0,
+    duration:
+      performanceLevel === "high"
+        ? 0.6
+        : performanceLevel === "medium"
+        ? 0.8
+        : 1.0,
     ease: performanceLevel === "high" ? [0.25, 0.1, 0.25, 1] : "easeOut",
-  }
+  };
 
   const handleThemeChange = (variant: any) => {
-    if (soundEnabled) playSound(440, 150)
-    setBackgroundVariant(variant)
-    setShowVariantSelector(false)
-  }
+    if (soundEnabled) playSound(440, 150);
+    setBackgroundVariant(variant);
+    setShowVariantSelector(false);
+  };
 
   const handleRandomTheme = () => {
-    if (soundEnabled) playSound(660, 200)
-    const randomVariant = backgroundVariants[Math.floor(Math.random() * backgroundVariants.length)]
-    setBackgroundVariant(randomVariant.value as any)
-  }
+    if (soundEnabled) playSound(660, 200);
+    const randomVariant =
+      backgroundVariants[Math.floor(Math.random() * backgroundVariants.length)];
+    setBackgroundVariant(randomVariant.value as any);
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -105,12 +140,18 @@ export default function HomePage() {
         className="min-h-screen relative overflow-hidden"
       >
         {/* Adaptive Background */}
-        <AdaptiveBackground performanceLevel={performanceLevel} variant={backgroundVariant} />
+        <AdaptiveBackground
+          performanceLevel={performanceLevel}
+          variant={backgroundVariant}
+        />
 
         {/* Performance Indicator - Moved to top left */}
-        <PerformanceIndicator performanceLevel={performanceLevel} capabilities={capabilities} isLoading={isLoading} />
-        
-        
+        <PerformanceIndicator
+          performanceLevel={performanceLevel}
+          capabilities={capabilities}
+          isLoading={isLoading}
+        />
+
         {/* Theme Controls - Bottom right */}
         <div className="fixed bottom-6 right-6 z-50 space-y-2">
           <motion.div
@@ -122,13 +163,12 @@ export default function HomePage() {
               variant="outline"
               size="sm"
               onClick={() => {
-                if (soundEnabled) playSound(330, 100)
-                setShowVariantSelector(!showVariantSelector)
+                if (soundEnabled) playSound(330, 100);
+                setShowVariantSelector(!showVariantSelector);
               }}
               className="bg-slate-900/80 backdrop-blur-sm border-slate-700/50 text-purple-400 hover:bg-slate-800/80 transition-all duration-300 shadow-lg"
             >
-              <Palette className="w-4 h-4 mr-2" />
-              Themes
+              <Palette className="w-4 h-4" />
             </Button>
 
             <AnimatePresence>
@@ -177,15 +217,23 @@ export default function HomePage() {
                               <div className="flex items-center space-x-3">
                                 <span className="text-lg">{variant.emoji}</span>
                                 <div>
-                                  <div className="font-medium text-sm text-purple-400">{variant.name}</div>
-                                  <div className="text-xs text-purple-300/70">{variant.description}</div>
+                                  <div className="font-medium text-sm text-purple-400">
+                                    {variant.name}
+                                  </div>
+                                  <div className="text-xs text-purple-300/70">
+                                    {variant.description}
+                                  </div>
                                 </div>
                               </div>
                               {backgroundVariant === variant.value && (
                                 <motion.div
                                   initial={{ scale: 0 }}
                                   animate={{ scale: 1 }}
-                                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                  transition={{
+                                    type: "spring",
+                                    stiffness: 500,
+                                    damping: 30,
+                                  }}
                                 >
                                   <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 text-xs">
                                     Active
@@ -212,12 +260,16 @@ export default function HomePage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => {
-                            setSoundEnabled(!soundEnabled)
-                            if (!soundEnabled) playSound(880, 100)
+                            setSoundEnabled(!soundEnabled);
+                            if (!soundEnabled) playSound(880, 100);
                           }}
                           className="w-full text-pink-400 hover:text-purple-400 transition-all duration-300"
                         >
-                          {soundEnabled ? <Volume2 className="w-4 h-4 mr-2" /> : <VolumeX className="w-4 h-4 mr-2" />}
+                          {soundEnabled ? (
+                            <Volume2 className="w-4 h-4 mr-2" />
+                          ) : (
+                            <VolumeX className="w-4 h-4 mr-2" />
+                          )}
                           Sound {soundEnabled ? "On" : "Off"}
                         </Button>
                       </div>
@@ -236,19 +288,34 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <Navbar performanceLevel={performanceLevel} animationSettings={animationSettings} />
+          <Navbar
+            performanceLevel={performanceLevel}
+            animationSettings={animationSettings}
+          />
           <HeroSection
             performanceLevel={performanceLevel}
             animationSettings={animationSettings}
             variant={backgroundVariant}
           />
-          <FeaturesSection performanceLevel={performanceLevel} />
-          <StatsSection performanceLevel={performanceLevel} />
-          <TestimonialsSection performanceLevel={performanceLevel} />
-          <CTASection performanceLevel={performanceLevel} />
+          <FeaturesSection
+            performanceLevel={performanceLevel}
+            variant={backgroundVariant}
+          />
+          <ImpactSection
+            performanceLevel={performanceLevel}
+            variant={backgroundVariant}
+          />
+          <TestimonialsSection
+            performanceLevel={performanceLevel}
+            variant={backgroundVariant}
+          />
+          <CTASection
+            performanceLevel={performanceLevel}
+            variant={backgroundVariant}
+          />
           <Footer />
         </motion.div>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }

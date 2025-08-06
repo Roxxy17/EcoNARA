@@ -9,6 +9,7 @@ import type { PerformanceLevel } from "@/hooks/use-device-performance"
 
 interface TestimonialsSectionProps {
   performanceLevel: PerformanceLevel
+  variant?: "default" | "aurora" | "geometric" | "nebula" | "night"
 }
 
 const testimonials = [
@@ -38,11 +39,50 @@ const testimonials = [
   },
 ]
 
-export const TestimonialsSection = ({ performanceLevel }: TestimonialsSectionProps) => {
+export const TestimonialsSection = ({ performanceLevel, variant = "default" }: TestimonialsSectionProps) => {
   const animationDelay = performanceLevel === "high" ? 0.1 : performanceLevel === "medium" ? 0.15 : 0.2
 
+  // Get theme-based colors
+  const getThemeColors = () => {
+    switch (variant) {
+      case "aurora":
+        return {
+          badgeBg: "bg-green-500/20",
+          badgeText: "text-green-300",
+          badgeBorder: "border-green-500/30",
+        }
+      case "geometric":
+        return {
+          badgeBg: "bg-red-500/20",
+          badgeText: "text-red-300",
+          badgeBorder: "border-red-500/30",
+        }
+      case "nebula":
+        return {
+          badgeBg: "bg-purple-500/20",
+          badgeText: "text-purple-300",
+          badgeBorder: "border-purple-500/30",
+        }
+      case "night":
+        return {
+          badgeBg: "bg-blue-500/20",
+          badgeText: "text-blue-300",
+          badgeBorder: "border-blue-500/30",
+        }
+      default:
+        // Default sekarang adalah warna biru/teal (waves lama)
+        return {
+          badgeBg: "bg-blue-500/20",
+          badgeText: "text-blue-300",
+          badgeBorder: "border-blue-500/30",
+        }
+    }
+  }
+
+  const themeColors = getThemeColors()
+
   return (
-    <section className="py-20 px-4">
+    <section className="py-20 px-4 relative z-10">
       <div className="max-w-6xl mx-auto">
         <motion.div
           className="text-center mb-16"
@@ -51,7 +91,7 @@ export const TestimonialsSection = ({ performanceLevel }: TestimonialsSectionPro
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <Badge className="mb-4 bg-pink-500/20 text-pink-300 border-pink-500/30">
+          <Badge className={`mb-4 ${themeColors.badgeBg} ${themeColors.badgeText} ${themeColors.badgeBorder}`}>
             Testimonials
           </Badge>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">

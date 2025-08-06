@@ -23,7 +23,7 @@ interface HeroSectionProps {
     duration: number
     ease: string | number[]
   }
-  variant?: "default" | "aurora" | "waves" | "geometric" | "nebula"
+  variant?: "default" | "aurora" | "geometric" | "nebula" | "night"
 }
 
 export const HeroSection = ({ performanceLevel, animationSettings, variant = "default" }: HeroSectionProps) => {
@@ -44,13 +44,6 @@ export const HeroSection = ({ performanceLevel, animationSettings, variant = "de
           accent: "text-emerald-300",
           gradient: "from-green-400 via-blue-400 to-emerald-400",
         }
-      case "waves":
-        return {
-          primary: "text-blue-400",
-          secondary: "text-cyan-400",
-          accent: "text-teal-300",
-          gradient: "from-blue-400 via-cyan-400 to-teal-400",
-        }
       case "geometric":
         return {
           primary: "text-red-400",
@@ -65,12 +58,20 @@ export const HeroSection = ({ performanceLevel, animationSettings, variant = "de
           accent: "text-violet-300",
           gradient: "from-purple-400 via-pink-400 to-violet-400",
         }
-      default:
+      case "night":
         return {
-          primary: "text-purple-400",
-          secondary: "text-pink-400",
-          accent: "text-blue-300",
-          gradient: "from-purple-400 via-pink-400 to-blue-400",
+          primary: "text-blue-400",
+          secondary: "text-cyan-400",
+          accent: "text-blue-900",
+          gradient: "from-blue-400 via-cyan-400 to-blue-900",
+        }
+      default:
+        // Default sekarang adalah warna biru/teal (waves lama)
+        return {
+          primary: "text-blue-400",
+          secondary: "text-cyan-400",
+          accent: "text-teal-300",
+          gradient: "from-blue-400 via-cyan-400 to-teal-400",
         }
     }
   }
