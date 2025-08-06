@@ -91,9 +91,15 @@
   }
 }
 
-/* Smooth scrolling */
+/* Smooth scrolling with performance consideration */
 html {
   scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* Custom scrollbar */
@@ -114,24 +120,47 @@ html {
   background: linear-gradient(45deg, rgba(139, 92, 246, 0.8), rgba(59, 130, 246, 0.8));
 }
 
-/* Focus styles */
-.focus-visible:focus {
-  outline: 2px solid rgba(139, 92, 246, 0.5);
-  outline-offset: 2px;
+/* Performance optimizations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Improved accessibility */
+/* Hardware acceleration for better performance */
+.gpu-accelerated,
+[data-animate],
+.animate-pulse {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize animations for different performance levels */
+@media (max-width: 768px) {
+  .motion-reduce {
+    animation-duration: 0.3s !important;
+    transition-duration: 0.3s !important;
+  }
+}
+
+/* Battery and performance aware animations */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  .motion-safe {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  .bg-slate-900\/50 {
+  .bg-slate-900\/60 {
     background-color: rgba(15, 23, 42, 0.9);
   }
 
@@ -140,9 +169,56 @@ html {
   }
 }
 
+/* Focus styles */
+.focus-visible:focus {
+  outline: 2px solid rgba(139, 92, 246, 0.5);
+  outline-offset: 2px;
+}
+
 /* Print styles */
 @media print {
   .no-print {
     display: none !important;
   }
+
+  /* Disable animations in print */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Device-specific optimizations */
+@media (max-device-width: 768px) and (orientation: portrait) {
+  /* Mobile portrait optimizations */
+  .mobile-optimized {
+    will-change: auto;
+    transform: none;
+  }
+}
+
+/* Low-end device optimizations */
+@media (max-width: 480px) {
+  .low-end-device {
+    animation: none;
+    transition: opacity 0.2s ease;
+  }
+}
+
+/* Intersection observer fallback */
+.fade-in-fallback {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Performance monitoring styles */
+.perf-indicator {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  font-size: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  backdrop-filter: blur(8px);
 }
