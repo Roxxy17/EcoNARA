@@ -64,6 +64,19 @@ export default function HomePage() {
     setIsPageLoaded(true)
   }, [])
 
+  useEffect(() => {
+    // Hapus semua class theme-* yang mungkin sudah ada
+    document.body.classList.remove(
+      "theme-default",
+      "theme-aurora",
+      "theme-waves",
+      "theme-geometric",
+      "theme-nebula"
+    )
+    // Tambahkan class sesuai backgroundVariant aktif
+    document.body.classList.add(`theme-${backgroundVariant}`)
+  }, [backgroundVariant])
+
   const animationSettings = {
     duration: performanceLevel === "high" ? 0.6 : performanceLevel === "medium" ? 0.8 : 1.0,
     ease: performanceLevel === "high" ? [0.25, 0.1, 0.25, 1] : "easeOut",
@@ -96,7 +109,8 @@ export default function HomePage() {
 
         {/* Performance Indicator - Moved to top left */}
         <PerformanceIndicator performanceLevel={performanceLevel} capabilities={capabilities} isLoading={isLoading} />
-
+        
+        
         {/* Theme Controls - Bottom right */}
         <div className="fixed bottom-6 right-6 z-50 space-y-2">
           <motion.div
