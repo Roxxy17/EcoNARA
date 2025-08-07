@@ -6,8 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Sparkles, Camera, Clock, Users, Leaf, ChefHat, ArrowLeft, Plus, Trash2 } from "lucide-react"
-import Link from "next/link"
+import { Sparkles, Camera, Clock, Users, Leaf, ChefHat, Plus, Trash2 } from "lucide-react" // ArrowLeft dihilangkan
+import Link from "next/link" // Link dipertahankan jika ada Link lain yang digunakan di masa depan
+import { Navbar } from "@/components/navigation/nav-dashboard" // Import Navbar
 
 const sampleRecipes = [
   {
@@ -72,23 +73,24 @@ export default function FoodRescuePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-yellow-50">
+      <Navbar /> {/* Navbar ditambahkan di sini */}
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-40">
+      <header className="bg-white/80 backdrop-blur-md border-b sticky top-[56px] z-40"> {/* Sesuaikan top */}
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center space-x-4">
-            <Link href="/dashboard">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Kembali
-              </Button>
-            </Link>
+            {/* Tombol "Kembali" telah dihapus */}
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
+              {/* Desain judul yang divariasikan */}
               <div>
-                <h1 className="text-xl font-bold text-gray-800">Food Rescue AI</h1>
-                <p className="text-sm text-gray-600">Ubah bahan sisa jadi hidangan lezat</p>
+                <h1 className="text-2xl font-extrabold text-gray-900 leading-tight">
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-green-600">
+                    Food Rescue AI
+                  </span>
+                </h1>
+                <p className="text-sm text-gray-700 mt-0.5">Ubah bahan sisa jadi hidangan lezat</p>
               </div>
             </div>
           </div>

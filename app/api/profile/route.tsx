@@ -91,78 +91,47 @@ export async function GET(req: Request) {
 
   return NextResponse.json(profile);
 }
+export async function PUT(req) {
+  const supabase = createRouteHandlerClient({ cookies });
+  
+  // Dapatkan user dari sesi yang ada di cookies
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-// PUT /api/profile
-export async function PUT(req: Request) {
+  // Jika tidak ada user, tolak permintaan
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader) {
-      return NextResponse.json({ error: "Unauthorized: No token" }, { status: 401 });
-    }
+    const body = await req.json();
+    const { nama } = body;
 
-    const token = authHeader.replace("Bearer ", "");
-    // Gunakan supabaseAdmin untuk memverifikasi token di sisi server
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
-    if (authError || !user) {
-      console.error("Authentication Error (PUT profile):", authError?.message || "User not found");
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
-
-    const contentType = req.headers.get("content-type");
-
-    let nama: string | undefined;
-    let email: string | undefined; // Email biasanya diupdate melalui auth.updateUser, bukan langsung di tabel users
-    let avatar_url: string | undefined; // Jika Anda ingin menyimpan URL avatar di tabel users
-
-    // Handle multipart/form-data (untuk upload file seperti avatar)
-    if (contentType?.includes("multipart/form-data")) {
-      const formData = await req.formData();
-      const avatarFile = formData.get("avatar") as File;
-      nama = formData.get("nama") as string || undefined;
-      email = formData.get("email") as string || undefined; // Jika ingin mengizinkan update email via form data
-
-      if (avatarFile && avatarFile.size > 0) {
-        const path = `avatars/${user.id}/${avatarFile.name}`; // Path lebih spesifik per user
-        avatar_url = await uploadToStorage(avatarFile, path, "smartpantry"); // Ganti 'smartpantry' dengan nama bucket Anda
-      }
-    }
-    // Handle application/json
-    else if (contentType?.includes("application/json")) {
-      const body = await req.json();
-      nama = body.nama || undefined;
-      email = body.email || undefined;
-      avatar_url = body.avatar_url || undefined; // Jika URL avatar dikirim langsung
-    }
-    // Unsupported content type
-    else {
-      return NextResponse.json({ error: "Unsupported Content-Type" }, { status: 415 });
-    }
-
-    const updateData: { [key: string]: any } = { updated_at: new Date().toISOString() };
-    if (nama !== undefined) updateData.nama = nama;
-    // Jika Anda ingin mengizinkan update email dari sini, pastikan
-    // Supabase Auth juga diupdate atau kelola implikasinya.
-    // Biasanya, email di tabel 'users' adalah salinan dari auth.users.email
-    if (email !== undefined) updateData.email = email;
-    if (avatar_url !== undefined) updateData.avatar_url = avatar_url; // Pastikan kolom ini ada di tabel public.users
-
-    // Update tabel 'public.users'
-    const { data: updatedProfile, error: updateError } = await supabaseAdmin
+    // Lakukan update data di database
+    const { data, error } = await supabase
       .from("users")
-      .update(updateData)
+      .update({ nama })
       .eq("id", user.id)
-      .select("id, email, nama, role, desa_id, poin_komunitas, created_at, updated_at") // Pilih kolom yang diperbarui untuk dikembalikan
+      .select()
       .single();
 
-    if (updateError) {
-      console.error("Supabase Error updating user profile:", updateError);
-      return NextResponse.json({ error: updateError.message || "Failed to update user profile." }, { status: 500 });
+    // Tangani error dari Supabase
+    if (error) {
+      console.error("Supabase error:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json(updatedProfile, { status: 200 });
+    // Tangani jika data tidak ditemukan (misal, user_id tidak valid)
+    if (!data) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
-  } catch (err: any) {
-    console.error("Unexpected error in PUT /api/profile:", err);
-    return NextResponse.json({ error: err.message || "Internal Server Error" }, { status: 500 });
+    // Kembalikan respons sukses
+    return NextResponse.json(data);
+  } catch (error) {
+    // Tangani error parsing JSON atau error tak terduga
+    console.error("API error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
