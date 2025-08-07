@@ -4,23 +4,25 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { useUser } from '@/contexts/UserContext';
 import { motion } from "framer-motion";
 import { LogOut } from 'lucide-react';
 import Link from "next/link";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 export default function LogoutPage() {
   const router = useRouter();
-  const { setUserProfile } = useUser();
+  // Gunakan client khusus komponen untuk memastikan konsistensi
+  const supabaseClient = createClientComponentClient();
 
   useEffect(() => {
     const performLogout = async () => {
-      // Tunggu Supabase selesai sign out
-      await supabase.auth.signOut();
+      // Panggil signOut, auth-helpers akan menghapus cookies.
+      await supabaseClient.auth.signOut();
       
-      // Bersihkan profil pengguna di context
-      setUserProfile(null);
+      // Karena signOut akan memicu listener di UserProvider,
+      // kita tidak perlu memanggil setUserProfile secara manual.
       
-      // Redirect ke halaman login setelah 1-2 detik
+      // Redirect ke halaman login setelah jeda singkat
       const timeoutId = setTimeout(() => {
         router.push("/login");
       }, 1500); // Tunda sebentar untuk efek visual
@@ -29,7 +31,7 @@ export default function LogoutPage() {
     };
 
     performLogout();
-  }, [router, setUserProfile]);
+  }, [router, supabaseClient]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-red-50 via-red-100 to-orange-100 p-4">
