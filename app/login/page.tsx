@@ -1,3 +1,5 @@
+// File: src/app/login/page.jsx (asumsi ini lokasi file Anda)
+
 "use client"
 
 import { useState } from "react"
@@ -9,14 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Leaf, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase" // <--- Baris ini yang perlu ditambahkan
-
-// Pastikan Anda sudah menginisialisasi Supabase client di sini atau di file lain
-// Contoh:
-// import { createClient } from "@supabase/supabase-js"
-// const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-// const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-// const supabase = createClient(supabaseUrl, supabaseAnonKey)
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -25,27 +20,31 @@ export default function LoginPage() {
   const [error, setError] = useState(null)
   const router = useRouter()
 
+  // Inisialisasi client Supabase khusus untuk komponen klien
+  const supabase = createClientComponentClient()
+
   const handleLogin = async (e) => {
     e.preventDefault()
     setIsLoading(true)
-    setError(null) // Reset error state
+    setError(null)
 
-    // Integrasi dengan Supabase Auth
+    // Lakukan login dengan Supabase
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
 
     if (error) {
-      // Menampilkan pesan error dari Supabase
       setError(error.message)
       setIsLoading(false)
       return
     }
 
-    // Jika login berhasil, Anda bisa mendapatkan role dari data user (jika disimpan)
-    // atau mengambilnya dari tabel lain.
-    // Contoh ini mengasumsikan role disimpan di metadata pengguna.
+    // Setelah login berhasil, panggil router.refresh()
+    // Ini akan memaksa Next.js untuk me-render ulang rute dan memvalidasi sesi
+    // dari cookies yang baru dibuat oleh auth-helpers.
+    router.refresh()
+
     const user = data?.user
     const userRole = user?.user_metadata?.role
 
