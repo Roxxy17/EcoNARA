@@ -20,7 +20,7 @@ import { PerformanceIndicator } from "@/components/ui/performance-indicator";
 
 const backgroundVariants = [
   {
-    name: "Ocean",
+    name: "Ocean (default)",
     value: "default",
     description: "Flowing blue & teal waves",
     emoji: "🌊",
@@ -82,6 +82,33 @@ const playSound = (frequency: number, duration = 100) => {
 
 export default function HomePage() {
   const { performanceLevel, capabilities, isLoading } = useDevicePerformance();
+  const themeBgMap: Record<string, string> = {
+    default:
+      "bg-gradient-to-br from-blue-900/80 via-cyan-900/80 to-teal-900/80",
+    aurora:
+      "bg-gradient-to-br from-green-900/80 via-blue-900/80 to-emerald-900/80",
+    geometric:
+      "bg-gradient-to-br from-red-900/80 via-orange-900/80 to-yellow-900/80",
+    nebula:
+      "bg-gradient-to-br from-purple-900/80 via-pink-900/80 to-violet-900/80",
+    night: "bg-gradient-to-br from-blue-900/80 via-cyan-900/80 to-blue-950/80",
+  };
+  const themeTextColorMap: Record<string, string> = {
+    default: "text-cyan-400",
+    aurora: "text-green-300",
+    geometric: "text-orange-400",
+    nebula: "text-pink-400",
+    night: "text-blue-300",
+  };
+
+  const themeIconColorMap: Record<string, string> = {
+    default: "text-cyan-400",
+    aurora: "text-green-300",
+    geometric: "text-orange-400",
+    nebula: "text-pink-400",
+    night: "text-blue-300",
+  };
+
   const [backgroundVariant, setBackgroundVariant] = useState<
     "default" | "aurora" | "geometric" | "nebula" | "night"
   >("default");
@@ -166,9 +193,11 @@ export default function HomePage() {
                 if (soundEnabled) playSound(330, 100);
                 setShowVariantSelector(!showVariantSelector);
               }}
-              className="bg-slate-900/80 backdrop-blur-sm border-slate-700/50 text-purple-400 hover:bg-slate-800/80 transition-all duration-300 shadow-lg"
+              className={`bg-slate-900/80 backdrop-blur-sm border-slate-700/50 hover:bg-slate-800/80 transition-all duration-300 shadow-lg ${themeTextColorMap[backgroundVariant]}`}
             >
-              <Palette className="w-4 h-4" />
+              <Palette
+                className={`w-4 h-4 ${themeIconColorMap[backgroundVariant]}`}
+              />
             </Button>
 
             <AnimatePresence>
@@ -180,10 +209,14 @@ export default function HomePage() {
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   className="absolute bottom-full right-0 mb-2 w-72"
                 >
-                  <Card className="bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
+                  <Card
+                    className={`${themeBgMap[backgroundVariant]} backdrop-blur-xl border border-slate-700/50 shadow-2xl`}
+                  >
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-purple-400 flex items-center">
+                        <h3
+                          className={`font-semibold flex items-center ${themeTextColorMap[backgroundVariant]}`}
+                        >
                           <Settings className="w-4 h-4 mr-2" />
                           Animation Themes
                         </h3>
@@ -217,10 +250,14 @@ export default function HomePage() {
                               <div className="flex items-center space-x-3">
                                 <span className="text-lg">{variant.emoji}</span>
                                 <div>
-                                  <div className="font-medium text-sm text-purple-400">
+                                  <div
+                                    className={`font-medium text-sm ${themeTextColorMap[backgroundVariant]}`}
+                                  >
                                     {variant.name}
                                   </div>
-                                  <div className="text-xs text-purple-300/70">
+                                  <div
+                                    className={`text-xs ${themeTextColorMap[backgroundVariant]}/70`}
+                                  >
                                     {variant.description}
                                   </div>
                                 </div>
@@ -263,7 +300,7 @@ export default function HomePage() {
                             setSoundEnabled(!soundEnabled);
                             if (!soundEnabled) playSound(880, 100);
                           }}
-                          className="w-full text-pink-400 hover:text-purple-400 transition-all duration-300"
+                          className={`w-full transition-all duration-300 ${themeTextColorMap[backgroundVariant]} hover:brightness-125`}
                         >
                           {soundEnabled ? (
                             <Volume2 className="w-4 h-4 mr-2" />

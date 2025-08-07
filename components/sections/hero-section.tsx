@@ -26,6 +26,14 @@ interface HeroSectionProps {
   variant?: "default" | "aurora" | "geometric" | "nebula" | "night"
 }
 
+const badgeClassMap: Record<string, string> = {
+  default: "bg-purple-500/20 text-blue-400 border-purple-500/30",
+  aurora: "bg-green-500/20 text-green-400 border-green-500/30",
+  geometric: "bg-red-500/20 text-red-400 border-red-500/30",
+  nebula: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+  night: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+}
+
 export const HeroSection = ({ performanceLevel, animationSettings, variant = "default" }: HeroSectionProps) => {
   const heroRef = useRef(null)
   const { scrollY } = useScroll()
@@ -77,6 +85,7 @@ export const HeroSection = ({ performanceLevel, animationSettings, variant = "de
   }
 
   const themeColors = getThemeColors()
+  const badgeClass = badgeClassMap[variant] || badgeClassMap.default
 
   return (
     <section ref={heroRef} className="relative pt-32 pb-20 z-10">
@@ -95,10 +104,10 @@ export const HeroSection = ({ performanceLevel, animationSettings, variant = "de
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...animationSettings, delay: 0.2 }}
             >
-              <Badge className={`bg-${variant === 'default' ? 'purple' : variant === 'aurora' ? 'green' : variant === 'waves' ? 'blue' : variant === 'geometric' ? 'red' : 'purple'}-500/20 ${themeColors.primary} border-${variant === 'default' ? 'purple' : variant === 'aurora' ? 'green' : variant === 'waves' ? 'blue' : variant === 'geometric' ? 'red' : 'purple'}-500/30 px-4 py-2 text-sm font-medium backdrop-blur-sm relative overflow-hidden`}>
+              <Badge className={`${badgeClass} px-4 py-2 text-sm font-medium backdrop-blur-sm relative overflow-hidden`}>
                 {performanceLevel === "high" && (
                   <motion.div
-                    className={`absolute inset-0 bg-gradient-to-r ${themeColors.gradient.replace('text-', 'from-').replace(' via-', '/20 via-').replace(' to-', '/20 to-')}/20`}
+                    className={`absolute inset-0 bg-gradient-to-r ${themeColors.gradient}/20`}
                     animate={{
                       x: ["-100%", "100%"],
                     }}
@@ -169,36 +178,12 @@ export const HeroSection = ({ performanceLevel, animationSettings, variant = "de
               <motion.div whileHover={performanceLevel !== "low" ? { scale: 1.05 } : {}} whileTap={{ scale: 0.95 }}>
                 <Button
                   size="lg"
-                  className={`bg-gradient-to-r ${themeColors.gradient.replace('text-', 'from-').replace(' via-', ' to-')} hover:opacity-90 text-white font-semibold px-8 py-4 relative overflow-hidden group`}
+                  className={`bg-gradient-to-r ${themeColors.gradient} hover:opacity-90 text-white font-semibold px-8 py-4 relative overflow-hidden group`}
                 >
                   <span className="relative z-10 flex items-center">
                     <Play className="w-5 h-5 mr-2" />
                     Mulai Sekarang
                   </span>
-                  {performanceLevel === "high" && (
-                    <>
-                      <motion.div
-                        className={`absolute inset-0 bg-gradient-to-r ${themeColors.gradient.replace('text-', 'from-').replace(' via-', ' to-')}`}
-                        initial={{ scale: 0, opacity: 0 }}
-                        whileHover={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                      <motion.div
-                        className={`absolute inset-0 bg-gradient-to-r ${themeColors.gradient.replace('text-', 'from-').replace(' via-', ' to-')} opacity-0 group-hover:opacity-50`}
-                        animate={{
-                          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Number.POSITIVE_INFINITY,
-                          ease: "easeInOut",
-                        }}
-                        style={{
-                          backgroundSize: "200% 200%",
-                        }}
-                      />
-                    </>
-                  )}
                 </Button>
               </motion.div>
               <motion.div whileHover={performanceLevel !== "low" ? { scale: 1.02 } : {}}>
