@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Camera, Upload, Recycle, Leaf, AlertCircle, ArrowLeft, CheckCircle, Info, Trash2 } from "lucide-react"
-import Link from "next/link"
+import { Camera, Upload, Recycle, Leaf, AlertCircle, CheckCircle, Info, Trash2 } from "lucide-react" // ArrowLeft dihilangkan
+import Link from "next/link" // Tetap dipertahankan jika ada Link lain yang digunakan, jika tidak bisa dihapus
 import { Navbar } from "@/components/navigation/nav-dashboard" // Import Navbar
 
 const wasteCategories = {
@@ -106,12 +106,7 @@ export default function TrashClassifierPage() {
       <header className="bg-white/80 backdrop-blur-md border-b sticky top-[56px] z-40"> {/* Sesuaikan top */}
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center space-x-4">
-            <Link href="/dashboard">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Kembali
-              </Button>
-            </Link>
+            {/* Bagian "Kembali" telah dihapus */}
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
                 <Camera className="w-5 h-5 text-white" />

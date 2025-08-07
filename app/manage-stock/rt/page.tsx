@@ -1,164 +1,309 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Package } from 'lucide-react'
-import { Navbar } from "@/components/navigation/nav-dashboard" // Mengimpor komponen Navbar
-// Interface for original stock item structure
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Loader2, Package, Users, Home } from 'lucide-react'
+import { Navbar } from "@/components/navigation/nav-dashboard"
+import { cn } from "@/lib/utils"
+import { useUser } from "@/contexts/UserContext"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+
+// Interface untuk struktur data stok
 interface StockItem {
   id: string
   name: string
-  category: string
-  added_date: Date
-  quantity: number
-  unit: string
-  created_at: Date
-  user_id: string // Mock user_id, in a real app this would be from auth
+  category: string | null
+  added_date: string
+  quantity: number | null
+  unit: string | null
+  created_at: string
+  user_id: string
+  user_name?: string // Ditambahkan dari join dengan tabel users
+  status?: 'tersedia' | 'menipis' | 'habis'
 }
 
-// Interface for aggregated stock data
-interface AggregatedStockItem {
-  name: string
-  category: string
-  totalQuantity: number
-  unit: string
+// Interface untuk total stok per kategori
+interface TotalStockByCategory {
+  category: string;
+  totalQuantity: number;
 }
 
-export default function VillageStockSummaryPage() {
-  // Mock data for individual stock items (as if from various residents)
-  const [rawStockItems] = useState<StockItem[]>([
-    {
-      id: "1",
-      name: "Beras Premium",
-      category: "Bahan Pokok",
-      added_date: new Date("2024-07-20"),
-      quantity: 50,
-      unit: "kg",
-      created_at: new Date("2024-07-20T10:00:00Z"),
-      user_id: "user-123",
-    },
-    {
-      id: "2",
-      name: "Minyak Goreng",
-      category: "Bahan Pokok",
-      added_date: new Date("2024-07-22"),
-      quantity: 10,
-      unit: "liter",
-      created_at: new Date("2024-07-22T11:30:00Z"),
-      user_id: "user-123",
-    },
-    {
-      id: "3",
-      name: "Mie Instan",
-      category: "Makanan Instan",
-      added_date: new Date("2024-07-25"),
-      quantity: 100,
-      unit: "bungkus",
-      created_at: new Date("2024-07-25T14:00:00Z"),
-      user_id: "user-123",
-    },
-    {
-      id: "4",
-      name: "Pakaian Layak Pakai",
-      category: "Donasi",
-      added_date: new Date("2024-07-28"),
-      quantity: 20,
-      unit: "pcs",
-      created_at: new Date("2024-07-28T09:15:00Z"),
-      user_id: "user-123",
-    },
-    {
-      id: "5",
-      name: "Beras Premium", // Another entry for Beras Premium from a different "resident"
-      category: "Bahan Pokok",
-      added_date: new Date("2024-07-29"),
-      quantity: 30,
-      unit: "kg",
-      created_at: new Date("2024-07-29T10:00:00Z"),
-      user_id: "user-456",
-    },
-    {
-      id: "6",
-      name: "Mie Instan", // Another entry for Mie Instan
-      category: "Makanan Instan",
-      added_date: new Date("2024-07-30"),
-      quantity: 50,
-      unit: "bungkus",
-      created_at: new Date("2024-07-30T12:00:00Z"),
-      user_id: "user-789",
-    },
-  ]);
+export default function ManageStockKetuaPage() {
+  const { userProfile, loadingUser } = useUser();
+  const [allDesaStockItems, setAllDesaStockItems] = useState<StockItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
-  const [aggregatedStock, setAggregatedStock] = useState<AggregatedStockItem[]>([]);
+  const [selectedFamilyId, setSelectedFamilyId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const aggregateData = (items: StockItem[]): AggregatedStockItem[] => {
-      const aggregatedMap = new Map<string, AggregatedStockItem>();
+  const supabase = createClientComponentClient();
 
-      items.forEach(item => {
-        const key = `${item.name}_${item.unit}`; // Unique key for aggregation
-        if (aggregatedMap.has(key)) {
-          const existing = aggregatedMap.get(key)!;
-          existing.totalQuantity += item.quantity;
-        } else {
-          aggregatedMap.set(key, {
-            name: item.name,
-            category: item.category, // Taking the category from the first encountered item
-            totalQuantity: item.quantity,
-            unit: item.unit,
-          });
-        }
+  // Helper to determine stock status based on quantity
+  const getStockStatus = (quantity: number | null): StockItem['status'] => {
+    if (quantity === null || quantity <= 0) return 'habis';
+    if (quantity <= 20) return 'menipis'; // Ambang batas "menipis"
+    return 'tersedia';
+  };
+
+  // Fungsi untuk mengambil data stok seluruh desa (yang bisa diakses ketua)
+  const fetchAllDesaStockItems = async () => {
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      if (!token) {
+        throw new Error("Tidak ada token otorisasi ditemukan.");
+      }
+
+      const res = await fetch("/api/stock", {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
-      return Array.from(aggregatedMap.values());
-    };
 
-    setAggregatedStock(aggregateData(rawStockItems));
-  }, [rawStockItems]);
+      if (!res.ok) {
+        let errorData = { message: "Gagal mengambil item stok desa." };
+        try {
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const parsedData = await res.json();
+            errorData.message = parsedData.message || res.statusText;
+          } else {
+            errorData.message = res.statusText || "Respons server tidak valid.";
+          }
+        } catch (e) {
+          console.error("Error parsing error response in fetchAllDesaStockItems:", e);
+          errorData.message = "Terjadi kesalahan saat memproses respons error.";
+        }
+        throw new Error(errorData.message);
+      }
+
+      const data: StockItem[] = await res.json();
+      const itemsWithStatus = data.map(item => ({
+        ...item,
+        status: getStockStatus(item.quantity)
+      }));
+      setAllDesaStockItems(itemsWithStatus);
+    } catch (e: any) {
+      console.error("Error fetching all desa stock items:", e);
+      setError(e.message);
+      setMessage({ type: 'error', text: `Gagal memuat data stok desa: ${e.message}` });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Efek untuk memuat data saat komponen dimuat atau userProfile berubah
+  useEffect(() => {
+    if (!loadingUser && userProfile) {
+      // Hanya izinkan ketua/admin melihat halaman ini
+      if (userProfile.role === 'ketua' || userProfile.role === 'admin') {
+        fetchAllDesaStockItems();
+      } else {
+        setError("Akses Ditolak: Anda tidak memiliki izin untuk melihat halaman ini.");
+        setMessage({ type: 'error', text: "Akses Ditolak: Hanya Ketua atau Admin yang dapat melihat halaman ini." });
+        setLoading(false);
+      }
+    } else if (!loadingUser && !userProfile) {
+      setLoading(false);
+      setError("Pengguna tidak terautentikasi.");
+      setMessage({ type: 'error', text: "Pengguna tidak terautentikasi. Mohon login." });
+    }
+  }, [userProfile, loadingUser]);
+
+  // UseMemo untuk menghitung total stok per kategori di desa
+  const totalStockByCategory: TotalStockByCategory[] = useMemo(() => {
+    const totals: { [key: string]: number } = {};
+    allDesaStockItems.forEach(item => {
+      if (item.category && item.quantity !== null) {
+        totals[item.category] = (totals[item.category] || 0) + item.quantity;
+      }
+    });
+    return Object.entries(totals).map(([category, totalQuantity]) => ({
+      category,
+      totalQuantity,
+    })).sort((a, b) => a.category.localeCompare(b.category)); // Urutkan berdasarkan kategori
+  }, [allDesaStockItems]);
+
+  // UseMemo untuk mendapatkan daftar keluarga unik (pengguna) di desa
+  const familiesInDesa = useMemo(() => {
+    const uniqueFamilies = new Map<string, string>(); // Map<user_id, user_name>
+    allDesaStockItems.forEach(item => {
+      if (item.user_id && item.user_name) {
+        uniqueFamilies.set(item.user_id, item.user_name);
+      }
+    });
+    return Array.from(uniqueFamilies.entries()).map(([id, name]) => ({ id, name }));
+  }, [allDesaStockItems]);
+
+  // UseMemo untuk memfilter stok berdasarkan keluarga yang dipilih
+  const filteredFamilyStock = useMemo(() => {
+    if (!selectedFamilyId) {
+      return [];
+    }
+    return allDesaStockItems.filter(item => item.user_id === selectedFamilyId);
+  }, [allDesaStockItems, selectedFamilyId]);
+
+  const getFamilyNameById = (id: string | null) => {
+    if (!id) return "Pilih Keluarga";
+    const family = familiesInDesa.find(f => f.id === id);
+    return family ? family.name : "Keluarga Tidak Dikenal";
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm mb-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm mb-8 relative">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <Package className="w-6 h-6 text-green-600" />
-                <span>Ringkasan Stok Barang Warga Desa</span>
+                <Home className="w-6 h-6 text-blue-600" />
+                <span>Dashboard Ketua Desa</span>
               </CardTitle>
-              <CardDescription>Lihat total jumlah barang yang tersedia dari seluruh warga desa.</CardDescription>
+              <CardDescription>Ringkasan stok pangan desa dan rincian per keluarga.</CardDescription>
             </CardHeader>
             <CardContent>
-              {aggregatedStock.length === 0 ? (
-                <p className="text-gray-600 text-center py-8">Belum ada stok barang yang tercatat.</p>
-              ) : (
-                <div className="overflow-x-auto rounded-lg border">
-                  <Table className="min-w-full bg-white">
-                    <TableHeader className="bg-gray-100">
-                      <TableRow>
-                        <TableHead>Nama Barang</TableHead>
-                        <TableHead>Kategori</TableHead>
-                        <TableHead>Total Jumlah</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {aggregatedStock.map((item) => (
-                        <TableRow key={`${item.name}-${item.unit}`}>
-                          <TableCell className="font-medium">{item.name}</TableCell>
-                          <TableCell>{item.category}</TableCell>
-                          <TableCell>{item.totalQuantity} {item.unit}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+              {/* Loading Overlay */}
+              {(loading || loadingUser) && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white/70 z-10 rounded-lg">
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                  <span className="ml-2 text-gray-700">Memuat data desa...</span>
                 </div>
               )}
+
+              {/* Message Display */}
+              {message && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className={cn(
+                    "p-3 rounded-md mb-4 text-sm font-medium",
+                    message.type === 'success' ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                  )}
+                  onAnimationComplete={() => {
+                    if (message) {
+                      setTimeout(() => setMessage(null), 5000); // Sembunyikan pesan setelah 5 detik
+                    }
+                  }}
+                >
+                  {message.text}
+                </motion.div>
+              )}
+
+              {error && !loading && (
+                <div className="text-red-600 text-center py-8">Gagal memuat data: {error}</div>
+              )}
+
+              {!error && !loading && userProfile && (userProfile.role === 'ketua' || userProfile.role === 'admin') ? (
+                <>
+                  {/* Total Pangan Desa */}
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center space-x-2">
+                    <Package className="w-5 h-5 text-green-600" />
+                    <span>Total Stok Pangan Desa {userProfile.desa_id ? `(${userProfile.desa_id})` : ''}</span>
+                  </h3>
+                  {totalStockByCategory.length === 0 ? (
+                    <p className="text-gray-600 text-center py-4">Tidak ada data stok pangan di desa ini.</p>
+                  ) : (
+                    <div className="overflow-x-auto rounded-lg border mb-8">
+                      <Table className="min-w-full bg-white">
+                        <TableHeader className="bg-gray-100">
+                          <TableRow>
+                            <TableHead>Kategori</TableHead>
+                            <TableHead className="text-right">Total Jumlah</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {totalStockByCategory.map((data, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="font-medium">{data.category}</TableCell>
+                              <TableCell className="text-right">{data.totalQuantity}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+
+                  {/* Rincian Stok Tiap Keluarga */}
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center space-x-2">
+                    <Users className="w-5 h-5 text-purple-600" />
+                    <span>Rincian Stok Tiap Keluarga</span>
+                  </h3>
+                  <div className="mb-4">
+                    <Label htmlFor="family-select" className="mb-1 block text-sm font-medium text-gray-700">Pilih Keluarga</Label>
+                    <Select onValueChange={setSelectedFamilyId} value={selectedFamilyId || ""}>
+                      <SelectTrigger className="w-full md:w-[250px] rounded-md">
+                        <SelectValue placeholder="Pilih Keluarga" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {familiesInDesa.length === 0 ? (
+                          <SelectItem value="no-families" disabled>Tidak ada keluarga di desa ini</SelectItem>
+                        ) : (
+                          familiesInDesa.map(family => (
+                            <SelectItem key={family.id} value={family.id}>
+                              {family.name}
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {selectedFamilyId && filteredFamilyStock.length > 0 ? (
+                    <div className="overflow-x-auto rounded-lg border">
+                      <Table className="min-w-full bg-white">
+                        <TableHeader className="bg-gray-100">
+                          <TableRow>
+                            <TableHead>Nama Barang</TableHead>
+                            <TableHead>Kategori</TableHead>
+                            <TableHead>Jumlah</TableHead>
+                            <TableHead>Satuan</TableHead>
+                            <TableHead>Tanggal Ditambahkan</TableHead>
+                            <TableHead>Status</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredFamilyStock.map((item) => (
+                            <TableRow key={item.id}>
+                              <TableCell className="font-medium">{item.name}</TableCell>
+                              <TableCell>{item.category}</TableCell>
+                              <TableCell>{item.quantity}</TableCell>
+                              <TableCell>{item.unit}</TableCell>
+                              <TableCell>{item.added_date}</TableCell>
+                              <TableCell>
+                                <span className={cn(
+                                  "px-2 py-1 rounded-full text-xs font-medium",
+                                  item.status === 'tersedia' && "bg-green-100 text-green-800",
+                                  item.status === 'menipis' && "bg-yellow-100 text-yellow-800",
+                                  item.status === 'habis' && "bg-red-100 text-red-800"
+                                )}>
+                                  {item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : 'N/A'}
+                                </span>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  ) : selectedFamilyId && filteredFamilyStock.length === 0 ? (
+                    <p className="text-gray-600 text-center py-8">Tidak ada stok yang tercatat untuk {getFamilyNameById(selectedFamilyId)}.</p>
+                  ) : (
+                    <p className="text-gray-600 text-center py-8">Pilih keluarga dari daftar di atas untuk melihat rincian stok mereka.</p>
+                  )}
+                </>
+              ) : null}
             </CardContent>
           </Card>
         </motion.div>
