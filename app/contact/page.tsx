@@ -1,17 +1,20 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
-import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Mail, Phone, MapPin, Clock, Send, MessageCircle, Headphones, Leaf, CheckCircle } from "lucide-react"
+import { ArrowLeft, Mail, Phone, MapPin, Clock, Send, MessageCircle, Headphones, Leaf, CheckCircle } from 'lucide-react'
 import Link from "next/link"
+import { useDevicePerformance } from "@/hooks/use-device-performance"
+import { AdaptiveBackground } from "@/components/background/adaptive-background"
+import { PerformanceIndicator } from "@/components/ui/performance-indicator"
+import { ThemeSelector } from "@/components/ui/theme-selector"
 
 const contactMethods = [
   {
@@ -20,7 +23,6 @@ const contactMethods = [
     description: "Kirim email dan kami akan merespons dalam 24 jam",
     contact: "hello@econara.id",
     action: "Kirim Email",
-    color: "from-blue-400 to-cyan-600",
   },
   {
     icon: Phone,
@@ -28,7 +30,6 @@ const contactMethods = [
     description: "Hubungi tim support kami langsung",
     contact: "+62 21 1234 5678",
     action: "Telepon Sekarang",
-    color: "from-purple-400 to-indigo-600",
   },
   {
     icon: MessageCircle,
@@ -36,7 +37,6 @@ const contactMethods = [
     description: "Chat langsung via WhatsApp untuk respon cepat",
     contact: "+62 812 3456 7890",
     action: "Chat WhatsApp",
-    color: "from-pink-400 to-rose-600",
   },
   {
     icon: Headphones,
@@ -44,7 +44,6 @@ const contactMethods = [
     description: "Support online 24/7 untuk bantuan instan",
     contact: "Available 24/7",
     action: "Mulai Chat",
-    color: "from-indigo-400 to-purple-600",
   },
 ]
 
@@ -99,6 +98,10 @@ const faqs = [
 ]
 
 export default function ContactPage() {
+  const { performanceLevel, capabilities, isLoading } = useDevicePerformance()
+  const [currentVariant, setCurrentVariant] = useState<"default" | "aurora" | "night" | "geometric" | "nebula">("default")
+  const [soundEnabled, setSoundEnabled] = useState(false)
+  const [isPageLoaded, setIsPageLoaded] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -109,6 +112,93 @@ export default function ContactPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  useEffect(() => {
+    setIsPageLoaded(true)
+  }, [])
+
+  const animationSettings = {
+    duration: performanceLevel === "high" ? 0.6 : performanceLevel === "medium" ? 0.8 : 1.0,
+    ease: performanceLevel === "high" ? [0.25, 0.1, 0.25, 1] : "easeOut",
+  }
+
+  // Get theme-based colors
+  const getThemeColors = () => {
+    switch (currentVariant) {
+      case "aurora":
+        return {
+          gradient: "from-green-400 via-blue-400 to-emerald-400",
+          badgeBg: "bg-green-500/20",
+          badgeText: "text-green-300",
+          badgeBorder: "border-green-500/30",
+          buttonGradient: "from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600",
+          cardGradients: [
+            "from-green-400 to-blue-600",
+            "from-blue-400 to-emerald-600", 
+            "from-emerald-400 to-teal-600",
+            "from-teal-400 to-cyan-600"
+          ]
+        }
+      case "night":
+        return {
+          gradient: "from-blue-600 via-indigo-400 to-cyan-400",
+          badgeBg: "bg-blue-500/20",
+          badgeText: "text-blue-300",
+          badgeBorder: "border-blue-500/30",
+          buttonGradient: "from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600",
+          cardGradients: [
+            "from-blue-600 to-indigo-600",
+            "from-indigo-400 to-cyan-600",
+            "from-cyan-400 to-blue-600",
+            "from-blue-500 to-indigo-500"
+          ]
+        }
+      case "geometric":
+        return {
+          gradient: "from-red-400 via-orange-400 to-yellow-400",
+          badgeBg: "bg-red-500/20",
+          badgeText: "text-red-300",
+          badgeBorder: "border-red-500/30",
+          buttonGradient: "from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600",
+          cardGradients: [
+            "from-red-400 to-orange-600",
+            "from-orange-400 to-yellow-600",
+            "from-yellow-400 to-red-600",
+            "from-pink-400 to-red-600"
+          ]
+        }
+      case "nebula":
+        return {
+          gradient: "from-purple-400 via-pink-400 to-violet-400",
+          badgeBg: "bg-purple-500/20",
+          badgeText: "text-purple-300",
+          badgeBorder: "border-purple-500/30",
+          buttonGradient: "from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600",
+          cardGradients: [
+            "from-purple-400 to-pink-600",
+            "from-pink-400 to-violet-600",
+            "from-violet-400 to-purple-600",
+            "from-indigo-400 to-purple-600"
+          ]
+        }
+      default:
+        return {
+          gradient: "from-blue-400 via-cyan-400 to-teal-400",
+          badgeBg: "bg-blue-500/20",
+          badgeText: "text-blue-300",
+          badgeBorder: "border-blue-500/30",
+          buttonGradient: "from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600",
+          cardGradients: [
+            "from-blue-400 to-cyan-600",
+            "from-cyan-400 to-teal-600",
+            "from-teal-400 to-blue-600",
+            "from-indigo-400 to-blue-600"
+          ]
+        }
+    }
+  }
+
+  const themeColors = getThemeColors()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -126,360 +216,382 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Iridescent Background */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900"></div>
-        <div className="absolute inset-0 bg-gradient-to-tr from-pink-500/20 via-purple-500/20 to-cyan-500/20 animate-pulse"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-400/10 via-pink-400/10 to-blue-400/10 animate-gradient-x"></div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key="contact-page"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+        className="min-h-screen relative overflow-hidden"
+      >
+        <AdaptiveBackground performanceLevel={performanceLevel} variant={currentVariant} />
+        
+        <PerformanceIndicator
+          performanceLevel={performanceLevel}
+          capabilities={capabilities}
+          isLoading={isLoading}
+        />
+        
+        <ThemeSelector
+          currentVariant={currentVariant}
+          onVariantChange={setCurrentVariant}
+          soundEnabled={soundEnabled}
+          onSoundToggle={() => setSoundEnabled(!soundEnabled)}
+        />
 
-        {/* Floating Orbs */}
-        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-pink-400/30 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-r from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-float-delayed"></div>
-        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-gradient-to-r from-indigo-400/20 to-purple-400/20 rounded-full blur-2xl animate-float-slow"></div>
-      </div>
-
-      {/* Navigation */}
-      <nav className="bg-white/10 backdrop-blur-2xl border-b border-white/20 sticky top-0 z-50 shadow-2xl">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/">
-              <Button variant="ghost" className="text-white/80 hover:text-white hover:bg-white/10 rounded-xl">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Kembali ke Beranda
-              </Button>
-            </Link>
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 via-pink-500 to-blue-500 rounded-xl flex items-center justify-center shadow-2xl">
-                <Leaf className="w-6 h-6 text-white" />
+        <motion.div
+          className="relative z-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          {/* Navigation */}
+          <nav className="bg-slate-900/50 backdrop-blur-xl border-b border-slate-700/50 sticky top-0 z-40">
+            <div className="max-w-7xl mx-auto px-6 py-4">
+              <div className="flex items-center justify-between">
+                <Link href="/">
+                  <Button variant="ghost" className="text-white/80 hover:text-white hover:bg-white/10 rounded-xl">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Kembali ke Beranda
+                  </Button>
+                </Link>
+                <div className="flex items-center space-x-4">
+                  <div className={`w-10 h-10 bg-gradient-to-br ${themeColors.gradient.replace('from-', 'from-').replace(' via-', ' to-')} rounded-xl flex items-center justify-center shadow-2xl`}>
+                    <Leaf className="w-6 h-6 text-white" />
+                  </div>
+                  <span className="text-xl font-black text-white">ECONARA</span>
+                </div>
               </div>
-              <span className="text-xl font-black text-white">ECONARA</span>
             </div>
-          </div>
-        </div>
-      </nav>
+          </nav>
 
-      {/* Hero Section */}
-      <section className="py-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <Badge className="bg-white/10 text-white px-4 py-2 rounded-full mb-6 border border-white/20 backdrop-blur-sm">
-              📞 Hubungi Kami
-            </Badge>
-            <h1 className="text-5xl lg:text-7xl font-black text-white mb-8 leading-tight">
-              Mari
-              <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                Terhubung
-              </span>
-            </h1>
-            <p className="text-xl text-white/80 max-w-4xl mx-auto leading-relaxed">
-              Kami siap membantu Anda memulai perjalanan menuju komunitas yang lebih berkelanjutan. Tim ahli kami
-              tersedia untuk menjawab pertanyaan dan memberikan dukungan yang Anda butuhkan.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+          {/* Hero Section */}
+          <section className="py-20 relative z-10">
+            <div className="max-w-7xl mx-auto px-6 text-center">
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={animationSettings}
+              >
+                <Badge className={`${themeColors.badgeBg} ${themeColors.badgeText} px-4 py-2 rounded-full mb-6 ${themeColors.badgeBorder} backdrop-blur-sm`}>
+                  📞 Hubungi Kami
+                </Badge>
+                <h1 className="text-5xl lg:text-7xl font-black text-white mb-8 leading-tight">
+                  Mari
+                  <span className={`block bg-gradient-to-r ${themeColors.gradient} bg-clip-text text-transparent`}>
+                    Terhubung
+                  </span>
+                </h1>
+                <p className="text-xl text-slate-300 max-w-4xl mx-auto leading-relaxed">
+                  Kami siap membantu Anda memulai perjalanan menuju komunitas yang lebih berkelanjutan. Tim ahli kami
+                  tersedia untuk menjawab pertanyaan dan memberikan dukungan yang Anda butuhkan.
+                </p>
+              </motion.div>
+            </div>
+          </section>
 
-      {/* Contact Methods */}
-      <section className="py-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <Badge className="bg-white/10 text-white px-4 py-2 rounded-full mb-6 border border-white/20 backdrop-blur-sm">
-              💬 Cara Menghubungi
-            </Badge>
-            <h2 className="text-4xl lg:text-5xl font-black text-white mb-6">
-              Pilih Cara
-              <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                Terbaik untuk Anda
-              </span>
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {contactMethods.map((method, index) => (
+          {/* Contact Methods */}
+          <section className="py-20 relative z-10">
+            <div className="max-w-7xl mx-auto px-6">
               <motion.div
-                key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
+                transition={animationSettings}
+                className="text-center mb-16"
               >
-                <Card className="border-0 shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 bg-white/10 backdrop-blur-xl border border-white/20 h-full">
-                  <CardContent className="p-8 text-center">
-                    <div
-                      className={`w-16 h-16 bg-gradient-to-r ${method.color} rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl`}
-                    >
-                      <method.icon className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-4">{method.title}</h3>
-                    <p className="text-white/70 text-sm leading-relaxed mb-4">{method.description}</p>
-                    <div className="text-purple-300 font-semibold mb-6">{method.contact}</div>
-                    <Button
-                      className={`w-full bg-gradient-to-r ${method.color} hover:shadow-lg transition-all duration-300 text-white rounded-xl border-0`}
-                    >
-                      {method.action}
-                    </Button>
-                  </CardContent>
-                </Card>
+                <Badge className={`${themeColors.badgeBg} ${themeColors.badgeText} px-4 py-2 rounded-full mb-6 ${themeColors.badgeBorder} backdrop-blur-sm`}>
+                  💬 Cara Menghubungi
+                </Badge>
+                <h2 className="text-4xl lg:text-5xl font-black text-white mb-6">
+                  Pilih Cara
+                  <span className={`block bg-gradient-to-r ${themeColors.gradient} bg-clip-text text-transparent`}>
+                    Terbaik untuk Anda
+                  </span>
+                </h2>
               </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Contact Form & Offices */}
-      <section className="py-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            {/* Contact Form */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <Card className="border-0 shadow-2xl bg-white/10 backdrop-blur-xl border border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-2xl font-black text-white flex items-center space-x-3">
-                    <Send className="w-6 h-6 text-purple-300" />
-                    <span>Kirim Pesan</span>
-                  </CardTitle>
-                  <p className="text-white/70">
-                    Isi form di bawah ini dan tim kami akan menghubungi Anda dalam 24 jam.
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  {!isSubmitted ? (
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-sm font-medium text-white/80 mb-2 block">Nama Lengkap</label>
-                          <Input
-                            placeholder="Masukkan nama lengkap"
-                            value={formData.name}
-                            onChange={(e) => handleInputChange("name", e.target.value)}
-                            required
-                            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 backdrop-blur-sm"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-white/80 mb-2 block">Email</label>
-                          <Input
-                            type="email"
-                            placeholder="nama@email.com"
-                            value={formData.email}
-                            onChange={(e) => handleInputChange("email", e.target.value)}
-                            required
-                            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 backdrop-blur-sm"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-sm font-medium text-white/80 mb-2 block">Nomor Telepon</label>
-                          <Input
-                            placeholder="+62 812 3456 7890"
-                            value={formData.phone}
-                            onChange={(e) => handleInputChange("phone", e.target.value)}
-                            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 backdrop-blur-sm"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-white/80 mb-2 block">Kategori</label>
-                          <Select
-                            value={formData.category}
-                            onValueChange={(value) => handleInputChange("category", value)}
-                          >
-                            <SelectTrigger className="bg-white/10 border-white/20 text-white backdrop-blur-sm">
-                              <SelectValue placeholder="Pilih kategori" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-slate-900 border-white/20 text-white">
-                              <SelectItem value="general">Pertanyaan Umum</SelectItem>
-                              <SelectItem value="technical">Dukungan Teknis</SelectItem>
-                              <SelectItem value="partnership">Kemitraan</SelectItem>
-                              <SelectItem value="media">Media & Press</SelectItem>
-                              <SelectItem value="feedback">Feedback</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="text-sm font-medium text-white/80 mb-2 block">Subjek</label>
-                        <Input
-                          placeholder="Subjek pesan Anda"
-                          value={formData.subject}
-                          onChange={(e) => handleInputChange("subject", e.target.value)}
-                          required
-                          className="bg-white/10 border-white/20 text-white placeholder:text-white/50 backdrop-blur-sm"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-sm font-medium text-white/80 mb-2 block">Pesan</label>
-                        <Textarea
-                          placeholder="Tulis pesan Anda di sini..."
-                          className="h-32 bg-white/10 border-white/20 text-white placeholder:text-white/50 backdrop-blur-sm"
-                          value={formData.message}
-                          onChange={(e) => handleInputChange("message", e.target.value)}
-                          required
-                        />
-                      </div>
-
-                      <Button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 hover:from-purple-600 hover:via-pink-600 hover:to-blue-600 text-white py-3 rounded-xl font-semibold border-0 shadow-2xl"
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Mengirim...
-                          </>
-                        ) : (
-                          <>
-                            <Send className="w-4 h-4 mr-2" />
-                            Kirim Pesan
-                          </>
-                        )}
-                      </Button>
-                    </form>
-                  ) : (
-                    <div className="text-center py-12">
-                      <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-                        <CheckCircle className="w-8 h-8 text-green-400" />
-                      </div>
-                      <h3 className="text-xl font-bold text-white mb-4">Pesan Terkirim!</h3>
-                      <p className="text-white/70 mb-6">
-                        Terima kasih telah menghubungi kami. Tim ECONARA akan merespons dalam 24 jam.
-                      </p>
-                      <Button
-                        onClick={() => setIsSubmitted(false)}
-                        variant="outline"
-                        className="border-purple-400/50 text-purple-300 hover:bg-purple-500/20 bg-white/5 backdrop-blur-sm"
-                      >
-                        Kirim Pesan Lain
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Offices */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-8"
-            >
-              <div>
-                <h2 className="text-3xl font-black text-white mb-6">Kantor Kami</h2>
-                <p className="text-white/70 leading-relaxed">
-                  Kunjungi kantor kami di berbagai kota untuk bertemu langsung dengan tim ECONARA.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                {offices.map((office, index) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {contactMethods.map((method, index) => (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: index * 0.1 }}
+                    transition={{ duration: animationSettings.duration, delay: index * 0.1 }}
+                    whileHover={performanceLevel !== "low" ? { y: -5 } : {}}
                   >
-                    <Card className="border-0 shadow-2xl bg-white/10 backdrop-blur-xl border border-white/20">
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between mb-4">
-                          <div>
-                            <h3 className="text-xl font-bold text-white">{office.city}</h3>
-                            <Badge className="bg-purple-500/20 text-purple-300 mt-1 border-purple-400/30">
-                              {office.type}
-                            </Badge>
-                          </div>
-                          <MapPin className="w-5 h-5 text-purple-300" />
+                    <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 hover:border-slate-600/50 transition-all duration-300 h-full">
+                      <CardContent className="p-8 text-center">
+                        <div
+                          className={`w-16 h-16 bg-gradient-to-r ${themeColors.cardGradients[index]} rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl`}
+                        >
+                          <method.icon className="w-8 h-8 text-white" />
                         </div>
-
-                        <div className="space-y-3 text-sm text-white/70">
-                          <div className="flex items-start space-x-3">
-                            <MapPin className="w-4 h-4 text-white/50 mt-0.5" />
-                            <span>{office.address}</span>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <Phone className="w-4 h-4 text-white/50" />
-                            <span>{office.phone}</span>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <Mail className="w-4 h-4 text-white/50" />
-                            <span>{office.email}</span>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <Clock className="w-4 h-4 text-white/50" />
-                            <span>{office.hours}</span>
-                          </div>
-                        </div>
+                        <h3 className="text-xl font-bold text-white mb-4">{method.title}</h3>
+                        <p className="text-slate-300 text-sm leading-relaxed mb-4">{method.description}</p>
+                        <div className={`${themeColors.badgeText} font-semibold mb-6`}>{method.contact}</div>
+                        <Button
+                          className={`w-full bg-gradient-to-r ${themeColors.cardGradients[index]} hover:shadow-lg transition-all duration-300 text-white rounded-xl border-0`}
+                        >
+                          {method.action}
+                        </Button>
                       </CardContent>
                     </Card>
                   </motion.div>
                 ))}
               </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+            </div>
+          </section>
 
-      {/* FAQ */}
-      <section className="py-20 relative z-10">
-        <div className="max-w-4xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <Badge className="bg-white/10 text-white px-4 py-2 rounded-full mb-6 border border-white/20 backdrop-blur-sm">
-              ❓ FAQ
-            </Badge>
-            <h2 className="text-4xl lg:text-5xl font-black text-white mb-6">
-              Pertanyaan
-              <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                yang Sering Diajukan
-              </span>
-            </h2>
-          </motion.div>
+          {/* Contact Form & Offices */}
+          <section className="py-20 relative z-10">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                {/* Contact Form */}
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={animationSettings}
+                >
+                  <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+                    <CardHeader>
+                      <CardTitle className="text-2xl font-black text-white flex items-center space-x-3">
+                        <Send className={`w-6 h-6 ${themeColors.badgeText}`} />
+                        <span>Kirim Pesan</span>
+                      </CardTitle>
+                      <p className="text-slate-300">
+                        Isi form di bawah ini dan tim kami akan menghubungi Anda dalam 24 jam.
+                      </p>
+                    </CardHeader>
+                    <CardContent>
+                      {!isSubmitted ? (
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-sm font-medium text-slate-300 mb-2 block">Nama Lengkap</label>
+                              <Input
+                                placeholder="Masukkan nama lengkap"
+                                value={formData.name}
+                                onChange={(e) => handleInputChange("name", e.target.value)}
+                                required
+                                className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 backdrop-blur-sm"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium text-slate-300 mb-2 block">Email</label>
+                              <Input
+                                type="email"
+                                placeholder="nama@email.com"
+                                value={formData.email}
+                                onChange={(e) => handleInputChange("email", e.target.value)}
+                                required
+                                className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 backdrop-blur-sm"
+                              />
+                            </div>
+                          </div>
 
-          <div className="space-y-6">
-            {faqs.map((faq, index) => (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-sm font-medium text-slate-300 mb-2 block">Nomor Telepon</label>
+                              <Input
+                                placeholder="+62 812 3456 7890"
+                                value={formData.phone}
+                                onChange={(e) => handleInputChange("phone", e.target.value)}
+                                className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 backdrop-blur-sm"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium text-slate-300 mb-2 block">Kategori</label>
+                              <Select
+                                value={formData.category}
+                                onValueChange={(value) => handleInputChange("category", value)}
+                              >
+                                <SelectTrigger className="bg-slate-800/50 border-slate-600 text-white backdrop-blur-sm">
+                                  <SelectValue placeholder="Pilih kategori" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-900 border-slate-600 text-white">
+                                  <SelectItem value="general">Pertanyaan Umum</SelectItem>
+                                  <SelectItem value="technical">Dukungan Teknis</SelectItem>
+                                  <SelectItem value="partnership">Kemitraan</SelectItem>
+                                  <SelectItem value="media">Media & Press</SelectItem>
+                                  <SelectItem value="feedback">Feedback</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="text-sm font-medium text-slate-300 mb-2 block">Subjek</label>
+                            <Input
+                              placeholder="Subjek pesan Anda"
+                              value={formData.subject}
+                              onChange={(e) => handleInputChange("subject", e.target.value)}
+                              required
+                              className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 backdrop-blur-sm"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="text-sm font-medium text-slate-300 mb-2 block">Pesan</label>
+                            <Textarea
+                              placeholder="Tulis pesan Anda di sini..."
+                              className="h-32 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 backdrop-blur-sm"
+                              value={formData.message}
+                              onChange={(e) => handleInputChange("message", e.target.value)}
+                              required
+                            />
+                          </div>
+
+                          <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className={`w-full bg-gradient-to-r ${themeColors.buttonGradient} text-white py-3 rounded-xl font-semibold border-0 shadow-2xl`}
+                          >
+                            {isSubmitting ? (
+                              <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                Mengirim...
+                              </>
+                            ) : (
+                              <>
+                                <Send className="w-4 h-4 mr-2" />
+                                Kirim Pesan
+                              </>
+                            )}
+                          </Button>
+                        </form>
+                      ) : (
+                        <div className="text-center py-12">
+                          <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
+                            <CheckCircle className="w-8 h-8 text-green-400" />
+                          </div>
+                          <h3 className="text-xl font-bold text-white mb-4">Pesan Terkirim!</h3>
+                          <p className="text-slate-300 mb-6">
+                            Terima kasih telah menghubungi kami. Tim ECONARA akan merespons dalam 24 jam.
+                          </p>
+                          <Button
+                            onClick={() => setIsSubmitted(false)}
+                            variant="outline"
+                            className={`border-slate-600 ${themeColors.badgeText} hover:bg-slate-800/50 bg-slate-900/20 backdrop-blur-sm`}
+                          >
+                            Kirim Pesan Lain
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                {/* Offices */}
+                <motion.div
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={animationSettings}
+                  className="space-y-8"
+                >
+                  <div>
+                    <h2 className="text-3xl font-black text-white mb-6">Kantor Kami</h2>
+                    <p className="text-slate-300 leading-relaxed">
+                      Kunjungi kantor kami di berbagai kota untuk bertemu langsung dengan tim ECONARA.
+                    </p>
+                  </div>
+
+                  <div className="space-y-6">
+                    {offices.map((office, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: animationSettings.duration, delay: index * 0.1 }}
+                      >
+                        <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+                          <CardContent className="p-6">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h3 className="text-xl font-bold text-white">{office.city}</h3>
+                                <Badge className={`${themeColors.badgeBg} ${themeColors.badgeText} mt-1 ${themeColors.badgeBorder}`}>
+                                  {office.type}
+                                </Badge>
+                              </div>
+                              <MapPin className={`w-5 h-5 ${themeColors.badgeText}`} />
+                            </div>
+
+                            <div className="space-y-3 text-sm text-slate-300">
+                              <div className="flex items-start space-x-3">
+                                <MapPin className="w-4 h-4 text-slate-400 mt-0.5" />
+                                <span>{office.address}</span>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Phone className="w-4 h-4 text-slate-400" />
+                                <span>{office.phone}</span>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Mail className="w-4 h-4 text-slate-400" />
+                                <span>{office.email}</span>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Clock className="w-4 h-4 text-slate-400" />
+                                <span>{office.hours}</span>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </section>
+
+          {/* FAQ */}
+          <section className="py-20 relative z-10">
+            <div className="max-w-4xl mx-auto px-6">
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                transition={animationSettings}
+                className="text-center mb-16"
               >
-                <Card className="border-0 shadow-2xl bg-white/10 backdrop-blur-xl border border-white/20">
-                  <CardContent className="p-8">
-                    <h3 className="text-lg font-bold text-white mb-4">{faq.question}</h3>
-                    <p className="text-white/70 leading-relaxed">{faq.answer}</p>
-                  </CardContent>
-                </Card>
+                <Badge className={`${themeColors.badgeBg} ${themeColors.badgeText} px-4 py-2 rounded-full mb-6 ${themeColors.badgeBorder} backdrop-blur-sm`}>
+                  ❓ FAQ
+                </Badge>
+                <h2 className="text-4xl lg:text-5xl font-black text-white mb-6">
+                  Pertanyaan
+                  <span className={`block bg-gradient-to-r ${themeColors.gradient} bg-clip-text text-transparent`}>
+                    yang Sering Diajukan
+                  </span>
+                </h2>
               </motion.div>
-            ))}
-          </div>
 
-          <div className="text-center mt-12">
-            <p className="text-white/70 mb-6">Tidak menemukan jawaban yang Anda cari?</p>
-            <Button className="bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 hover:from-purple-600 hover:via-pink-600 hover:to-blue-600 text-white px-8 py-3 rounded-xl font-semibold border-0 shadow-2xl">
-              Hubungi Tim Support
-            </Button>
-          </div>
-        </div>
-      </section>
-    </div>
+              <div className="space-y-6">
+                {faqs.map((faq, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: animationSettings.duration, delay: index * 0.1 }}
+                  >
+                    <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+                      <CardContent className="p-8">
+                        <h3 className="text-lg font-bold text-white mb-4">{faq.question}</h3>
+                        <p className="text-slate-300 leading-relaxed">{faq.answer}</p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="text-center mt-12">
+                <p className="text-slate-300 mb-6">Tidak menemukan jawaban yang Anda cari?</p>
+                <Button className={`bg-gradient-to-r ${themeColors.buttonGradient} text-white px-8 py-3 rounded-xl font-semibold border-0 shadow-2xl`}>
+                  Hubungi Tim Support
+                </Button>
+              </div>
+            </div>
+          </section>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   )
 }

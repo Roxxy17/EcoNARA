@@ -9,9 +9,9 @@ import type { PerformanceLevel } from "@/hooks/use-device-performance"
 
 const navigationItems = [
   { name: "Beranda", href: "/" },
-  { name: "Tentang", href: "/about" },
   { name: "Fitur", href: "/features" },
   { name: "Komunitas", href: "/community" },
+  { name: "Tentang", href: "/about" },
   { name: "Kontak", href: "/contact" },
 ]
 
