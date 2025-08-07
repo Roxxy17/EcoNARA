@@ -56,7 +56,7 @@ export async function PUT(req: Request) {
   // Periksa apakah item stok ada dan user memiliki izin
   const { data: stockItem, error: stockFetchError } = await supabaseAdmin
     .from("stock")
-    .select("user_id, desa_id") // Ambil desa_id juga untuk pengecekan role ketua/admin
+    .select("user_id") // Ambil desa_id juga untuk pengecekan role ketua/admin
     .eq("id", stockId)
     .single();
 
@@ -125,7 +125,7 @@ export async function DELETE(req: Request) {
     // Ubah .single() menjadi .maybeSingle()
     const { data: stockItem, error: stockFetchError } = await supabaseAdmin
         .from("stock")
-        .select("user_id, desa_id")
+    .select("user_id")
         .eq("id", stockId)
         .maybeSingle(); // Perubahan ada di sini
 

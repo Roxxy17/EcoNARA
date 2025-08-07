@@ -58,7 +58,7 @@ export function Navbar() {
   const userDisplayName = userProfile?.name || "Pengguna";
   const userEmail = userProfile?.email || "email@example.com";
   const userInitial = userDisplayName.charAt(0).toUpperCase();
-  const userRole = userProfile?.role; // Ambil peran dari context
+  const userRole = userProfile?.role;
 
   // Daftar item navigasi awal
   const navItems = [
@@ -68,8 +68,7 @@ export function Navbar() {
       icon: Package,
       type: "dropdown",
       items: [
-        { label: "Kelola Stok", href: "/manage-stock", icon: Package, description: "Atur inventaris dan produk Anda." },
-        { label: "Marketplace", href: "/marketplace", icon: ShoppingCart, description: "Jelajahi dan jual produk ramah lingkungan." },
+        { label: "Kelola Stok", href: "/manage-stock", icon: Package, description: "Atur inventaris dan produk Anda." }
       ],
     },
     {
@@ -86,17 +85,33 @@ export function Navbar() {
     { label: "Leaderboard", href: "/leaderboard", icon: TrendingUp, type: "link" },
   ];
 
-  // Filter item navigasi berdasarkan peran pengguna
-  const filteredNavItems = navItems.filter(item => {
-    // Sembunyikan 'Aksi Lingkungan' jika peran adalah 'ketua' atau 'admin'
+  // Logika untuk memfilter dan menambahkan item navigasi
+  let finalNavItems = [...navItems];
+
+  // Sembunyikan 'Aksi Lingkungan' jika peran adalah 'ketua' atau 'admin'
+  finalNavItems = finalNavItems.filter(item => {
     if (item.label === "Aksi Lingkungan" && (userRole === "ketua" || userRole === "admin")) {
       return false;
     }
     return true;
   });
 
-  // Modifikasi href untuk 'Kelola Stok' pada item yang sudah difilter
-  const updatedNavItems = filteredNavItems.map(item => {
+  // Tambahkan item verifikasi jika peran adalah 'ketua'
+  if (userRole === "ketua") {
+    const produkItemIndex = finalNavItems.findIndex(item => item.label === "Produk");
+    if (produkItemIndex !== -1) {
+      const verifikasiItem = {
+        label: "Verifikasi RT",
+        href: "/rt/verification",
+        icon: CheckSquare,
+        description: "Verifikasi kontribusi dari warga RT."
+      };
+      finalNavItems[produkItemIndex].items.push(verifikasiItem);
+    }
+  }
+
+  // Modifikasi href untuk 'Kelola Stok' jika peran adalah 'ketua' atau 'admin'
+  const updatedNavItems = finalNavItems.map(item => {
     if (item.label === "Produk" && item.type === "dropdown") {
       const updatedItems = item.items.map(subItem => {
         if (subItem.label === "Kelola Stok") {
@@ -283,11 +298,11 @@ export function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center space-x-2 pr-2 pl-2">
-                    <div className="relative h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium">
-                        {userInitial}
-                    </div>
-                    <span className="hidden md:inline-block font-medium text-sm">{userDisplayName}</span>
-                    <ChevronDown className="h-4 w-4 text-gray-500" />
+                  <div className="relative h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium">
+                    {userInitial}
+                  </div>
+                  <span className="hidden md:inline-block font-medium text-sm">{userDisplayName}</span>
+                  <ChevronDown className="h-4 w-4 text-gray-500" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -301,21 +316,21 @@ export function Navbar() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <Link href="/profile" className="flex items-center w-full">
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Profil</span>
-                    </Link>
+                  <Link href="/profile" className="flex items-center w-full">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profil</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link href="/settings" className="flex items-center w-full">
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Pengaturan</span>
-                    </Link>
+                  <Link href="/settings" className="flex items-center w-full">
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Pengaturan</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Keluar</span>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Keluar</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
