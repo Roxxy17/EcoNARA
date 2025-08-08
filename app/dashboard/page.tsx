@@ -97,7 +97,7 @@ export default function DashboardPage() {
                 <Leaf className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-800">Selamat datang, {userProfile?.name || 'Pengguna'}!</h1>
+                <h1 className="text-xl font-bold text-gray-800">Selamat datang, {userProfile?.nama || 'Pengguna'}!</h1>
                 <p className="text-sm text-gray-600">RT 05, Kelurahan Maju Bersama</p>
               </div>
             </div>

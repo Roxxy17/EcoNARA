@@ -57,7 +57,7 @@ export function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const { userProfile, loadingUser, setUserProfile } = useUser();
-  const userDisplayName = userProfile?.name || "Pengguna";
+  const userDisplayName = userProfile?.nama || "Pengguna";
   const userEmail = userProfile?.email || "email@example.com";
   const userInitial = userDisplayName.charAt(0).toUpperCase();
   const userRole = userProfile?.role;
