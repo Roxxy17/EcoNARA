@@ -29,6 +29,8 @@ import { PerformanceIndicator } from "@/components/ui/performance-indicator";
 import { ThemeSelector } from "@/components/ui/theme-selector";
 import { Navbar } from "@/components/navigation/navbar";
 import { useTheme } from "next-themes";
+import { Footer } from "@/components/sections/footer";
+
 
 const featureCategories = [
   {
@@ -574,6 +576,7 @@ export default function FeaturesPage() {
               </motion.div>
             </div>
           </section>
+          <Footer />
         </motion.div>
       </motion.div>
     </AnimatePresence>
