@@ -2,7 +2,7 @@
 
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,6 +12,9 @@ import { Leaf, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { AdaptiveBackground } from "@/components/background/adaptive-background"
+import { ThemeSelector } from "@/components/ui/theme-selector"
+import { useTheme } from "next-themes"
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -19,16 +22,19 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState(null)
   const router = useRouter()
-
-  // Inisialisasi client Supabase khusus untuk komponen klien
   const supabase = createClientComponentClient()
+  const { theme = "default" } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleLogin = async (e) => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
 
-    // Lakukan login dengan Supabase
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -40,11 +46,7 @@ export default function LoginPage() {
       return
     }
 
-    // Setelah login berhasil, panggil router.refresh()
-    // Ini akan memaksa Next.js untuk me-render ulang rute dan memvalidasi sesi
-    // dari cookies yang baru dibuat oleh auth-helpers.
     router.refresh()
-
     const user = data?.user
     const userRole = user?.user_metadata?.role
 
@@ -57,16 +59,27 @@ export default function LoginPage() {
     setIsLoading(false)
   }
 
+  // Jangan render sebelum mounted agar theme konsisten (hindari hydration error)
+  if (!mounted) return null
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen relative flex items-center justify-center p-4">
+      {/* Background dinamis */}
+      <AdaptiveBackground performanceLevel="high" variant={theme as any} />
+
+      {/* Theme Selector pojok kanan atas */}
+      <div className="fixed top-4 right-4 z-20">
+        <ThemeSelector />
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md z-10"
       >
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2 text-gray-600 hover:text-gray-800 mb-4">
+          <Link href="/" className="inline-flex items-center space-x-2 text-muted-foreground hover:text-foreground mb-4">
             <ArrowLeft className="w-4 h-4" />
             <span>Kembali ke Beranda</span>
           </Link>
@@ -75,14 +88,14 @@ export default function LoginPage() {
             <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
               <Leaf className="w-6 h-6 text-white" />
             </div>
-            <span className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
               ECONARA
             </span>
           </div>
-          <p className="text-gray-600">Masuk ke akun Anda</p>
+          <p className="text-muted-foreground">Masuk ke akun Anda</p>
         </div>
 
-        <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+        <Card className="border-0 shadow-xl bg-background/90 backdrop-blur-md">
           <CardHeader>
             <CardTitle>Masuk</CardTitle>
             <CardDescription>Masukkan email dan password Anda untuk melanjutkan</CardDescription>
@@ -98,6 +111,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  autoComplete="username"
                 />
               </div>
               <div className="space-y-2">
@@ -105,9 +119,11 @@ export default function LoginPage() {
                 <Input
                   id="password"
                   type="password"
+                  placeholder="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  autoComplete="current-password"
                 />
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
@@ -120,9 +136,9 @@ export default function LoginPage() {
               </Button>
             </form>
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Belum punya akun?{" "}
-                <Link href="/register" className="text-green-600 hover:underline">
+                <Link href="/register" className="text-green-400 hover:underline">
                   Daftar di sini
                 </Link>
               </p>

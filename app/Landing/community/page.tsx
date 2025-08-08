@@ -14,6 +14,8 @@ import { useDevicePerformance } from "@/hooks/use-device-performance"
 import { AdaptiveBackground } from "@/components/background/adaptive-background"
 import { PerformanceIndicator } from "@/components/ui/performance-indicator"
 import { ThemeSelector } from "@/components/ui/theme-selector"
+import { Navbar } from "@/components/navigation/navbar"
+import { useTheme } from "next-themes"
 
 const communityEvents = [
   {
@@ -112,7 +114,7 @@ const leaderboard = [
 
 export default function CommunityPage() {
   const { performanceLevel, capabilities, isLoading } = useDevicePerformance()
-  const [currentVariant, setCurrentVariant] = useState<"default" | "aurora" | "night" | "geometric" | "nebula">("default")
+  const { theme = "default" } = useTheme()
   const [soundEnabled, setSoundEnabled] = useState(false)
   const [isPageLoaded, setIsPageLoaded] = useState(false)
   const [activeTab, setActiveTab] = useState("events")
@@ -130,7 +132,7 @@ export default function CommunityPage() {
 
   // Get theme-based colors
   const getThemeColors = () => {
-    switch (currentVariant) {
+    switch (theme) {
       case "aurora":
         return {
           gradient: "from-green-400 via-blue-400 to-emerald-400",
@@ -199,7 +201,7 @@ export default function CommunityPage() {
         transition={{ duration: 0.5 }}
         className="min-h-screen relative overflow-hidden"
       >
-        <AdaptiveBackground performanceLevel={performanceLevel} variant={currentVariant} />
+        <AdaptiveBackground performanceLevel={performanceLevel} variant={theme as "default" | "aurora" | "geometric" | "nebula" | "night"} />
         
         <PerformanceIndicator
           performanceLevel={performanceLevel}
@@ -207,12 +209,8 @@ export default function CommunityPage() {
           isLoading={isLoading}
         />
         
-        <ThemeSelector
-          currentVariant={currentVariant}
-          onVariantChange={setCurrentVariant}
-          soundEnabled={soundEnabled}
-          onSoundToggle={() => setSoundEnabled(!soundEnabled)}
-        />
+        {/* ThemeSelector hanya di halaman ini */}
+        <ThemeSelector />
 
         <motion.div
           className="relative z-10"
@@ -220,41 +218,12 @@ export default function CommunityPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          {/* Header */}
-          <header className="bg-slate-900/50 backdrop-blur-xl border-b border-slate-700/50 sticky top-0 z-40">
-            <div className="container mx-auto px-4 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <Link href="/">
-                    <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10">
-                      <ArrowLeft className="w-4 h-4 mr-2" />
-                      Kembali
-                    </Button>
-                  </Link>
-                  <div className="flex items-center space-x-2">
-                    <div className={`w-8 h-8 bg-gradient-to-r ${themeColors.gradient.replace('from-', 'from-').replace(' via-', ' to-')} rounded-lg flex items-center justify-center`}>
-                      <Users className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <h1 className="text-xl font-bold text-white">Komunitas</h1>
-                      <p className="text-sm text-slate-400">Terhubung dengan tetangga sekitar</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-800/50">
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    Chat
-                  </Button>
-                  <Button className={`bg-gradient-to-r ${themeColors.buttonGradient}`}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Buat Event
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </header>
+          {/* Navbar */}
+          <Navbar
+            performanceLevel="high"
+            animationSettings={{ duration: 0.5, ease: "easeInOut" }}
+            theme={theme as "default" | "aurora" | "geometric" | "nebula" | "night"}
+          />
 
           <div className="container mx-auto px-4 py-8">
             {/* Community Stats */}

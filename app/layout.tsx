@@ -1,22 +1,21 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/toaster";
-import { UserProvider } from "@/contexts/UserContext"; // Import UserProvider
+import type React from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Providers } from "./providers";
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   preload: true,
-})
+});
 
 export const metadata: Metadata = {
   title: "ECONARA - Sustainable Community Platform",
   description:
     "Platform AI-powered yang menghubungkan komunitas untuk mengatasi food waste, mengoptimalkan distribusi pangan, dan membangun ekonomi sirkular yang berkelanjutan.",
-  keywords: "sustainability, community, AI, food waste, circular economy, Indonesia",
+  keywords:
+    "sustainability, community, AI, food waste, circular economy, Indonesia",
   authors: [{ name: "ECONARA Team" }],
   creator: "ECONARA",
   publisher: "ECONARA",
@@ -59,30 +58,34 @@ export const metadata: Metadata = {
   verification: {
     google: "google-site-verification-code",
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
         <meta name="theme-color" content="#0f172a" />
-        <meta name="color-scheme" content="dark light" />
+        <meta name="color-scheme" content="dark" />
       </head>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <UserProvider> {/* Bungkus children dengan UserProvider */}
-            {children}
-          </UserProvider>
-          <Toaster />
-        </ThemeProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
-  )
+  );
 }

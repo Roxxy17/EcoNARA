@@ -1,39 +1,51 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Leaf, Menu, X } from 'lucide-react'
-import Link from "next/link"
-import type { PerformanceLevel } from "@/hooks/use-device-performance"
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Leaf, Menu, X } from "lucide-react";
+import Link from "next/link";
+import type { PerformanceLevel } from "@/hooks/use-device-performance";
 
+// ✅ Navigasi
 const navigationItems = [
   { name: "Beranda", href: "/" },
-  { name: "Fitur", href: "/features" },
-  { name: "Komunitas", href: "/community" },
-  { name: "Tentang", href: "/about" },
-  { name: "Kontak", href: "/contact" },
-]
+  { name: "Fitur", href: "/Landing/features" },
+  { name: "Komunitas", href: "/Landing/community" },
+  { name: "Tentang", href: "/Landing/about" },
+  { name: "Kontak", href: "/Landing/contact" },
+];
 
+// ✅ Warna background berdasarkan tema
+const themeBgMap: Record<string, string> = {
+  default: "bg-slate-950/80",
+  aurora: "bg-green-900/80",
+  geometric: "bg-red-900/80",
+  nebula: "bg-purple-900/80",
+  night: "bg-blue-900/80",
+};
+
+// ✅ Props untuk Navbar
 interface NavbarProps {
-  performanceLevel: PerformanceLevel
+  theme: "default" | "aurora" | "night" | "geometric" | "nebula";
+  performanceLevel: PerformanceLevel;
   animationSettings: {
-    duration: number
-    ease: string | number[]
-  }
+    duration: number;
+    ease: string | number[];
+  };
 }
 
-export const Navbar = ({ performanceLevel, animationSettings }: NavbarProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
+export const Navbar = ({ theme, performanceLevel, animationSettings }: NavbarProps) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-    }
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <motion.nav
@@ -41,12 +53,14 @@ export const Navbar = ({ performanceLevel, animationSettings }: NavbarProps) => 
       animate={{ y: 0, opacity: 1 }}
       transition={animationSettings}
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? "bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/50" : "bg-transparent"
+        scrolled
+          ? `${themeBgMap[theme]} backdrop-blur-xl border-b border-slate-800/50`
+          : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-between items-center h-20">
-          {/* Enhanced Logo */}
+          {/* Logo */}
           <motion.div
             className="flex items-center space-x-3"
             whileHover={performanceLevel !== "low" ? { scale: 1.02 } : {}}
@@ -59,7 +73,7 @@ export const Navbar = ({ performanceLevel, animationSettings }: NavbarProps) => 
                     animate={{ rotate: [0, 360] }}
                     transition={{
                       duration: 15,
-                      repeat: Number.POSITIVE_INFINITY,
+                      repeat: Infinity,
                       ease: "linear",
                     }}
                   />
@@ -68,7 +82,7 @@ export const Navbar = ({ performanceLevel, animationSettings }: NavbarProps) => 
                     animate={{ rotate: [360, 0] }}
                     transition={{
                       duration: 10,
-                      repeat: Number.POSITIVE_INFINITY,
+                      repeat: Infinity,
                       ease: "linear",
                     }}
                   />
@@ -80,14 +94,19 @@ export const Navbar = ({ performanceLevel, animationSettings }: NavbarProps) => 
             </div>
             <div>
               <span className="text-2xl font-bold text-white">ECONARA</span>
-              <div className="text-xs text-slate-400 font-medium">Sustainable Platform</div>
+              <div className="text-xs text-slate-400 font-medium">
+                Sustainable Platform
+              </div>
             </div>
           </motion.div>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
             {navigationItems.map((item, index) => (
-              <motion.div key={index} whileHover={performanceLevel !== "low" ? { y: -2 } : {}}>
+              <motion.div
+                key={index}
+                whileHover={performanceLevel !== "low" ? { y: -2 } : {}}
+              >
                 <Link
                   href={item.href}
                   className="text-slate-300 hover:text-white font-medium transition-colors duration-200 relative group"
@@ -99,12 +118,19 @@ export const Navbar = ({ performanceLevel, animationSettings }: NavbarProps) => 
             ))}
           </div>
 
-          {/* Enhanced Action Buttons */}
+          {/* Desktop Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50" asChild>
+            <Button
+              variant="ghost"
+              className="text-slate-300 hover:text-white hover:bg-slate-800/50"
+              asChild
+            >
               <Link href="/login">Masuk</Link>
             </Button>
-            <motion.div whileHover={performanceLevel !== "low" ? { scale: 1.05 } : {}} whileTap={{ scale: 0.95 }}>
+            <motion.div
+              whileHover={performanceLevel !== "low" ? { scale: 1.05 } : {}}
+              whileTap={{ scale: 0.95 }}
+            >
               <Button
                 className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold relative overflow-hidden group"
                 asChild
@@ -119,7 +145,7 @@ export const Navbar = ({ performanceLevel, animationSettings }: NavbarProps) => 
                       }}
                       transition={{
                         duration: 3,
-                        repeat: Number.POSITIVE_INFINITY,
+                        repeat: Infinity,
                         ease: "easeInOut",
                       }}
                       style={{
@@ -132,8 +158,11 @@ export const Navbar = ({ performanceLevel, animationSettings }: NavbarProps) => 
             </motion.div>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden p-2 text-slate-300 hover:text-white">
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="lg:hidden p-2 text-slate-300 hover:text-white"
+          >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
@@ -163,7 +192,10 @@ export const Navbar = ({ performanceLevel, animationSettings }: NavbarProps) => 
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link href="/login">Masuk</Link>
               </Button>
-              <Button className="w-full bg-gradient-to-r from-purple-500 to-blue-500" asChild>
+              <Button
+                className="w-full bg-gradient-to-r from-purple-500 to-blue-500"
+                asChild
+              >
                 <Link href="/register">Bergabung</Link>
               </Button>
             </div>
@@ -171,5 +203,5 @@ export const Navbar = ({ performanceLevel, animationSettings }: NavbarProps) => 
         </motion.div>
       </div>
     </motion.nav>
-  )
-}
+  );
+};
