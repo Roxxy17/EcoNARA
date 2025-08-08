@@ -61,18 +61,45 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
+  // Penting: Logika otorisasi di sini.
+  // Jika hanya pemilik donasi yang bisa mengubah, `checkDonationOwnership` sudah benar.
+  // Namun, jika admin juga bisa mengubah status donasi orang lain, Anda perlu
+  // menambahkan logika untuk memeriksa role admin di sini (misalnya, dari tabel `users` Anda).
+  // Contoh:
+  // const { data: profile, error: profileError } = await supabase.from('users').select('role').eq('id', user.id).single();
+  // if (profileError || profile.role !== 'admin') {
+  //   const { error, status } = await checkDonationOwnership(supabase, id, user.id);
+  //   if (error) {
+  //     return NextResponse.json({ message: error }, { status });
+  //   }
+  // }
+
+  // Untuk saat ini, kita tetap menggunakan checkDonationOwnership yang ada,
+  // yang berarti hanya pemilik donasi yang bisa mengubahnya.
   const { error, status } = await checkDonationOwnership(supabase, id, user.id);
   if (error) {
     return NextResponse.json({ message: error }, { status });
   }
 
+
   try {
     const body = await req.json();
-    const { item_name, description } = body;
+    // Pastikan untuk menerima `status` dan `need_request_id` dari body
+    const { item_name, description, status: newStatus, need_request_id } = body; 
 
-    const updateFields: { item_name?: string; description?: string } = {};
+    const updateFields: { 
+      item_name?: string; 
+      description?: string; 
+      status?: string; 
+      need_request_id?: number | null; 
+    } = {};
+
     if (item_name !== undefined) updateFields.item_name = item_name;
     if (description !== undefined) updateFields.description = description;
+    // Tambahkan `newStatus` ke updateFields
+    if (newStatus !== undefined) updateFields.status = newStatus; 
+    // Tambahkan `need_request_id` ke updateFields
+    if (need_request_id !== undefined) updateFields.need_request_id = need_request_id; 
 
     if (Object.keys(updateFields).length === 0) {
       return NextResponse.json({ message: "No fields to update." }, { status: 400 });
@@ -82,7 +109,14 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       .from("donations")
       .update(updateFields)
       .eq("id", id)
-      .select()
+      .select(`
+        *,
+        users (
+          nama,
+          phone_number,
+          email
+        )
+      `) // Pastikan juga select data user setelah update
       .single();
 
     if (dbError) {
@@ -96,6 +130,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
+
 
 // DELETE /api/donations/[id]
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
