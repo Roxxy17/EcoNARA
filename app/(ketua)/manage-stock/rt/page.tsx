@@ -4,11 +4,10 @@ import { useState, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Loader2, Package, Users, Home } from 'lucide-react'
+import { Loader2, Package, Users, Home, AlertTriangle } from 'lucide-react'
 import { Navbar } from "@/components/navigation/nav-dashboard"
 import { cn } from "@/lib/utils"
 import { useUser } from "@/contexts/UserContext"
@@ -34,6 +33,14 @@ interface TotalStockByCategory {
   totalQuantity: number;
 }
 
+// Interface untuk status keluarga
+interface FamilyStatus {
+    id: string;
+    name: string;
+    hasShortage: boolean;
+}
+
+
 export default function ManageStockKetuaPage() {
   const { userProfile, loadingUser } = useUser();
   const [allDesaStockItems, setAllDesaStockItems] = useState<StockItem[]>([]);
@@ -45,7 +52,7 @@ export default function ManageStockKetuaPage() {
 
   const supabase = createClientComponentClient();
 
-  // Helper to determine stock status based on quantity
+  // Helper untuk menentukan status stok berdasarkan kuantitas
   const getStockStatus = (quantity: number | null): StockItem['status'] => {
     if (quantity === null || quantity <= 0) return 'habis';
     if (quantity <= 20) return 'menipis'; // Ambang batas "menipis"
@@ -135,16 +142,35 @@ export default function ManageStockKetuaPage() {
     })).sort((a, b) => a.category.localeCompare(b.category)); // Urutkan berdasarkan kategori
   }, [allDesaStockItems]);
 
-  // UseMemo untuk mendapatkan daftar keluarga unik (pengguna) di desa
-  const familiesInDesa = useMemo(() => {
-    const uniqueFamilies = new Map<string, string>(); // Map<user_id, user_name>
-    allDesaStockItems.forEach(item => {
-      if (item.user_id && item.user_name) {
-        uniqueFamilies.set(item.user_id, item.user_name);
-      }
-    });
-    return Array.from(uniqueFamilies.entries()).map(([id, name]) => ({ id, name }));
-  }, [allDesaStockItems]);
+  // UseMemo untuk mengidentifikasi keluarga yang butuh perhatian
+    const familiesWithShortageStatus: FamilyStatus[] = useMemo(() => {
+        const familyStatus = new Map<string, { name: string, hasShortage: boolean }>();
+
+        allDesaStockItems.forEach(item => {
+            if (item.user_id && item.user_name && !familyStatus.has(item.user_id)) {
+                familyStatus.set(item.user_id, { name: item.user_name, hasShortage: false });
+            }
+
+            if (item.user_id && (item.status === 'menipis' || item.status === 'habis')) {
+                const currentFamily = familyStatus.get(item.user_id);
+                if (currentFamily) {
+                    currentFamily.hasShortage = true;
+                }
+            }
+        });
+
+        return Array.from(familyStatus.entries()).map(([id, data]) => ({
+            id,
+            name: data.name,
+            hasShortage: data.hasShortage
+        })).sort((a, b) => (b.hasShortage ? 1 : 0) - (a.hasShortage ? 1 : 0) || a.name.localeCompare(b.name));
+    }, [allDesaStockItems]);
+
+    // Memo untuk memfilter daftar keluarga yang benar-benar kekurangan
+    const familiesInNeed = useMemo(() => {
+        return familiesWithShortageStatus.filter(family => family.hasShortage);
+    }, [familiesWithShortageStatus]);
+
 
   // UseMemo untuk memfilter stok berdasarkan keluarga yang dipilih
   const filteredFamilyStock = useMemo(() => {
@@ -156,7 +182,7 @@ export default function ManageStockKetuaPage() {
 
   const getFamilyNameById = (id: string | null) => {
     if (!id) return "Pilih Keluarga";
-    const family = familiesInDesa.find(f => f.id === id);
+    const family = familiesWithShortageStatus.find(f => f.id === id);
     return family ? family.name : "Keluarga Tidak Dikenal";
   };
 
@@ -194,7 +220,7 @@ export default function ManageStockKetuaPage() {
                   )}
                   onAnimationComplete={() => {
                     if (message) {
-                      setTimeout(() => setMessage(null), 5000); // Sembunyikan pesan setelah 5 detik
+                      setTimeout(() => setMessage(null), 5000);
                     }
                   }}
                 >
@@ -203,7 +229,7 @@ export default function ManageStockKetuaPage() {
               )}
 
               {error && !loading && (
-                <div className="text-red-600 text-center py-8">Gagal memuat data: {error}</div>
+                <div className="text-red-600 text-center py-8">{error}</div>
               )}
 
               {!error && !loading && userProfile && (userProfile.role === 'ketua' || userProfile.role === 'admin') ? (
@@ -236,8 +262,34 @@ export default function ManageStockKetuaPage() {
                     </div>
                   )}
 
+                  {/* Kartu Analisis Warga yang Kekurangan */}
+                  {familiesInNeed.length > 0 && (
+                      <div className="mt-8 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
+                          <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center space-x-2">
+                              <AlertTriangle className="w-5 h-5 text-yellow-600" />
+                              <span>Warga Perlu Perhatian (Stok Kritis)</span>
+                          </h3>
+                          <p className="text-sm text-gray-600 mb-4">
+                              Berikut adalah keluarga dengan stok menipis atau habis. Klik nama untuk melihat rincian.
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                              {familiesInNeed.map(family => (
+                                  <Button
+                                      key={family.id}
+                                      variant="outline"
+                                      size="sm"
+                                      className="bg-white hover:bg-gray-100"
+                                      onClick={() => setSelectedFamilyId(family.id)}
+                                  >
+                                      {family.name}
+                                  </Button>
+                              ))}
+                          </div>
+                      </div>
+                  )}
+
                   {/* Rincian Stok Tiap Keluarga */}
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center space-x-2">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center space-x-2 pt-8">
                     <Users className="w-5 h-5 text-purple-600" />
                     <span>Rincian Stok Tiap Keluarga</span>
                   </h3>
@@ -248,12 +300,12 @@ export default function ManageStockKetuaPage() {
                         <SelectValue placeholder="Pilih Keluarga" />
                       </SelectTrigger>
                       <SelectContent>
-                        {familiesInDesa.length === 0 ? (
+                        {familiesWithShortageStatus.length === 0 ? (
                           <SelectItem value="no-families" disabled>Tidak ada keluarga di desa ini</SelectItem>
                         ) : (
-                          familiesInDesa.map(family => (
+                          familiesWithShortageStatus.map(family => (
                             <SelectItem key={family.id} value={family.id}>
-                              {family.name}
+                              {family.hasShortage && <span className="mr-2">⚠️</span>} {family.name}
                             </SelectItem>
                           ))
                         )}
@@ -270,7 +322,7 @@ export default function ManageStockKetuaPage() {
                             <TableHead>Kategori</TableHead>
                             <TableHead>Jumlah</TableHead>
                             <TableHead>Satuan</TableHead>
-                            <TableHead>Tanggal Ditambahkan</TableHead>
+                            <TableHead>Tanggal</TableHead>
                             <TableHead>Status</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -281,7 +333,7 @@ export default function ManageStockKetuaPage() {
                               <TableCell>{item.category}</TableCell>
                               <TableCell>{item.quantity}</TableCell>
                               <TableCell>{item.unit}</TableCell>
-                              <TableCell>{item.added_date}</TableCell>
+                              <TableCell>{new Date(item.added_date).toLocaleDateString("id-ID")}</TableCell>
                               <TableCell>
                                 <span className={cn(
                                   "px-2 py-1 rounded-full text-xs font-medium",

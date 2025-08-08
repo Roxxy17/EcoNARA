@@ -1,98 +1,90 @@
-// File: src/components/providers/UserProvider.jsx
+// Nama file: src/components/providers/UserProvider.tsx
 
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"; // <--- Ubah baris ini
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { createClientComponentClient, User } from "@supabase/auth-helpers-nextjs";
 
-// Definisikan interface untuk profil pengguna
+// Definisikan interface agar 100% cocok dengan skema tabel 'users' Anda
 interface UserProfile {
   id: string;
-  name: string; 
+  nama: string; // <-- Gunakan 'nama' agar konsisten dengan DB
   email: string;
   role?: string;
+  desa_id?: number;
+  poin_komunitas?: number;
+  created_at?: string;
+  updated_at?: string;
+  phone_number?: string;
+  is_role_confirmed?: boolean;
+  bio?: string;
+  desa?: { nama_desa: string };
+  avatar_url?: string;
 }
 
-// Definisikan interface untuk nilai konteks
 interface UserContextType {
   userProfile: UserProfile | null;
-  // Hapus setUserProfile dari tipe konteks jika tidak diperlukan
   loadingUser: boolean;
+  refreshUserProfile: () => Promise<void>;
 }
 
-// Buat konteks
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// Buat provider
 export function UserProvider({ children }: { children: ReactNode }) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
-  const supabase = createClientComponentClient(); // <--- Ubah baris ini
+  const supabase = createClientComponentClient();
+
+  const fetchUserProfile = useCallback(async () => {
+    setLoadingUser(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: profileData, error } = await supabase
+          .from('users')
+          .select('*, desa:desa_id(nama_desa)')
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching user profile:", error.message);
+          setUserProfile(null);
+        } else {
+          // --- PERUBAHAN UTAMA DI SINI ---
+          // Langsung simpan objek dari Supabase. Tidak perlu mapping manual.
+          setUserProfile(profileData);
+        }
+      } else {
+        setUserProfile(null);
+      }
+    } catch (err) {
+      console.error("Unexpected error fetching user profile:", err);
+      setUserProfile(null);
+    } finally {
+      setLoadingUser(false);
+    }
+  }, [supabase]);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      setLoadingUser(true);
-      try {
-        // Ambil data sesi dari cookies.
-        // `getUser()` akan membaca cookies secara otomatis.
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (user) {
-          // Ambil data profil dari tabel public.users
-          const { data: profileData, error } = await supabase
-            .from('users') 
-            .select('id, nama, email, role') 
-            .eq('id', user.id)
-            .single();
-
-          if (error) {
-            console.error("Error fetching user profile:", error);
-            setUserProfile(null);
-          } else if (profileData) {
-            setUserProfile({
-              id: profileData.id,
-              name: profileData.nama, 
-              email: profileData.email,
-              role: profileData.role,
-            });
-          }
-        } else {
-          setUserProfile(null);
-        }
-      } catch (err) {
-        console.error("Unexpected error fetching user profile:", err);
-        setUserProfile(null);
-      } finally {
-        setLoadingUser(false);
-      }
-    };
-
-    // Panggil fetchUserProfile saat komponen dimuat
     fetchUserProfile();
 
-    // Tambahkan listener untuk event autentikasi (opsional, tapi bagus untuk real-time)
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-          fetchUserProfile();
-        }
-      }
-    );
+    const { data: authListener } = supabase.auth.onAuthStateChange(() => {
+      fetchUserProfile();
+    });
 
-    // Cleanup listener
     return () => {
-      authListener.unsubscribe();
+      authListener.subscription.unsubscribe();
     };
-  }, []);
+  }, [fetchUserProfile, supabase]);
 
   return (
-    <UserContext.Provider value={{ userProfile, loadingUser }}>
+    <UserContext.Provider value={{ userProfile, loadingUser, refreshUserProfile: fetchUserProfile }}>
       {children}
     </UserContext.Provider>
   );
 }
 
-// Hook kustom untuk menggunakan konteks pengguna
 export function useUser() {
   const context = useContext(UserContext);
   if (context === undefined) {

@@ -167,55 +167,7 @@ export default function LeaderboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50">
       <Navbar /> {/* Tambahkan Navbar di sini */}
-      {/* Header */}
-      <header className="bg-white/90 backdrop-blur-lg border-b sticky top-[56px] z-40 shadow-sm"> {/* Sesuaikan top */}
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Kembali
-                </Button>
-              </Link>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center">
-                  <Trophy className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-800">Leaderboard</h1>
-                  <p className="text-sm text-gray-600">Kompetisi dan pencapaian komunitas</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <Select value={timeRange} onValueChange={setTimeRange}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="weekly">Mingguan</SelectItem>
-                  <SelectItem value="monthly">Bulanan</SelectItem>
-                  <SelectItem value="yearly">Tahunan</SelectItem>
-                  <SelectItem value="alltime">Sepanjang Masa</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Semua</SelectItem>
-                  <SelectItem value="food">Food Rescue</SelectItem>
-                  <SelectItem value="donation">Donasi</SelectItem>
-                  <SelectItem value="recycle">Daur Ulang</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      </header>
+     
 
       <div className="container mx-auto px-4 py-8">
         {/* Weekly Challenge Banner */}
