@@ -512,7 +512,6 @@ export default function ManageStockPage() {
                       <Table className="min-w-full bg-white">
                         <TableHeader className="bg-gray-100">
                           <TableRow>
-                            <TableHead className="w-[100px]">ID</TableHead>
                             <TableHead>Nama Barang</TableHead>
                             <TableHead>Kategori</TableHead>
                             <TableHead>Jumlah</TableHead>
@@ -525,7 +524,6 @@ export default function ManageStockPage() {
                         <TableBody>
                           {filteredStockItems.map((item) => (
                             <TableRow key={item.id}>
-                              <TableCell className="font-medium">{item.id}</TableCell>
                               <TableCell>
                                 {editingItem?.id === item.id ? (
                                   <Input

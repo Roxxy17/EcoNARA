@@ -1,82 +1,28 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import Link from "next/link"
+import { useUser } from "@/contexts/UserContext"
+import { RoleSelectionModal } from "@/components/modals/RoleSelectionModal"
+import { Navbar } from "@/components/navigation/nav-dashboard"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
-  Leaf,
-  Wheat,
-  Recycle,
-  Heart,
-  MapPin,
-  TrendingUp,
-  Award,
-  Camera,
-  Sparkles,
-  Users,
-  Target,
-  ShoppingCart,
-  BookOpen,
-  Calendar,
-  Activity,
-  Globe,
+  Leaf, Wheat, Recycle, Heart, MapPin, TrendingUp, Award, Camera, Sparkles,
+  Users, Target, ShoppingCart, BookOpen, Calendar, Activity, Globe, Loader2
 } from "lucide-react"
-import Link from "next/link"
-import { Navbar } from "@/components/navigation/nav-dashboard" // Mengimpor komponen Navbar
 
 const quickActions = [
-  {
-    icon: Camera,
-    title: "Scan Sampah",
-    description: "Klasifikasi sampah dengan AI",
-    href: "/trash-classifier",
-    color: "bg-purple-500",
-    points: "+15 poin",
-  },
-  {
-    icon: Sparkles,
-    title: "Food Rescue",
-    description: "Resep dari bahan sisa",
-    href: "/food-rescue",
-    color: "bg-blue-500",
-    points: "+25 poin",
-  },
-  {
-    icon: Heart,
-    title: "Smart Donation",
-    description: "Donasi atau cari bantuan",
-    href: "/donations",
-    color: "bg-pink-500",
-    points: "+30 poin",
-  },
-  {
-    icon: MapPin,
-    title: "Peta Bantuan",
-    description: "Lokasi drop-off terdekat",
-    href: "/map",
-    color: "bg-red-500",
-    points: "+10 poin",
-  },
-  {
-    icon: ShoppingCart,
-    title: "Pasar Komunitas",
-    description: "Jual/beli hasil panen",
-    href: "/marketplace",
-    color: "bg-green-500",
-    points: "+20 poin",
-  },
-  {
-    icon: BookOpen,
-    title: "Edukasi",
-    description: "Konten pembelajaran",
-    href: "/education",
-    color: "bg-yellow-500",
-    points: "+5 poin",
-  },
+  { icon: Camera, title: "Scan Sampah", description: "Klasifikasi sampah dengan AI", href: "/trash-classifier", color: "bg-purple-500", points: "+15 poin" },
+  { icon: Sparkles, title: "Food Rescue", description: "Resep dari bahan sisa", href: "/food-rescue", color: "bg-blue-500", points: "+25 poin" },
+  { icon: Heart, title: "Smart Donation", description: "Donasi atau cari bantuan", href: "/donations", color: "bg-pink-500", points: "+30 poin" },
+  { icon: MapPin, title: "Peta Bantuan", description: "Lokasi drop-off terdekat", href: "/map", color: "bg-red-500", points: "+10 poin" },
+  { icon: ShoppingCart, title: "Pasar Komunitas", description: "Jual/beli hasil panen", href: "/marketplace", color: "bg-green-500", points: "+20 poin" },
+  { icon: BookOpen, title: "Edukasi", description: "Konten pembelajaran", href: "/education", color: "bg-yellow-500", points: "+5 poin" },
 ]
 
 const habitData = [
@@ -103,14 +49,24 @@ const communityStats = [
 ]
 
 export default function DashboardPage() {
+  const { userProfile, loadingUser } = useUser();
+  const [showRoleModal, setShowRoleModal] = useState(false);
+
+  useEffect(() => {
+    if (!loadingUser) {
+      console.log("User data loaded. Profile:", userProfile);
+      console.log("Value of is_role_confirmed:", userProfile?.is_role_confirmed);
+    }
+    if (!loadingUser && userProfile && userProfile.is_role_confirmed === false) {
+      setShowRoleModal(true);
+    } else {
+      setShowRoleModal(false);
+    }
+  }, [userProfile, loadingUser]);
+
   const [userStats, setUserStats] = useState({
-    totalPoints: 445,
-    rank: 12,
-    foodSaved: 15.5,
-    wasteReduced: 8.2,
-    level: "Eco Warrior",
-    nextLevelPoints: 555,
-    streak: 7,
+    totalPoints: 445, rank: 12, foodSaved: 15.5, wasteReduced: 8.2,
+    level: "Eco Warrior", nextLevelPoints: 555, streak: 7,
   })
 
   const [notifications, setNotifications] = useState([
@@ -119,11 +75,20 @@ export default function DashboardPage() {
     { id: 3, message: "Stok beras RT 04 menipis", type: "warning", time: "3 jam lalu" },
   ])
 
+  if (loadingUser) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
-      <Navbar /> {/* Menggunakan komponen Navbar */}
+      <Navbar />
       
-      {/* Enhanced Header */}
+      <RoleSelectionModal isOpen={showRoleModal} />
+
       <header className="bg-white/90 backdrop-blur-lg border-b sticky top-[56px] z-40 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
@@ -132,11 +97,11 @@ export default function DashboardPage() {
                 <Leaf className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-800">Selamat datang, Budi!</h1>
+                <h1 className="text-xl font-bold text-gray-800">Selamat datang, {userProfile?.nama || 'Pengguna'}!</h1>
                 <p className="text-sm text-gray-600">RT 05, Kelurahan Maju Bersama</p>
               </div>
             </div>
-
+            
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Badge className="bg-gradient-to-r from-green-500 to-blue-500 text-white">
@@ -146,12 +111,9 @@ export default function DashboardPage() {
                 <Badge className="bg-blue-100 text-blue-800">Rank #{userStats.rank}</Badge>
                 <Badge className="bg-orange-100 text-orange-800">🔥 {userStats.streak} hari</Badge>
               </div>
-
-              {/* Tombol Bell dan Settings dipindahkan ke komponen Navbar */}
             </div>
           </div>
-
-          {/* Progress to Next Level */}
+          
           <div className="mt-4 bg-gray-50 rounded-lg p-3">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium text-gray-700">Progress ke Level Berikutnya</span>
@@ -165,7 +127,6 @@ export default function DashboardPage() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Enhanced Stats Overview */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <Card className="text-center bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg">
@@ -213,9 +174,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Quick Actions */}
             <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
@@ -257,7 +216,6 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Enhanced Habit Tracker */}
             <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
@@ -307,7 +265,6 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Community Impact */}
             <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
@@ -337,13 +294,11 @@ export default function DashboardPage() {
             </Card>
           </div>
 
-          {/* Enhanced Sidebar */}
           <div className="space-y-6">
-            {/* Notifications */}
             <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Globe className="w-5 h-5 text-orange-500" /> {/* Menggunakan ikon Globe karena Bell sudah di navbar */}
+                  <Globe className="w-5 h-5 text-orange-500" />
                   <span>Notifikasi</span>
                 </CardTitle>
               </CardHeader>
@@ -372,7 +327,6 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Community Leaderboard */}
             <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
@@ -427,7 +381,6 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Recent Activity */}
             <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
