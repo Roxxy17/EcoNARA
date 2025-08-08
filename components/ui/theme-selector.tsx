@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -73,8 +73,13 @@ const playSound = (frequency: number, duration = 100) => {
 export const ThemeSelector = () => {
   const [showVariantSelector, setShowVariantSelector] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   const { theme = "default", setTheme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const themeBgMap: Record<string, string> = {
     default:
@@ -116,6 +121,9 @@ export const ThemeSelector = () => {
 
   const currentVariant =
     theme as "default" | "aurora" | "geometric" | "nebula" | "night";
+
+  // ⬇️ Tambahkan pengecekan mounted agar tidak terjadi hydration error
+  if (!mounted) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 space-y-2">
