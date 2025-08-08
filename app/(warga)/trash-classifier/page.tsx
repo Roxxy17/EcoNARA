@@ -6,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Camera, Upload, Recycle, Leaf, AlertCircle, CheckCircle, Info, Trash2 } from "lucide-react" // ArrowLeft dihilangkan
-import Link from "next/link" // Tetap dipertahankan jika ada Link lain yang digunakan, jika tidak bisa dihapus
-import { Navbar } from "@/components/navigation/nav-dashboard" // Import Navbar
+import { Camera, Upload, Recycle, Leaf, AlertCircle, CheckCircle, Info, Trash2 } from "lucide-react"
+import Link from "next/link"
+import { Navbar } from "@/components/navigation/nav-dashboard"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 const wasteCategories = {
   organic: {
@@ -56,8 +57,10 @@ const wasteCategories = {
 export default function TrashClassifierPage() {
   const [selectedImage, setSelectedImage] = useState(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [isSaving, setIsSaving] = useState(false) // State baru untuk loading saat menyimpan
   const [result, setResult] = useState(null)
   const fileInputRef = useRef(null)
+  const supabase = createClientComponentClient();
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0]
@@ -91,6 +94,78 @@ export default function TrashClassifierPage() {
     setIsAnalyzing(false)
   }
 
+ const saveResult = async () => {
+    if (!selectedImage || !result) {
+        alert("Tidak ada hasil untuk disimpan.");
+        return;
+    }
+    setIsSaving(true);
+
+    try {
+        // Ambil sesi pengguna dan token
+        const { data: { session } } = await supabase.auth.getSession();
+        const user = session?.user;
+
+        if (!user) {
+            throw new Error("Pengguna tidak terautentikasi.");
+        }
+
+        // --- Tambahan logging untuk debugging RLS ---
+        console.log("User ID dari sesi:", user.id);
+        console.log("Data yang akan di-INSERT:", {
+            user_id: user.id,
+            classified_as: result.category,
+        });
+        // --- Akhir logging ---
+
+        // Ubah format data URL menjadi File agar bisa diupload ke Storage
+        const fetchRes = await fetch(selectedImage);
+        const blob = await fetchRes.blob();
+        const file = new File([blob], `trash-${Date.now()}.png`, { type: "image/png" });
+        
+        // Upload gambar ke Supabase Storage
+        const filePath = `${user.id}/${file.name}`;
+        const { error: uploadError } = await supabase.storage
+            .from("trash-photos")
+            .upload(filePath, file, {
+                cacheControl: "3600",
+                upsert: false,
+            });
+
+        if (uploadError) {
+            throw new Error(`Gagal mengunggah foto: ${uploadError.message}`);
+        }
+
+        // Dapatkan URL gambar yang sudah diunggah
+        const { data: publicUrlData } = supabase.storage
+            .from("trash-photos")
+            .getPublicUrl(filePath);
+        
+        const photo_url = publicUrlData.publicUrl;
+
+        // Simpan data ke tabel trash_records
+        const { error: insertError } = await supabase
+            .from("trash_records")
+            .insert({
+                user_id: user.id,
+                photo_url,
+                classified_as: result.category,
+            });
+        
+        if (insertError) {
+            // Perbarui pesan error agar lebih informatif
+            throw new Error(`Gagal menyimpan data: ${insertError.message}`);
+        }
+
+        alert("Hasil analisis berhasil disimpan!");
+    } catch (e) {
+        console.error("Gagal menyimpan hasil:", e);
+        alert(`Gagal menyimpan hasil: ${e.message}`);
+    } finally {
+        setIsSaving(false);
+    }
+};
+
   const resetAnalysis = () => {
     setSelectedImage(null)
     setResult(null)
@@ -101,12 +176,10 @@ export default function TrashClassifierPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-green-50">
-      <Navbar /> {/* Tambahkan Navbar di sini */}
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b sticky top-[56px] z-40"> {/* Sesuaikan top */}
+      <Navbar />
+      <header className="bg-white/80 backdrop-blur-md border-b sticky top-[56px] z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center space-x-4">
-            {/* Bagian "Kembali" telah dihapus */}
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
                 <Camera className="w-5 h-5 text-white" />
@@ -274,8 +347,20 @@ export default function TrashClassifierPage() {
                     </div>
 
                     <div className="flex space-x-2 pt-4">
-                      <Button className="flex-1 bg-transparent" variant="outline">
-                        Simpan Hasil
+                      <Button
+                        onClick={saveResult}
+                        disabled={isSaving}
+                        className="flex-1 bg-transparent"
+                        variant="outline"
+                      >
+                        {isSaving ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                              Menyimpan...
+                            </>
+                        ) : (
+                            "Simpan Hasil"
+                        )}
                       </Button>
                       <Button className="flex-1 bg-transparent" variant="outline">
                         Bagikan

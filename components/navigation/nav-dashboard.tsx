@@ -19,6 +19,8 @@ import {
   TrendingUp,
   ShoppingCart,
   Menu,
+  Landmark,
+  Shield, // <-- TAMBAHKAN IKON INI
 } from 'lucide-react'
 import { cn } from "@/lib/utils"
 
@@ -55,60 +57,91 @@ export function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const { userProfile, loadingUser, setUserProfile } = useUser();
-  const userDisplayName = userProfile?.name || "Pengguna";
+  const userDisplayName = userProfile?.nama || "Pengguna";
   const userEmail = userProfile?.email || "email@example.com";
   const userInitial = userDisplayName.charAt(0).toUpperCase();
-  const userRole = userProfile?.role; // Ambil peran dari context
+  const userRole = userProfile?.role;
 
-  // Daftar item navigasi awal
-  const navItems = [
-    { label: "Dashboard", href: "/dashboard", icon: Home, type: "link" },
-    {
-      label: "Produk",
-      icon: Package,
-      type: "dropdown",
-      items: [
-        { label: "Kelola Stok", href: "/manage-stock", icon: Package, description: "Atur inventaris dan produk Anda." },
-        { label: "Marketplace", href: "/marketplace", icon: ShoppingCart, description: "Jelajahi dan jual produk ramah lingkungan." },
-      ],
-    },
-    {
-      label: "Aksi Lingkungan",
-      icon: Leaf,
-      type: "dropdown",
-      items: [
-        { label: "Eco Habit Tracker", href: "/habit-tracker", icon: CheckSquare, description: "Lacak kebiasaan ramah lingkungan Anda." },
-        { label: "Trash Classifier", href: "/trash-classifier", icon: Camera, description: "Identifikasi dan pilah sampah Anda." },
-        { label: "Donasi", href: "/donations", icon: Heart, description: "Berikan donasi untuk lingkungan." },
-        { label: "Food Rescue", href: "/food-rescue", icon: Wheat, description: "Selamatkan makanan dari pemborosan." },
-      ],
-    },
-    { label: "Leaderboard", href: "/leaderboard", icon: TrendingUp, type: "link" },
-  ];
+  let navItemsToShow;
 
-  // Filter item navigasi berdasarkan peran pengguna
-  const filteredNavItems = navItems.filter(item => {
-    // Sembunyikan 'Aksi Lingkungan' jika peran adalah 'ketua' atau 'admin'
-    if (item.label === "Aksi Lingkungan" && (userRole === "ketua" || userRole === "admin")) {
-      return false;
+  if (userRole === 'admin') {
+    // Navigasi khusus untuk role 'admin'
+    navItemsToShow = [
+      // --- MENU BARU DITAMBAHKAN DI SINI ---
+      { label: "Home", href: "/dashboard", icon: Home, type: "link" },
+      { label: "Dashboard", href: "/admin/dashboard", icon: Shield, type: "link" },
+      {
+        label: "Admin",
+        icon: Settings,
+        type: "dropdown",
+        items: [
+          { label: "Kelola Donasi", href: "/admin/donasi", icon: Heart, description: "Lihat dan kelola data donasi." },
+          { label: "Tambah Desa", href: "/admin/desa", icon: Landmark, description: "Tambahkan data desa baru ke sistem." }
+        ],
+      },
+    ];
+  } else {
+    // Logika navigasi yang sudah ada untuk role lainnya
+    const navItems = [
+      { label: "Dashboard", href: "/dashboard", icon: Home, type: "link" },
+      {
+        label: "Produk",
+        icon: Package,
+        type: "dropdown",
+        items: [
+          { label: "Kelola Stok", href: "/manage-stock", icon: Package, description: "Atur inventaris dan produk Anda." }
+        ],
+      },
+      {
+        label: "Aksi Lingkungan",
+        icon: Leaf,
+        type: "dropdown",
+        items: [
+          { label: "Eco Habit Tracker", href: "/habit-tracker", icon: CheckSquare, description: "Lacak kebiasaan ramah lingkungan Anda." },
+          { label: "Trash Classifier", href: "/trash-classifier", icon: Camera, description: "Identifikasi dan pilah sampah Anda." },
+          { label: "Donasi", href: "/donations", icon: Heart, description: "Berikan donasi untuk lingkungan." },
+          { label: "Food Rescue", href: "/food-rescue", icon: Wheat, description: "Selamatkan makanan dari pemborosan." },
+        ],
+      },
+      { label: "Leaderboard", href: "/leaderboard", icon: TrendingUp, type: "link" },
+    ];
+
+    let finalNavItems = [...navItems];
+
+    finalNavItems = finalNavItems.filter(item => {
+      if (item.label === "Aksi Lingkungan" && userRole === "ketua") {
+        return false;
+      }
+      return true;
+    });
+
+    if (userRole === "ketua") {
+      const produkItemIndex = finalNavItems.findIndex(item => item.label === "Produk");
+      if (produkItemIndex !== -1) {
+        const verifikasiItem = {
+          label: "Verifikasi RT",
+          href: "/rt/verification",
+          icon: CheckSquare,
+          description: "Verifikasi kontribusi dari warga RT."
+        };
+        finalNavItems[produkItemIndex].items.push(verifikasiItem);
+      }
     }
-    return true;
-  });
 
-  // Modifikasi href untuk 'Kelola Stok' pada item yang sudah difilter
-  const updatedNavItems = filteredNavItems.map(item => {
-    if (item.label === "Produk" && item.type === "dropdown") {
-      const updatedItems = item.items.map(subItem => {
-        if (subItem.label === "Kelola Stok") {
-          const newHref = (userRole === "ketua" || userRole === "admin") ? "/manage-stock/rt" : "/manage-stock";
-          return { ...subItem, href: newHref };
-        }
-        return subItem;
-      });
-      return { ...item, items: updatedItems };
-    }
-    return item;
-  });
+    navItemsToShow = finalNavItems.map(item => {
+      if (item.label === "Produk" && item.type === "dropdown") {
+        const updatedItems = item.items.map(subItem => {
+          if (subItem.label === "Kelola Stok") {
+            const newHref = (userRole === "ketua") ? "/manage-stock/rt" : "/manage-stock";
+            return { ...subItem, href: newHref };
+          }
+          return subItem;
+        });
+        return { ...item, items: updatedItems };
+      }
+      return item;
+    });
+  }
 
   const handleLogout = () => {
     router.push("/logout");
@@ -126,10 +159,9 @@ export function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Navigation */}
         <NavigationMenu className="hidden lg:flex">
           <NavigationMenuList>
-            {updatedNavItems.map((item) => (
+            {navItemsToShow.map((item) => (
               item.type === "link" ? (
                 <NavigationMenuItem key={item.href}>
                   <NavigationMenuLink asChild>
@@ -185,7 +217,6 @@ export function Navbar() {
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* Mobile & Tablet Navigation (Sheet) */}
         <div className="flex items-center space-x-2 lg:hidden">
           <Sheet>
             <SheetTrigger asChild>
@@ -206,7 +237,7 @@ export function Navbar() {
                 </SheetDescription>
               </SheetHeader>
               <div className="flex flex-col space-y-2 mt-6">
-                {updatedNavItems.map((item) => (
+                {navItemsToShow.map((item) => (
                   item.type === "link" ? (
                     <Link href={item.href} key={item.href} passHref>
                       <Button
@@ -283,11 +314,11 @@ export function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center space-x-2 pr-2 pl-2">
-                    <div className="relative h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium">
-                        {userInitial}
-                    </div>
-                    <span className="hidden md:inline-block font-medium text-sm">{userDisplayName}</span>
-                    <ChevronDown className="h-4 w-4 text-gray-500" />
+                  <div className="relative h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium">
+                    {userInitial}
+                  </div>
+                  <span className="hidden md:inline-block font-medium text-sm">{userDisplayName}</span>
+                  <ChevronDown className="h-4 w-4 text-gray-500" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -301,21 +332,21 @@ export function Navbar() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <Link href="/profile" className="flex items-center w-full">
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Profil</span>
-                    </Link>
+                  <Link href="/profile" className="flex items-center w-full">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profil</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link href="/settings" className="flex items-center w-full">
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Pengaturan</span>
-                    </Link>
+                  <Link href="/settings" className="flex items-center w-full">
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Pengaturan</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Keluar</span>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Keluar</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
