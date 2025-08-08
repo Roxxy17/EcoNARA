@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowLeft,
+  ArrowRight,
   Sparkles,
   Camera,
   MapPin,
@@ -22,13 +22,13 @@ import {
   BarChart3,
   Bell,
   Smartphone,
-  ArrowRight,
 } from "lucide-react";
-import Link from "next/link";
 import { useDevicePerformance } from "@/hooks/use-device-performance";
 import { AdaptiveBackground } from "@/components/background/adaptive-background";
 import { PerformanceIndicator } from "@/components/ui/performance-indicator";
 import { ThemeSelector } from "@/components/ui/theme-selector";
+import { Navbar } from "@/components/navigation/navbar";
+import { useTheme } from "next-themes";
 
 const featureCategories = [
   {
@@ -212,15 +212,8 @@ const technicalFeatures = [
 
 export default function FeaturesPage() {
   const { performanceLevel, capabilities, isLoading } = useDevicePerformance();
-  const [currentVariant, setCurrentVariant] = useState<
-    "default" | "aurora" | "night" | "geometric" | "nebula"
-  >("default");
+  const { theme = "default" } = useTheme();
   const [soundEnabled, setSoundEnabled] = useState(false);
-  const [isPageLoaded, setIsPageLoaded] = useState(false);
-
-  useEffect(() => {
-    setIsPageLoaded(true);
-  }, []);
 
   const animationSettings = {
     duration:
@@ -232,9 +225,9 @@ export default function FeaturesPage() {
     ease: performanceLevel === "high" ? [0.25, 0.1, 0.25, 1] : "easeOut",
   };
 
-  // Get theme-based colors
+  // Theme color mapping
   const getThemeColors = () => {
-    switch (currentVariant) {
+    switch (theme) {
       case "aurora":
         return {
           gradient: "from-green-400 via-blue-400 to-emerald-400",
@@ -327,7 +320,7 @@ export default function FeaturesPage() {
       >
         <AdaptiveBackground
           performanceLevel={performanceLevel}
-          variant={currentVariant}
+          variant={theme as "default" | "aurora" | "geometric" | "nebula" | "night"}
         />
 
         <PerformanceIndicator
@@ -336,12 +329,8 @@ export default function FeaturesPage() {
           isLoading={isLoading}
         />
 
-        <ThemeSelector
-          currentVariant={currentVariant}
-          onVariantChange={setCurrentVariant}
-          soundEnabled={soundEnabled}
-          onSoundToggle={() => setSoundEnabled(!soundEnabled)}
-        />
+        {/* ThemeSelector hanya di halaman ini */}
+        <ThemeSelector />
 
         <motion.div
           className="relative z-10"
@@ -350,34 +339,11 @@ export default function FeaturesPage() {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           {/* Navigation */}
-          <nav className="bg-slate-900/50 backdrop-blur-xl border-b border-slate-700/50 sticky top-0 z-40">
-            <div className="max-w-7xl mx-auto px-6 py-4">
-              <div className="flex items-center justify-between">
-                <Link href="/">
-                  <Button
-                    variant="ghost"
-                    className="text-white/80 hover:text-white hover:bg-white/10 rounded-xl"
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Kembali ke Beranda
-                  </Button>
-                </Link>
-                <div className="flex items-center space-x-4">
-                  <div
-                    className={`w-10 h-10 bg-gradient-to-br ${themeColors.gradient
-                      .replace("from-", "from-")
-                      .replace(
-                        " via-",
-                        " to-"
-                      )} rounded-xl flex items-center justify-center shadow-2xl`}
-                  >
-                    <Sparkles className="w-6 h-6 text-white" />
-                  </div>
-                  <span className="text-xl font-black text-white">ECONARA</span>
-                </div>
-              </div>
-            </div>
-          </nav>
+          <Navbar
+            performanceLevel="high"
+            animationSettings={{ duration: 0.5, ease: "easeInOut" }}
+            theme={theme as "default" | "aurora" | "geometric" | "nebula" | "night"}
+          />
 
           {/* Hero Section */}
           <section className="py-20 relative z-10">

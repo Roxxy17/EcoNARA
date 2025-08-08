@@ -7,23 +7,23 @@ import { Separator } from "@/components/ui/separator"
 import { Github, Twitter, Linkedin, Mail } from 'lucide-react'
 
 const footerLinks = {
-  product: [
-    { label: "Features", href: "#features" },
-    { label: "Pricing", href: "#pricing" },
-    { label: "Documentation", href: "#docs" },
+  produk: [
+    { label: "Fitur", href: "#features" },
+    { label: "Harga", href: "#pricing" },
+    { label: "Dokumentasi", href: "#docs" },
     { label: "API", href: "#api" },
   ],
-  company: [
-    { label: "About", href: "#about" },
+  perusahaan: [
+    { label: "Tentang", href: "#about" },
     { label: "Blog", href: "#blog" },
-    { label: "Careers", href: "#careers" },
-    { label: "Contact", href: "#contact" },
+    { label: "Karir", href: "#careers" },
+    { label: "Kontak", href: "#contact" },
   ],
-  support: [
-    { label: "Help Center", href: "/help" },
-    { label: "Community", href: "/community" },
+  bantuan: [
+    { label: "Pusat Bantuan", href: "/help" },
+    { label: "Komunitas", href: "/community" },
     { label: "Status", href: "#status" },
-    { label: "Updates", href: "#updates" },
+    { label: "Pembaruan", href: "#updates" },
   ],
 }
 
@@ -54,7 +54,7 @@ export const Footer = () => {
               <span className="text-white font-semibold text-lg">EconaraPlatform</span>
             </motion.div>
             <p className="text-slate-400 text-sm mb-4">
-              The next generation platform for adaptive digital experiences.
+              Platform generasi berikutnya untuk pengalaman digital adaptif.
             </p>
             <div className="flex space-x-2">
               {socialLinks.map((social) => (
@@ -97,17 +97,17 @@ export const Footer = () => {
 
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-slate-400 text-sm mb-4 md:mb-0">
-            © 2024 EconaraPlatform. All rights reserved.
+            © 2024 EconaraPlatform. Hak cipta dilindungi undang-undang.
           </p>
           <div className="flex space-x-6">
             <Link href="#privacy" className="text-slate-400 hover:text-white text-sm transition-colors duration-200">
-              Privacy Policy
+              Kebijakan Privasi
             </Link>
             <Link href="#terms" className="text-slate-400 hover:text-white text-sm transition-colors duration-200">
-              Terms of Service
+              Syarat Layanan
             </Link>
             <Link href="#cookies" className="text-slate-400 hover:text-white text-sm transition-colors duration-200">
-              Cookie Policy
+              Kebijakan Cookie
             </Link>
           </div>
         </div>

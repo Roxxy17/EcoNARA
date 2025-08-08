@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect } from "react"
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion, useMotionValue, useSpring } from "framer-motion"
 import { FloatingParticle } from "./floating-particle"
 import type { PerformanceLevel } from "@/hooks/use-device-performance"
@@ -10,12 +11,20 @@ interface AdaptiveBackgroundProps {
   variant?: "default" | "aurora" | "night" | "geometric" | "nebula"
 }
 
-export const AdaptiveBackground = ({ performanceLevel, variant = "default" }: AdaptiveBackgroundProps) => {
+export function AdaptiveBackground({ performanceLevel, variant = "default" }: AdaptiveBackgroundProps) {
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // 🟢 Semua hooks tetap dipanggil setiap render!
   const shouldReduceMotion = useReducedMotion()
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   const springX = useSpring(mouseX, { stiffness: 50, damping: 20 })
   const springY = useSpring(mouseY, { stiffness: 50, damping: 20 })
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (performanceLevel === "high" && !shouldReduceMotion) {
@@ -75,6 +84,9 @@ export const AdaptiveBackground = ({ performanceLevel, variant = "default" }: Ad
   }
 
   const colors = getThemeColors()
+
+  // 🟢 Pengecekan mounted di dalam return JSX
+  if (!mounted) return <div className="fixed inset-0 z-0" />;
 
   if (shouldReduceMotion || performanceLevel === "low") {
     return (
