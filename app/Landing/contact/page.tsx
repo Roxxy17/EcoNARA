@@ -1,20 +1,39 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Mail, Phone, MapPin, Clock, Send, MessageCircle, Headphones, Leaf, CheckCircle } from 'lucide-react'
-import Link from "next/link"
-import { useDevicePerformance } from "@/hooks/use-device-performance"
-import { AdaptiveBackground } from "@/components/background/adaptive-background"
-import { PerformanceIndicator } from "@/components/ui/performance-indicator"
-import { ThemeSelector } from "@/components/ui/theme-selector"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  ArrowLeft,
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  Send,
+  MessageCircle,
+  Headphones,
+  Leaf,
+  CheckCircle,
+} from "lucide-react";
+import Link from "next/link";
+import { useDevicePerformance } from "@/hooks/use-device-performance";
+import { AdaptiveBackground } from "@/components/background/adaptive-background";
+import { PerformanceIndicator } from "@/components/ui/performance-indicator";
+import { ThemeSelector } from "@/components/ui/theme-selector";
+import { Navbar } from "@/components/navigation/navbar";
+import { useTheme } from "next-themes";
 
 const contactMethods = [
   {
@@ -45,7 +64,7 @@ const contactMethods = [
     contact: "Available 24/7",
     action: "Mulai Chat",
   },
-]
+];
 
 const offices = [
   {
@@ -72,7 +91,7 @@ const offices = [
     hours: "Senin - Jumat: 09:00 - 17:00",
     type: "Kantor Regional",
   },
-]
+];
 
 const faqs = [
   {
@@ -95,13 +114,13 @@ const faqs = [
     answer:
       "Keamanan data adalah prioritas utama kami. Semua data dienkripsi dan disimpan sesuai standar keamanan internasional.",
   },
-]
+];
 
 export default function ContactPage() {
-  const { performanceLevel, capabilities, isLoading } = useDevicePerformance()
-  const [currentVariant, setCurrentVariant] = useState<"default" | "aurora" | "night" | "geometric" | "nebula">("default")
-  const [soundEnabled, setSoundEnabled] = useState(false)
-  const [isPageLoaded, setIsPageLoaded] = useState(false)
+  const { performanceLevel, capabilities, isLoading } = useDevicePerformance();
+  const { theme = "default" } = useTheme();
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -109,111 +128,121 @@ export default function ContactPage() {
     subject: "",
     category: "",
     message: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    setIsPageLoaded(true)
-  }, [])
+    setIsPageLoaded(true);
+  }, []);
 
   const animationSettings = {
-    duration: performanceLevel === "high" ? 0.6 : performanceLevel === "medium" ? 0.8 : 1.0,
+    duration:
+      performanceLevel === "high"
+        ? 0.6
+        : performanceLevel === "medium"
+        ? 0.8
+        : 1.0,
     ease: performanceLevel === "high" ? [0.25, 0.1, 0.25, 1] : "easeOut",
-  }
+  };
 
   // Get theme-based colors
   const getThemeColors = () => {
-    switch (currentVariant) {
+    switch (theme) {
       case "aurora":
         return {
           gradient: "from-green-400 via-blue-400 to-emerald-400",
           badgeBg: "bg-green-500/20",
           badgeText: "text-green-300",
           badgeBorder: "border-green-500/30",
-          buttonGradient: "from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600",
+          buttonGradient:
+            "from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600",
           cardGradients: [
             "from-green-400 to-blue-600",
-            "from-blue-400 to-emerald-600", 
+            "from-blue-400 to-emerald-600",
             "from-emerald-400 to-teal-600",
-            "from-teal-400 to-cyan-600"
-          ]
-        }
+            "from-teal-400 to-cyan-600",
+          ],
+        };
       case "night":
         return {
           gradient: "from-blue-600 via-indigo-400 to-cyan-400",
           badgeBg: "bg-blue-500/20",
           badgeText: "text-blue-300",
           badgeBorder: "border-blue-500/30",
-          buttonGradient: "from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600",
+          buttonGradient:
+            "from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600",
           cardGradients: [
             "from-blue-600 to-indigo-600",
             "from-indigo-400 to-cyan-600",
             "from-cyan-400 to-blue-600",
-            "from-blue-500 to-indigo-500"
-          ]
-        }
+            "from-blue-500 to-indigo-500",
+          ],
+        };
       case "geometric":
         return {
           gradient: "from-red-400 via-orange-400 to-yellow-400",
           badgeBg: "bg-red-500/20",
           badgeText: "text-red-300",
           badgeBorder: "border-red-500/30",
-          buttonGradient: "from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600",
+          buttonGradient:
+            "from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600",
           cardGradients: [
             "from-red-400 to-orange-600",
             "from-orange-400 to-yellow-600",
             "from-yellow-400 to-red-600",
-            "from-pink-400 to-red-600"
-          ]
-        }
+            "from-pink-400 to-red-600",
+          ],
+        };
       case "nebula":
         return {
           gradient: "from-purple-400 via-pink-400 to-violet-400",
           badgeBg: "bg-purple-500/20",
           badgeText: "text-purple-300",
           badgeBorder: "border-purple-500/30",
-          buttonGradient: "from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600",
+          buttonGradient:
+            "from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600",
           cardGradients: [
             "from-purple-400 to-pink-600",
             "from-pink-400 to-violet-600",
             "from-violet-400 to-purple-600",
-            "from-indigo-400 to-purple-600"
-          ]
-        }
+            "from-indigo-400 to-purple-600",
+          ],
+        };
       default:
         return {
           gradient: "from-blue-400 via-cyan-400 to-teal-400",
           badgeBg: "bg-blue-500/20",
           badgeText: "text-blue-300",
           badgeBorder: "border-blue-500/30",
-          buttonGradient: "from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600",
+          buttonGradient:
+            "from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600",
           cardGradients: [
             "from-blue-400 to-cyan-600",
             "from-cyan-400 to-teal-600",
             "from-teal-400 to-blue-600",
-            "from-indigo-400 to-blue-600"
-          ]
-        }
+            "from-indigo-400 to-blue-600",
+          ],
+        };
     }
-  }
+  };
 
-  const themeColors = getThemeColors()
+  const themeColors = getThemeColors();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
     // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-  }
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+  };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -225,20 +254,19 @@ export default function ContactPage() {
         transition={{ duration: 0.5 }}
         className="min-h-screen relative overflow-hidden"
       >
-        <AdaptiveBackground performanceLevel={performanceLevel} variant={currentVariant} />
-        
+        <AdaptiveBackground
+          performanceLevel={performanceLevel}
+          variant={theme as "default" | "aurora" | "geometric" | "nebula" | "night"}
+        />
+
         <PerformanceIndicator
           performanceLevel={performanceLevel}
           capabilities={capabilities}
           isLoading={isLoading}
         />
-        
-        <ThemeSelector
-          currentVariant={currentVariant}
-          onVariantChange={setCurrentVariant}
-          soundEnabled={soundEnabled}
-          onSoundToggle={() => setSoundEnabled(!soundEnabled)}
-        />
+
+        {/* ThemeSelector hanya di halaman ini */}
+        <ThemeSelector />
 
         <motion.div
           className="relative z-10"
@@ -246,46 +274,38 @@ export default function ContactPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          {/* Navigation */}
-          <nav className="bg-slate-900/50 backdrop-blur-xl border-b border-slate-700/50 sticky top-0 z-40">
-            <div className="max-w-7xl mx-auto px-6 py-4">
-              <div className="flex items-center justify-between">
-                <Link href="/">
-                  <Button variant="ghost" className="text-white/80 hover:text-white hover:bg-white/10 rounded-xl">
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Kembali ke Beranda
-                  </Button>
-                </Link>
-                <div className="flex items-center space-x-4">
-                  <div className={`w-10 h-10 bg-gradient-to-br ${themeColors.gradient.replace('from-', 'from-').replace(' via-', ' to-')} rounded-xl flex items-center justify-center shadow-2xl`}>
-                    <Leaf className="w-6 h-6 text-white" />
-                  </div>
-                  <span className="text-xl font-black text-white">ECONARA</span>
-                </div>
-              </div>
-            </div>
-          </nav>
+          <Navbar
+            performanceLevel={performanceLevel}
+            animationSettings={animationSettings}
+            theme={theme as "default" | "aurora" | "geometric" | "nebula" | "night"}
+          />
 
           {/* Hero Section */}
           <section className="py-20 relative z-10">
             <div className="max-w-7xl mx-auto px-6 text-center">
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }} 
-                animate={{ opacity: 1, y: 0 }} 
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={animationSettings}
               >
-                <Badge className={`${themeColors.badgeBg} ${themeColors.badgeText} px-4 py-2 rounded-full mb-6 ${themeColors.badgeBorder} backdrop-blur-sm`}>
+                <Badge
+                  className={`${themeColors.badgeBg} ${themeColors.badgeText} px-4 py-2 rounded-full mb-6 ${themeColors.badgeBorder} backdrop-blur-sm`}
+                >
                   📞 Hubungi Kami
                 </Badge>
                 <h1 className="text-5xl lg:text-7xl font-black text-white mb-8 leading-tight">
                   Mari
-                  <span className={`block bg-gradient-to-r ${themeColors.gradient} bg-clip-text text-transparent`}>
+                  <span
+                    className={`block bg-gradient-to-r ${themeColors.gradient} bg-clip-text text-transparent`}
+                  >
                     Terhubung
                   </span>
                 </h1>
                 <p className="text-xl text-slate-300 max-w-4xl mx-auto leading-relaxed">
-                  Kami siap membantu Anda memulai perjalanan menuju komunitas yang lebih berkelanjutan. Tim ahli kami
-                  tersedia untuk menjawab pertanyaan dan memberikan dukungan yang Anda butuhkan.
+                  Kami siap membantu Anda memulai perjalanan menuju komunitas
+                  yang lebih berkelanjutan. Tim ahli kami tersedia untuk
+                  menjawab pertanyaan dan memberikan dukungan yang Anda
+                  butuhkan.
                 </p>
               </motion.div>
             </div>
@@ -300,12 +320,16 @@ export default function ContactPage() {
                 transition={animationSettings}
                 className="text-center mb-16"
               >
-                <Badge className={`${themeColors.badgeBg} ${themeColors.badgeText} px-4 py-2 rounded-full mb-6 ${themeColors.badgeBorder} backdrop-blur-sm`}>
+                <Badge
+                  className={`${themeColors.badgeBg} ${themeColors.badgeText} px-4 py-2 rounded-full mb-6 ${themeColors.badgeBorder} backdrop-blur-sm`}
+                >
                   💬 Cara Menghubungi
                 </Badge>
                 <h2 className="text-4xl lg:text-5xl font-black text-white mb-6">
                   Pilih Cara
-                  <span className={`block bg-gradient-to-r ${themeColors.gradient} bg-clip-text text-transparent`}>
+                  <span
+                    className={`block bg-gradient-to-r ${themeColors.gradient} bg-clip-text text-transparent`}
+                  >
                     Terbaik untuk Anda
                   </span>
                 </h2>
@@ -317,7 +341,10 @@ export default function ContactPage() {
                     key={index}
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: animationSettings.duration, delay: index * 0.1 }}
+                    transition={{
+                      duration: animationSettings.duration,
+                      delay: index * 0.1,
+                    }}
                     whileHover={performanceLevel !== "low" ? { y: -5 } : {}}
                   >
                     <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 hover:border-slate-600/50 transition-all duration-300 h-full">
@@ -327,9 +354,17 @@ export default function ContactPage() {
                         >
                           <method.icon className="w-8 h-8 text-white" />
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-4">{method.title}</h3>
-                        <p className="text-slate-300 text-sm leading-relaxed mb-4">{method.description}</p>
-                        <div className={`${themeColors.badgeText} font-semibold mb-6`}>{method.contact}</div>
+                        <h3 className="text-xl font-bold text-white mb-4">
+                          {method.title}
+                        </h3>
+                        <p className="text-slate-300 text-sm leading-relaxed mb-4">
+                          {method.description}
+                        </p>
+                        <div
+                          className={`${themeColors.badgeText} font-semibold mb-6`}
+                        >
+                          {method.contact}
+                        </div>
                         <Button
                           className={`w-full bg-gradient-to-r ${themeColors.cardGradients[index]} hover:shadow-lg transition-all duration-300 text-white rounded-xl border-0`}
                         >
@@ -356,11 +391,14 @@ export default function ContactPage() {
                   <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
                     <CardHeader>
                       <CardTitle className="text-2xl font-black text-white flex items-center space-x-3">
-                        <Send className={`w-6 h-6 ${themeColors.badgeText}`} />
+                        <Send
+                          className={`w-6 h-6 ${themeColors.badgeText}`}
+                        />
                         <span>Kirim Pesan</span>
                       </CardTitle>
                       <p className="text-slate-300">
-                        Isi form di bawah ini dan tim kami akan menghubungi Anda dalam 24 jam.
+                        Isi form di bawah ini dan tim kami akan menghubungi
+                        Anda dalam 24 jam.
                       </p>
                     </CardHeader>
                     <CardContent>
@@ -368,22 +406,30 @@ export default function ContactPage() {
                         <form onSubmit={handleSubmit} className="space-y-6">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                              <label className="text-sm font-medium text-slate-300 mb-2 block">Nama Lengkap</label>
+                              <label className="text-sm font-medium text-slate-300 mb-2 block">
+                                Nama Lengkap
+                              </label>
                               <Input
                                 placeholder="Masukkan nama lengkap"
                                 value={formData.name}
-                                onChange={(e) => handleInputChange("name", e.target.value)}
+                                onChange={(e) =>
+                                  handleInputChange("name", e.target.value)
+                                }
                                 required
                                 className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 backdrop-blur-sm"
                               />
                             </div>
                             <div>
-                              <label className="text-sm font-medium text-slate-300 mb-2 block">Email</label>
+                              <label className="text-sm font-medium text-slate-300 mb-2 block">
+                                Email
+                              </label>
                               <Input
                                 type="email"
                                 placeholder="nama@email.com"
                                 value={formData.email}
-                                onChange={(e) => handleInputChange("email", e.target.value)}
+                                onChange={(e) =>
+                                  handleInputChange("email", e.target.value)
+                                }
                                 required
                                 className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 backdrop-blur-sm"
                               />
@@ -392,52 +438,78 @@ export default function ContactPage() {
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                              <label className="text-sm font-medium text-slate-300 mb-2 block">Nomor Telepon</label>
+                              <label className="text-sm font-medium text-slate-300 mb-2 block">
+                                Nomor Telepon
+                              </label>
                               <Input
                                 placeholder="+62 812 3456 7890"
                                 value={formData.phone}
-                                onChange={(e) => handleInputChange("phone", e.target.value)}
+                                onChange={(e) =>
+                                  handleInputChange("phone", e.target.value)
+                                }
                                 className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 backdrop-blur-sm"
                               />
                             </div>
                             <div>
-                              <label className="text-sm font-medium text-slate-300 mb-2 block">Kategori</label>
+                              <label className="text-sm font-medium text-slate-300 mb-2 block">
+                                Kategori
+                              </label>
                               <Select
                                 value={formData.category}
-                                onValueChange={(value) => handleInputChange("category", value)}
+                                onValueChange={(value) =>
+                                  handleInputChange("category", value)
+                                }
                               >
                                 <SelectTrigger className="bg-slate-800/50 border-slate-600 text-white backdrop-blur-sm">
                                   <SelectValue placeholder="Pilih kategori" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-slate-900 border-slate-600 text-white">
-                                  <SelectItem value="general">Pertanyaan Umum</SelectItem>
-                                  <SelectItem value="technical">Dukungan Teknis</SelectItem>
-                                  <SelectItem value="partnership">Kemitraan</SelectItem>
-                                  <SelectItem value="media">Media & Press</SelectItem>
-                                  <SelectItem value="feedback">Feedback</SelectItem>
+                                  <SelectItem value="general">
+                                    Pertanyaan Umum
+                                  </SelectItem>
+                                  <SelectItem value="technical">
+                                    Dukungan Teknis
+                                  </SelectItem>
+                                  <SelectItem value="partnership">
+                                    Kemitraan
+                                  </SelectItem>
+                                  <SelectItem value="media">
+                                    Media & Press
+                                  </SelectItem>
+                                  <SelectItem value="feedback">
+                                    Feedback
+                                  </SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium text-slate-300 mb-2 block">Subjek</label>
+                            <label className="text-sm font-medium text-slate-300 mb-2 block">
+                              Subjek
+                            </label>
                             <Input
                               placeholder="Subjek pesan Anda"
                               value={formData.subject}
-                              onChange={(e) => handleInputChange("subject", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("subject", e.target.value)
+                              }
                               required
                               className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 backdrop-blur-sm"
                             />
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium text-slate-300 mb-2 block">Pesan</label>
+                            <label className="text-sm font-medium text-slate-300 mb-2 block">
+                              Pesan
+                            </label>
                             <Textarea
                               placeholder="Tulis pesan Anda di sini..."
                               className="h-32 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 backdrop-blur-sm"
                               value={formData.message}
-                              onChange={(e) => handleInputChange("message", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("message", e.target.value)
+                              }
                               required
                             />
                           </div>
@@ -465,9 +537,12 @@ export default function ContactPage() {
                           <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
                             <CheckCircle className="w-8 h-8 text-green-400" />
                           </div>
-                          <h3 className="text-xl font-bold text-white mb-4">Pesan Terkirim!</h3>
+                          <h3 className="text-xl font-bold text-white mb-4">
+                            Pesan Terkirim!
+                          </h3>
                           <p className="text-slate-300 mb-6">
-                            Terima kasih telah menghubungi kami. Tim ECONARA akan merespons dalam 24 jam.
+                            Terima kasih telah menghubungi kami. Tim ECONARA
+                            akan merespons dalam 24 jam.
                           </p>
                           <Button
                             onClick={() => setIsSubmitted(false)}
@@ -490,9 +565,12 @@ export default function ContactPage() {
                   className="space-y-8"
                 >
                   <div>
-                    <h2 className="text-3xl font-black text-white mb-6">Kantor Kami</h2>
+                    <h2 className="text-3xl font-black text-white mb-6">
+                      Kantor Kami
+                    </h2>
                     <p className="text-slate-300 leading-relaxed">
-                      Kunjungi kantor kami di berbagai kota untuk bertemu langsung dengan tim ECONARA.
+                      Kunjungi kantor kami di berbagai kota untuk bertemu
+                      langsung dengan tim ECONARA.
                     </p>
                   </div>
 
@@ -502,18 +580,27 @@ export default function ContactPage() {
                         key={index}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: animationSettings.duration, delay: index * 0.1 }}
+                        transition={{
+                          duration: animationSettings.duration,
+                          delay: index * 0.1,
+                        }}
                       >
                         <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
                           <CardContent className="p-6">
                             <div className="flex items-start justify-between mb-4">
                               <div>
-                                <h3 className="text-xl font-bold text-white">{office.city}</h3>
-                                <Badge className={`${themeColors.badgeBg} ${themeColors.badgeText} mt-1 ${themeColors.badgeBorder}`}>
+                                <h3 className="text-xl font-bold text-white">
+                                  {office.city}
+                                </h3>
+                                <Badge
+                                  className={`${themeColors.badgeBg} ${themeColors.badgeText} mt-1 ${themeColors.badgeBorder}`}
+                                >
                                   {office.type}
                                 </Badge>
                               </div>
-                              <MapPin className={`w-5 h-5 ${themeColors.badgeText}`} />
+                              <MapPin
+                                className={`w-5 h-5 ${themeColors.badgeText}`}
+                              />
                             </div>
 
                             <div className="space-y-3 text-sm text-slate-300">
@@ -553,12 +640,16 @@ export default function ContactPage() {
                 transition={animationSettings}
                 className="text-center mb-16"
               >
-                <Badge className={`${themeColors.badgeBg} ${themeColors.badgeText} px-4 py-2 rounded-full mb-6 ${themeColors.badgeBorder} backdrop-blur-sm`}>
+                <Badge
+                  className={`${themeColors.badgeBg} ${themeColors.badgeText} px-4 py-2 rounded-full mb-6 ${themeColors.badgeBorder} backdrop-blur-sm`}
+                >
                   ❓ FAQ
                 </Badge>
                 <h2 className="text-4xl lg:text-5xl font-black text-white mb-6">
                   Pertanyaan
-                  <span className={`block bg-gradient-to-r ${themeColors.gradient} bg-clip-text text-transparent`}>
+                  <span
+                    className={`block bg-gradient-to-r ${themeColors.gradient} bg-clip-text text-transparent`}
+                  >
                     yang Sering Diajukan
                   </span>
                 </h2>
@@ -570,12 +661,19 @@ export default function ContactPage() {
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: animationSettings.duration, delay: index * 0.1 }}
+                    transition={{
+                      duration: animationSettings.duration,
+                      delay: index * 0.1,
+                    }}
                   >
                     <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
                       <CardContent className="p-8">
-                        <h3 className="text-lg font-bold text-white mb-4">{faq.question}</h3>
-                        <p className="text-slate-300 leading-relaxed">{faq.answer}</p>
+                        <h3 className="text-lg font-bold text-white mb-4">
+                          {faq.question}
+                        </h3>
+                        <p className="text-slate-300 leading-relaxed">
+                          {faq.answer}
+                        </p>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -583,8 +681,12 @@ export default function ContactPage() {
               </div>
 
               <div className="text-center mt-12">
-                <p className="text-slate-300 mb-6">Tidak menemukan jawaban yang Anda cari?</p>
-                <Button className={`bg-gradient-to-r ${themeColors.buttonGradient} text-white px-8 py-3 rounded-xl font-semibold border-0 shadow-2xl`}>
+                <p className="text-slate-300 mb-6">
+                  Tidak menemukan jawaban yang Anda cari?
+                </p>
+                <Button
+                  className={`bg-gradient-to-r ${themeColors.buttonGradient} text-white px-8 py-3 rounded-xl font-semibold border-0 shadow-2xl`}
+                >
                   Hubungi Tim Support
                 </Button>
               </div>
@@ -593,5 +695,5 @@ export default function ContactPage() {
         </motion.div>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }
