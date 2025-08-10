@@ -46,7 +46,7 @@ const marketplaceItems = [
     seller: "Bu Sari",
     location: "RT 03, 0.5 km",
     category: "vegetables",
-    image: "https://placehold.co/300x200/14b8a6/FFFFFF?text=Sayuran+Organik", // Placeholder URL
+    image: "https://grunteman.com/wp-content/uploads/2020/04/jual-sayur-organik-online-2.jpg", // Placeholder URL
     rating: 4.8,
     reviews: 12,
     timePosted: "2 jam lalu",
@@ -62,7 +62,7 @@ const marketplaceItems = [
     seller: "Pak Budi",
     location: "RT 05, 0.2 km",
     category: "books",
-    image: "https://placehold.co/300x200/3b82f6/FFFFFF?text=Buku+Pelajaran", // Placeholder URL
+    image: "https://www.shutterstock.com/image-photo/yogyakarta-indonesia-agust-28-2019-600nw-1490490578.jpg", // Placeholder URL
     rating: 4.9,
     reviews: 8,
     timePosted: "5 jam lalu",
@@ -78,7 +78,7 @@ const marketplaceItems = [
     seller: "Ibu Rina",
     location: "RT 02, 0.8 km",
     category: "handicrafts",
-    image: "https://placehold.co/300x200/06b6d4/FFFFFF?text=Tas+Daur+Ulang", // Placeholder URL
+    image: "https://yosakurga.com/assets/images/produk/tas_daur_ulang_17323_20210701171141.jpg", // Placeholder URL
     rating: 4.7,
     reviews: 15,
     timePosted: "1 hari lalu",
@@ -94,7 +94,7 @@ const marketplaceItems = [
     seller: "Pak Joko",
     location: "RT 06, 1.0 km",
     category: "fruits",
-    image: "https://placehold.co/300x200/f59e0b/FFFFFF?text=Buah+Mangga", // Placeholder URL
+    image: "https://sasi.sch.id/wp-content/uploads/2024/07/Pohon-Mangga-1170x568.jpg", // Placeholder URL
     rating: 4.9,
     reviews: 20,
     timePosted: "4 jam lalu",
