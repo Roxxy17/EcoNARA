@@ -28,21 +28,21 @@ const themeColorMap: Record<string, {
     logo: "from-blue-500 to-cyan-500",
     text: "from-blue-400 to-cyan-400",
     button: {
-      background: 'linear-gradient(90deg, #3b82f6, #06b6d4)',
+      backgroundImage: 'linear-gradient(90deg, #3b82f6, #06b6d4)',
       color: 'white'
     },
     buttonHover: {
-      background: 'linear-gradient(90deg, #2563eb, #0891b2)',
+      backgroundImage: 'linear-gradient(90deg, #2563eb, #0891b2)',
       color: 'white'
     },
     register: {
-      background: 'linear-gradient(90deg, #06b6d4, #3b82f6)',
+      backgroundImage: 'linear-gradient(90deg, #06b6d4, #3b82f6)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
     },
     registerHover: {
-      background: 'linear-gradient(90deg, #0891b2, #2563eb)',
+      backgroundImage: 'linear-gradient(90deg, #0891b2, #2563eb)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
@@ -52,21 +52,21 @@ const themeColorMap: Record<string, {
     logo: "from-green-500 to-blue-500",
     text: "from-green-400 to-blue-400",
     button: {
-      background: 'linear-gradient(90deg, #22c55e, #3b82f6)',
+      backgroundImage: 'linear-gradient(90deg, #22c55e, #3b82f6)',
       color: 'white'
     },
     buttonHover: {
-      background: 'linear-gradient(90deg, #16a34a, #2563eb)',
+      backgroundImage: 'linear-gradient(90deg, #16a34a, #2563eb)',
       color: 'white'
     },
     register: {
-      background: 'linear-gradient(90deg, #3b82f6, #22c55e)',
+      backgroundImage: 'linear-gradient(90deg, #3b82f6, #22c55e)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
     },
     registerHover: {
-      background: 'linear-gradient(90deg, #2563eb, #16a34a)',
+      backgroundImage: 'linear-gradient(90deg, #2563eb, #16a34a)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
@@ -76,21 +76,21 @@ const themeColorMap: Record<string, {
     logo: "from-red-500 to-orange-500",
     text: "from-red-400 to-orange-400",
     button: {
-      background: 'linear-gradient(90deg, #ef4444, #f97316)',
+      backgroundImage: 'linear-gradient(90deg, #ef4444, #f97316)',
       color: 'white'
     },
     buttonHover: {
-      background: 'linear-gradient(90deg, #dc2626, #ea580c)',
+      backgroundImage: 'linear-gradient(90deg, #dc2626, #ea580c)',
       color: 'white'
     },
     register: {
-      background: 'linear-gradient(90deg, #f97316, #ef4444)',
+      backgroundImage: 'linear-gradient(90deg, #f97316, #ef4444)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
     },
     registerHover: {
-      background: 'linear-gradient(90deg, #ea580c, #dc2626)',
+      backgroundImage: 'linear-gradient(90deg, #ea580c, #dc2626)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
@@ -100,21 +100,21 @@ const themeColorMap: Record<string, {
     logo: "from-purple-500 to-pink-500",
     text: "from-purple-400 to-pink-400",
     button: {
-      background: 'linear-gradient(90deg, #a855f7, #ec4899)',
+      backgroundImage: 'linear-gradient(90deg, #a855f7, #ec4899)',
       color: 'white'
     },
     buttonHover: {
-      background: 'linear-gradient(90deg, #9333ea, #db2777)',
+      backgroundImage: 'linear-gradient(90deg, #9333ea, #db2777)',
       color: 'white'
     },
     register: {
-      background: 'linear-gradient(90deg, #ec4899, #a855f7)',
+      backgroundImage: 'linear-gradient(90deg, #ec4899, #a855f7)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
     },
     registerHover: {
-      background: 'linear-gradient(90deg, #db2777, #9333ea)',
+      backgroundImage: 'linear-gradient(90deg, #db2777, #9333ea)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
@@ -124,21 +124,21 @@ const themeColorMap: Record<string, {
     logo: "from-blue-900 to-indigo-900",
     text: "from-blue-400 to-indigo-400",
     button: {
-      background: 'linear-gradient(90deg, #1e3a8a, #312e81)',
+      backgroundImage: 'linear-gradient(90deg, #1e3a8a, #312e81)',
       color: 'white'
     },
     buttonHover: {
-      background: 'linear-gradient(90deg, #1e40af, #3730a3)',
+      backgroundImage: 'linear-gradient(90deg, #1e40af, #3730a3)',
       color: 'white'
     },
     register: {
-      background: 'linear-gradient(90deg, #312e81, #1e3a8a)',
+      backgroundImage: 'linear-gradient(90deg, #312e81, #1e3a8a)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
     },
     registerHover: {
-      background: 'linear-gradient(90deg, #3730a3, #1e40af)',
+      backgroundImage: 'linear-gradient(90deg, #3730a3, #1e40af)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
@@ -266,7 +266,9 @@ export default function LoginPage() {
           className="border-0 shadow-2xl backdrop-blur-lg"
           style={{
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'rgba(255, 255, 255, 0.2)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)'
           }}
@@ -292,8 +294,11 @@ export default function LoginPage() {
                   className="text-base py-3"
                   style={{
                     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    backdropFilter: 'blur(10px)'
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)'
                   }}
                 />
               </div>
@@ -311,8 +316,11 @@ export default function LoginPage() {
                     className="text-base py-3 pr-12"
                     style={{
                       backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      backdropFilter: 'blur(10px)'
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      borderColor: 'rgba(255, 255, 255, 0.2)',
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)'
                     }}
                   />
                   <button
