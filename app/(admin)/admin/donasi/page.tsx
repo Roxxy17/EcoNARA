@@ -367,7 +367,7 @@ export default function AdminDonationManagementPage() {
       </div>
 
       <Navbar />
-
+//
       <main className="container mx-auto px-4 py-12 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
