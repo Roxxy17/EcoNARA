@@ -264,7 +264,7 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent
               side="left"
-              className="w-[280px] sm:w-[320px] bg-gradient-to-br from-cyan-500 via-blue-500 to-teal-500 text-white border-r border-white/20 p-0 flex flex-col"
+              className="w-[280px] sm:w-[320px] bg-gradient-to-br from-cyan-500 via-blue-500 to-teal-500 text-white border-r border-white/20 p-0"
             >
               <SheetHeader className="pb-6 px-6 pt-6">
                 <SheetTitle className="flex items-center space-x-3">
@@ -290,8 +290,7 @@ export function Navbar() {
                 <SheetDescription className="text-cyan-100/80">Navigasi platform berkelanjutan Anda</SheetDescription>
               </SheetHeader>
 
-              {/* Semua menu dan footer actions dalam satu area scroll */}
-              <div className="flex-1 flex flex-col overflow-y-auto space-y-3 mt-6 px-4 pb-6">
+              <div className="flex flex-col space-y-3 mt-6 px-4 pb-32">
                 {navItemsToShow.map((item) =>
                   item.type === "link" ? (
                     <Link href={item.href} key={item.href} passHref>
@@ -337,35 +336,35 @@ export function Navbar() {
                     </div>
                   ),
                 )}
+              </div>
 
-                {/* Mobile Footer Actions - now inside scroll */}
-                <div className="w-full pt-4">
-                  <div className="h-px bg-white/20 mb-4" />
-                  <Link href="/profile" passHref>
-                    <div className="flex items-center w-full p-3 hover:bg-white/15 rounded-xl cursor-pointer bg-white/10 backdrop-blur-sm shadow-sm text-white font-medium transition-all duration-300 hover:scale-105">
-                      <User className="mr-3 h-5 w-5" />
-                      <span>Profil</span>
-                    </div>
-                  </Link>
-                  <Link href="/settings" passHref>
-                    <div className="flex items-center w-full p-3 hover:bg-white/15 rounded-xl cursor-pointer bg-white/10 backdrop-blur-sm shadow-sm text-white font-medium transition-all duration-300 hover:scale-105">
-                      <Settings className="mr-3 h-5 w-5" />
-                      <span>Pengaturan</span>
-                    </div>
-                  </Link>
-                  <div
-                    onClick={handleLogout}
-                    className="flex items-center w-full p-3 hover:bg-red-500/20 text-red-200 rounded-xl cursor-pointer bg-red-500/10 backdrop-blur-sm shadow-sm font-medium transition-all duration-300 hover:scale-105"
-                  >
-                    <LogOut className="mr-3 h-5 w-5" />
-                    <span>Keluar</span>
+              {/* Mobile Footer Actions */}
+              <div className="fixed bottom-0 left-0 w-[280px] sm:w-[320px] px-4 pb-6 pt-4 bg-gradient-to-t from-cyan-500/80 via-blue-500/80 to-teal-500/60 backdrop-blur-lg z-50">
+                <div className="h-px bg-white/20 mb-4" />
+                <Link href="/profile" passHref>
+                  <div className="flex items-center w-full p-3 hover:bg-white/15 rounded-xl cursor-pointer bg-white/10 backdrop-blur-sm shadow-sm text-white font-medium transition-all duration-300 hover:scale-105">
+                    <User className="mr-3 h-5 w-5" />
+                    <span>Profil</span>
                   </div>
+                </Link>
+                <Link href="/settings" passHref>
+                  <div className="flex items-center w-full p-3 hover:bg-white/15 rounded-xl cursor-pointer bg-white/10 backdrop-blur-sm shadow-sm text-white font-medium transition-all duration-300 hover:scale-105">
+                    <Settings className="mr-3 h-5 w-5" />
+                    <span>Pengaturan</span>
+                  </div>
+                </Link>
+                <div
+                  onClick={handleLogout}
+                  className="flex items-center w-full p-3 hover:bg-red-500/20 text-red-200 rounded-xl cursor-pointer bg-red-500/10 backdrop-blur-sm shadow-sm font-medium transition-all duration-300 hover:scale-105"
+                >
+                  <LogOut className="mr-3 h-5 w-5" />
+                  <span>Keluar</span>
                 </div>
               </div>
             </SheetContent>
           </Sheet>
         </div>
-
+                                                                                                  
         {/* Desktop User Section */}
         <div className="hidden lg:flex items-center space-x-3">
           {/* Notification Button */}
