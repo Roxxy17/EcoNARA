@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEvent } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Leaf, Menu, X } from "lucide-react";
+import { Leaf, Menu, X, ChevronDown, Settings, LayoutDashboard, LogOut } from "lucide-react";
 import Link from "next/link";
 import type { PerformanceLevel } from "@/hooks/use-device-performance";
 import { useTheme } from "next-themes";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 // ✅ Navigasi
 const navigationItems = [
@@ -36,7 +38,16 @@ interface NavbarProps {
   };
 }
 
-const themeColorMap: Record<string, { logo: string; button: string; buttonHover: string; keluar: string; keluarHover: string }> = {
+const themeColorMap: Record<
+  string,
+  {
+    logo: string;
+    button: string;
+    buttonHover: string;
+    keluar: string;
+    keluarHover: string;
+  }
+> = {
   default: {
     logo: "from-blue-500 to-cyan-500",
     button: "from-blue-500 to-cyan-500",
@@ -66,7 +77,7 @@ const themeColorMap: Record<string, { logo: string; button: string; buttonHover:
     keluarHover: "hover:from-pink-600 hover:to-purple-600",
   },
   night: {
-    logo: "from-blue-900 to-indigo-900",
+    logo: "from-blue-500 to-indigo-500",
     button: "from-blue-900 to-indigo-900",
     buttonHover: "hover:from-blue-800 hover:to-indigo-800",
     keluar: "from-indigo-900 to-blue-900",
@@ -74,12 +85,24 @@ const themeColorMap: Record<string, { logo: string; button: string; buttonHover:
   },
 };
 
-export const Navbar = ({ theme, performanceLevel, animationSettings }: NavbarProps) => {
+export const Navbar = ({
+  theme,
+  performanceLevel,
+  animationSettings,
+}: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
   const supabase = createClientComponentClient();
+  const router = useRouter();
   const themeColor = themeColorMap[theme] || themeColorMap["default"];
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -96,6 +119,20 @@ export const Navbar = ({ theme, performanceLevel, animationSettings }: NavbarPro
     }
     getUser();
   }, [supabase]);
+
+  useEffect(() => {
+    if (!isDropdownOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      const dropdown = document.getElementById("user-dropdown");
+      if (dropdown && !dropdown.contains(e.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [isDropdownOpen]);
+
+  if (!mounted) return null;
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -122,13 +159,19 @@ export const Navbar = ({ theme, performanceLevel, animationSettings }: NavbarPro
             whileHover={performanceLevel !== "low" ? { scale: 1.02 } : {}}
           >
             <div className="relative">
-              <div className={`relative w-12 h-12 bg-gradient-to-br ${themeColor.logo} rounded-xl flex items-center justify-center shadow-lg`}>
-                <Leaf className="w-7 h-7 text-white" />
-              </div>
+              {/* Hapus background gradasi dan rounded */}
+              <Image
+                src="/logo.png"
+                alt="EcoNARA Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+                priority
+              />
             </div>
             <div>
-              <span className="text-2xl font-bold text-white">ECONARA</span>
-              <div className="text-xs text-slate-400 font-medium">
+              <span className={`text-2xl font-bold bg-gradient-to-r ${themeColor.logo} bg-clip-text text-transparent`}>EcoNara</span>
+              <div className={`text-xs bg-gradient-to-r ${themeColor.logo} bg-clip-text text-transparent font-medium`}>
                 Sustainable Platform
               </div>
             </div>
@@ -156,7 +199,42 @@ export const Navbar = ({ theme, performanceLevel, animationSettings }: NavbarPro
           <div className="hidden lg:flex items-center space-x-4">
             {user ? (
               <>
-                <span className="text-slate-200 font-semibold">{user.user_metadata?.name || user.email}</span>
+                <div className="relative">
+                  <button
+                    className="flex items-center space-x-2 text-slate-200 font-semibold hover:text-white focus:outline-none"
+                    onClick={() => setIsDropdownOpen((v) => !v)}
+                  >
+                    <span>{user.user_metadata?.name || user.email}</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                  {isDropdownOpen && (
+                    <div
+                      id="user-dropdown"
+                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-slate-200"
+                    >
+                      <button
+                        className="flex items-center w-full px-4 py-2 text-cyan-900 hover:bg-cyan-50 transition"
+                        onClick={() => {
+                          setIsDropdownOpen(false);
+                          router.push("/dashboard");
+                        }}
+                      >
+                        <LayoutDashboard className="w-4 h-4 mr-2" />
+                        Dashboard
+                      </button>
+                      <button
+                        className="flex items-center w-full px-4 py-2 text-cyan-900 hover:bg-cyan-50 transition"
+                        onClick={() => {
+                          setIsDropdownOpen(false);
+                          router.push("/settings");
+                        }}
+                      >
+                        <Settings className="w-4 h-4 mr-2" />
+                        Pengaturan
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <Button
                   className={`bg-gradient-to-r ${themeColor.keluar} ${themeColor.keluarHover} text-white font-semibold rounded-full px-6 py-2 shadow-md transition-all duration-200`}
                   onClick={handleLogout}
@@ -195,7 +273,11 @@ export const Navbar = ({ theme, performanceLevel, animationSettings }: NavbarPro
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="lg:hidden p-2 text-slate-300 hover:text-white"
           >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
         </div>
 
@@ -220,31 +302,78 @@ export const Navbar = ({ theme, performanceLevel, animationSettings }: NavbarPro
                 {item.name}
               </Link>
             ))}
-            <div className="pt-4 space-y-3">
-              {user ? (
-                <>
-                  <span className="block text-slate-200 font-semibold">{user.user_metadata?.name || user.email}</span>
-                  <Button
-                    className={`w-full bg-gradient-to-r ${themeColor.keluar} ${themeColor.keluarHover} text-white font-semibold rounded-full px-6 py-2 shadow-md transition-all duration-200`}
-                    onClick={handleLogout}
+            {user && (
+              <div className="pt-4">
+                <div className="relative">
+                  <button
+                    className="flex items-center space-x-2 text-slate-200 font-semibold hover:text-white focus:outline-none w-full justify-between"
+                    onClick={() => setIsMobileDropdownOpen((v) => !v)}
                   >
-                    Keluar
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="ghost" className="w-full justify-start rounded-full" asChild>
-                    <Link href="/login">Masuk</Link>
-                  </Button>
-                  <Button
-                    className={`w-full bg-gradient-to-r ${themeColor.button} ${themeColor.buttonHover} text-white font-semibold rounded-full px-6 py-2 shadow-md transition-all duration-200`}
-                    asChild
-                  >
-                    <Link href="/register">Bergabung</Link>
-                  </Button>
-                </>
-              )}
-            </div>
+                    <span>{user.user_metadata?.name || user.email}</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                  {isMobileDropdownOpen && (
+                    <div
+                      id="user-mobile-dropdown"
+                      className="mt-2 w-full rounded-lg z-50 flex flex-col bg-transparent shadow-none border-none"
+                    >
+                      <button
+                        className="block text-slate-300 hover:text-white font-medium py-2 text-left px-4 w-full transition-colors"
+                        onClick={() => {
+                          setIsMobileDropdownOpen(false);
+                          setIsMenuOpen(false);
+                          router.push("/dashboard");
+                        }}
+                      >
+                        <span className="inline-flex items-center">
+                          <LayoutDashboard className="w-5 h-5 mr-2" />
+                          Dashboard
+                        </span>
+                      </button>
+                      <button
+                        className="block text-slate-300 hover:text-white font-medium py-2 text-left px-4 w-full transition-colors"
+                        onClick={() => {
+                          setIsMobileDropdownOpen(false);
+                          setIsMenuOpen(false);
+                          router.push("/settings");
+                        }}
+                      >
+                        <span className="inline-flex items-center">
+                          <Settings className="w-5 h-5 mr-2" />
+                          Pengaturan
+                        </span>
+                      </button>
+                      <button
+                        className="block text-slate-300 hover:text-red-500 font-medium py-2 text-left px-4 w-full transition-colors"
+                        onClick={handleLogout}
+                      >
+                        <span className="inline-flex items-center">
+                          <LogOut className="w-5 h-5 mr-2" />
+                          Keluar
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            {!user && (
+              <>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start rounded-full"
+                  asChild
+                >
+                  <Link href="/login">Masuk</Link>
+                </Button>
+                <Button
+                  className={`w-full bg-gradient-to-r ${themeColor.button} ${themeColor.buttonHover} text-white font-semibold rounded-full px-6 py-2 shadow-md transition-all duration-200`}
+                  asChild
+                >
+                  <Link href="/register">Bergabung</Link>
+                </Button>
+              </>
+            )}
           </div>
         </motion.div>
       </div>

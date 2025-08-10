@@ -1,8 +1,11 @@
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import TransitionWrapper from "@/components/ui/transition-wrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -74,6 +77,8 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+        <link rel="icon" href="/logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, viewport-fit=cover"
@@ -83,6 +88,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <Providers>
+          <TransitionWrapper />
           {children}
         </Providers>
       </body>

@@ -12,6 +12,7 @@ import { AdaptiveBackground } from "@/components/background/adaptive-background"
 import { PerformanceIndicator } from "@/components/ui/performance-indicator";
 import { ThemeSelector } from "@/components/ui/theme-selector";
 import { Navbar } from "@/components/navigation/navbar";
+import { Footer } from "@/components/sections/footer";
 import { useTheme } from "next-themes";
 
 const values = [
@@ -108,10 +109,18 @@ export default function AboutPage() {
   const { theme = "default" } = useTheme();
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Semua hooks di atas, baru pengecekan mounted di bawah
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     setIsPageLoaded(true);
   }, []);
+
+  if (!mounted) return null;
 
   const animationSettings = {
     duration:
@@ -563,6 +572,8 @@ export default function AboutPage() {
             </div>
           </section>
         </motion.div>
+
+        <Footer />
       </motion.div>
     </AnimatePresence>
   );

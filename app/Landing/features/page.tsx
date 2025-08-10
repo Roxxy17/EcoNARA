@@ -31,7 +31,6 @@ import { Navbar } from "@/components/navigation/navbar";
 import { useTheme } from "next-themes";
 import { Footer } from "@/components/sections/footer";
 
-
 const featureCategories = [
   {
     title: "AI & Machine Learning",
@@ -216,6 +215,13 @@ export default function FeaturesPage() {
   const { performanceLevel, capabilities, isLoading } = useDevicePerformance();
   const { theme = "default" } = useTheme();
   const [soundEnabled, setSoundEnabled] = useState(false);
+
+  // Tambahkan mounted state
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
 
   const animationSettings = {
     duration:
