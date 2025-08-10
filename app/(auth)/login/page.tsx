@@ -16,46 +16,133 @@ import { AdaptiveBackground } from "@/components/background/adaptive-background"
 import { ThemeSelector } from "@/components/ui/theme-selector"
 import { useTheme } from "next-themes"
 
-const themeColorMap: Record<string, { logo: string; text: string; button: string; buttonHover: string; register: string; registerHover: string }> = {
+const themeColorMap: Record<string, { 
+  logo: string; 
+  text: string; 
+  button: React.CSSProperties;
+  buttonHover: React.CSSProperties;
+  register: React.CSSProperties;
+  registerHover: React.CSSProperties;
+}> = {
   default: {
     logo: "from-blue-500 to-cyan-500",
     text: "from-blue-400 to-cyan-400",
-    button: "from-blue-500 to-cyan-500",
-    buttonHover: "hover:from-blue-600 hover:to-cyan-600",
-    register: "from-cyan-500 to-blue-500",
-    registerHover: "hover:from-cyan-600 hover:to-blue-600",
+    button: {
+      background: 'linear-gradient(90deg, #3b82f6, #06b6d4)',
+      color: 'white'
+    },
+    buttonHover: {
+      background: 'linear-gradient(90deg, #2563eb, #0891b2)',
+      color: 'white'
+    },
+    register: {
+      background: 'linear-gradient(90deg, #06b6d4, #3b82f6)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text'
+    },
+    registerHover: {
+      background: 'linear-gradient(90deg, #0891b2, #2563eb)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text'
+    }
   },
   aurora: {
     logo: "from-green-500 to-blue-500",
     text: "from-green-400 to-blue-400",
-    button: "from-green-500 to-blue-500",
-    buttonHover: "hover:from-green-600 hover:to-blue-600",
-    register: "from-blue-500 to-green-500",
-    registerHover: "hover:from-blue-600 hover:to-green-600",
+    button: {
+      background: 'linear-gradient(90deg, #22c55e, #3b82f6)',
+      color: 'white'
+    },
+    buttonHover: {
+      background: 'linear-gradient(90deg, #16a34a, #2563eb)',
+      color: 'white'
+    },
+    register: {
+      background: 'linear-gradient(90deg, #3b82f6, #22c55e)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text'
+    },
+    registerHover: {
+      background: 'linear-gradient(90deg, #2563eb, #16a34a)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text'
+    }
   },
   geometric: {
     logo: "from-red-500 to-orange-500",
     text: "from-red-400 to-orange-400",
-    button: "from-red-500 to-orange-500",
-    buttonHover: "hover:from-red-600 hover:to-orange-600",
-    register: "from-orange-500 to-red-500",
-    registerHover: "hover:from-orange-600 hover:to-red-600",
+    button: {
+      background: 'linear-gradient(90deg, #ef4444, #f97316)',
+      color: 'white'
+    },
+    buttonHover: {
+      background: 'linear-gradient(90deg, #dc2626, #ea580c)',
+      color: 'white'
+    },
+    register: {
+      background: 'linear-gradient(90deg, #f97316, #ef4444)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text'
+    },
+    registerHover: {
+      background: 'linear-gradient(90deg, #ea580c, #dc2626)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text'
+    }
   },
   nebula: {
     logo: "from-purple-500 to-pink-500",
     text: "from-purple-400 to-pink-400",
-    button: "from-purple-500 to-pink-500",
-    buttonHover: "hover:from-purple-600 hover:to-pink-600",
-    register: "from-pink-500 to-purple-500",
-    registerHover: "hover:from-pink-600 hover:to-purple-600",
+    button: {
+      background: 'linear-gradient(90deg, #a855f7, #ec4899)',
+      color: 'white'
+    },
+    buttonHover: {
+      background: 'linear-gradient(90deg, #9333ea, #db2777)',
+      color: 'white'
+    },
+    register: {
+      background: 'linear-gradient(90deg, #ec4899, #a855f7)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text'
+    },
+    registerHover: {
+      background: 'linear-gradient(90deg, #db2777, #9333ea)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text'
+    }
   },
   night: {
     logo: "from-blue-900 to-indigo-900",
     text: "from-blue-400 to-indigo-400",
-    button: "from-blue-900 to-indigo-900",
-    buttonHover: "hover:from-blue-800 hover:to-indigo-800",
-    register: "from-indigo-900 to-blue-900",
-    registerHover: "hover:from-indigo-800 hover:to-blue-800",
+    button: {
+      background: 'linear-gradient(90deg, #1e3a8a, #312e81)',
+      color: 'white'
+    },
+    buttonHover: {
+      background: 'linear-gradient(90deg, #1e40af, #3730a3)',
+      color: 'white'
+    },
+    register: {
+      background: 'linear-gradient(90deg, #312e81, #1e3a8a)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text'
+    },
+    registerHover: {
+      background: 'linear-gradient(90deg, #3730a3, #1e40af)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text'
+    }
   },
 }
 
@@ -66,6 +153,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [user, setUser] = useState<any>(null)
+  const [isHovering, setIsHovering] = useState(false)
+  const [isRegisterHovering, setIsRegisterHovering] = useState(false)
   const router = useRouter()
   const supabase = createClientComponentClient()
   const { theme = "default" } = useTheme()
@@ -172,7 +261,16 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <Card className="border-0 shadow-2xl ring-1 ring-white/10 bg-background/80 backdrop-blur-lg">
+        {/* Card dengan background transparan menggunakan inline styles */}
+        <Card 
+          className="border-0 shadow-2xl backdrop-blur-lg"
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)'
+          }}
+        >
           <CardHeader>
             <CardTitle className="text-2xl">Masuk</CardTitle>
             <CardDescription className="text-base">
@@ -192,6 +290,11 @@ export default function LoginPage() {
                   required
                   autoComplete="username"
                   className="text-base py-3"
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)'
+                  }}
                 />
               </div>
               <div className="space-y-2">
@@ -206,6 +309,11 @@ export default function LoginPage() {
                     required
                     autoComplete="current-password"
                     className="text-base py-3 pr-12"
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      backdropFilter: 'blur(10px)'
+                    }}
                   />
                   <button
                     type="button"
@@ -219,9 +327,12 @@ export default function LoginPage() {
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button
-                className={`w-full bg-gradient-to-r ${themeColor.button} ${themeColor.buttonHover} py-3 text-base font-semibold transition-colors duration-200 rounded-lg`}
+                className="w-full py-3 text-base font-semibold transition-all duration-200 rounded-lg border-0"
                 type="submit"
                 disabled={isLoading}
+                style={isHovering ? themeColor.buttonHover : themeColor.button}
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
               >
                 {isLoading ? "Memproses..." : "Masuk"}
               </Button>
@@ -231,7 +342,10 @@ export default function LoginPage() {
                 Belum punya akun?{" "}
                 <Link
                   href="/register"
-                  className={`bg-gradient-to-r ${themeColor.register} ${themeColor.registerHover} bg-clip-text text-transparent font-semibold hover:underline transition-colors`}
+                  className="font-semibold hover:underline transition-all duration-200"
+                  style={isRegisterHovering ? themeColor.registerHover : themeColor.register}
+                  onMouseEnter={() => setIsRegisterHovering(true)}
+                  onMouseLeave={() => setIsRegisterHovering(false)}
                 >
                   Daftar di sini
                 </Link>
