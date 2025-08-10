@@ -11,21 +11,18 @@ import {
   ShoppingCart,
   Plus,
   Search,
-  Filter,
   MapPin,
   Clock,
   Star,
   Heart,
-  // ArrowLeft, // Dihapus karena tombol "Kembali" tidak diperlukan lagi
   Users,
   Package,
   TrendingUp,
   Eye,
   MessageCircle,
-  Leaf, // Diperlukan untuk logo di header
 } from "lucide-react"
 import Link from "next/link"
-import { Navbar } from "@/components/navigation/nav-dashboard" // Import Navbar yang baru
+import { Navbar } from "@/components/navigation/nav-dashboard"
 
 const categories = [
   { id: "all", name: "Semua", icon: "🏪" },
@@ -49,7 +46,7 @@ const marketplaceItems = [
     seller: "Bu Sari",
     location: "RT 03, 0.5 km",
     category: "vegetables",
-    image: "https://placehold.co/300x200/A855F7/FFFFFF?text=Sayuran+Organik",
+    image: "https://placehold.co/300x200/14b8a6/FFFFFF?text=Sayuran+Organik", // Placeholder URL
     rating: 4.8,
     reviews: 12,
     timePosted: "2 jam lalu",
@@ -59,13 +56,13 @@ const marketplaceItems = [
   },
   {
     id: 2,
-    title: "Buku Pelajaran SD Kelas 4-6",
-    description: "Koleksi buku pelajaran lengkap, kondisi 85%. Cocok untuk adik-adik yang membutuhkan.",
+    title: "Buku Pelajaran SD Bekas",
+    description: "Koleksi buku pelajaran lengkap, kondisi 85%. Cocok untuk yang membutuhkan.",
     price: "Gratis",
     seller: "Pak Budi",
     location: "RT 05, 0.2 km",
     category: "books",
-    image: "https://placehold.co/300x200/22C55E/FFFFFF?text=Buku+Pelajaran",
+    image: "https://placehold.co/300x200/3b82f6/FFFFFF?text=Buku+Pelajaran", // Placeholder URL
     rating: 4.9,
     reviews: 8,
     timePosted: "5 jam lalu",
@@ -75,13 +72,13 @@ const marketplaceItems = [
   },
   {
     id: 3,
-    title: "Kerajinan Tas dari Plastik Daur Ulang",
+    title: "Tas Cantik Daur Ulang",
     description: "Tas cantik hasil daur ulang plastik bekas. Kuat, tahan air, dan ramah lingkungan.",
     price: "Rp 35,000",
     seller: "Ibu Rina",
     location: "RT 02, 0.8 km",
     category: "handicrafts",
-    image: "https://placehold.co/300x200/F97316/FFFFFF?text=Tas+Daur+Ulang",
+    image: "https://placehold.co/300x200/06b6d4/FFFFFF?text=Tas+Daur+Ulang", // Placeholder URL
     rating: 4.7,
     reviews: 15,
     timePosted: "1 hari lalu",
@@ -91,44 +88,13 @@ const marketplaceItems = [
   },
   {
     id: 4,
-    title: "Smartphone Bekas Kondisi Baik",
-    description: "iPhone 12 bekas pakai 2 tahun, kondisi 90%, lengkap dengan charger dan case.",
-    price: "Rp 4,500,000",
-    originalPrice: "Rp 6,000,000",
-    seller: "Andi",
-    location: "RT 01, 1.2 km",
-    category: "electronics",
-    image: "https://placehold.co/300x200/6B7280/FFFFFF?text=iPhone+12",
-    rating: 4.6,
-    reviews: 3,
-    timePosted: "3 hari lalu",
-    type: "sell",
-    tags: ["Bekas", "Berkualitas", "Murah"],
-  },
-  {
-    id: 5,
-    title: "Pakaian Anak Usia 5-8 Tahun",
-    description: "Koleksi pakaian anak yang sudah tidak terpakai, kondisi masih bagus dan bersih.",
-    price: "Gratis",
-    seller: "Bu Maya",
-    location: "RT 04, 0.6 km",
-    category: "clothes",
-    image: "https://placehold.co/300x200/EF4444/FFFFFF?text=Pakaian+Anak",
-    rating: 4.8,
-    reviews: 6,
-    timePosted: "1 minggu lalu",
-    type: "donate",
-    tags: ["Anak", "Bersih", "Gratis"],
-  },
-  {
-    id: 6,
     title: "Buah Mangga Manis",
     description: "Mangga gedong gincu dari pohon sendiri. Manis, segar, dan tanpa pestisida.",
     price: "Rp 20,000/kg",
     seller: "Pak Joko",
     location: "RT 06, 1.0 km",
     category: "fruits",
-    image: "https://placehold.co/300x200/FACC15/000000?text=Mangga+Manis",
+    image: "https://placehold.co/300x200/f59e0b/FFFFFF?text=Buah+Mangga", // Placeholder URL
     rating: 4.9,
     reviews: 20,
     timePosted: "4 jam lalu",
@@ -136,13 +102,6 @@ const marketplaceItems = [
     tags: ["Segar", "Manis", "Organik"],
     isPopular: true,
   },
-]
-
-const stats = [
-  { label: "Total Produk", value: "1,247", icon: Package, color: "text-blue-600" },
-  { label: "Transaksi Bulan Ini", value: "89", icon: TrendingUp, color: "text-green-600" },
-  { label: "Penjual Aktif", value: "156", icon: Users, color: "text-purple-600" },
-  { label: "Rating Rata-rata", value: "4.8", icon: Star, color: "text-yellow-600" },
 ]
 
 export default function MarketplacePage() {
@@ -161,304 +120,160 @@ export default function MarketplacePage() {
   })
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
-      <Navbar /> {/* Navbar ditambahkan di sini */}
-
-      {/* Header (Diperbarui) */}
-      <header className="bg-white/90 backdrop-blur-lg border-b sticky top-0 z-30 shadow-sm"> {/* Z-index disesuaikan */}
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo dan Judul Halaman */}
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-                <ShoppingCart className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-800">Pasar Komunitas</h1>
-                <p className="text-sm text-gray-600">Jual, beli, dan donasi dengan tetangga</p>
-              </div>
-            </div>
-
-            {/* Tombol Aksi */}
-            <div className="flex items-center space-x-3">
-              <Button variant="outline" size="sm">
-                <Heart className="w-4 h-4 mr-2" />
-                Wishlist
-              </Button>
-              <Button className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600">
-                <Plus className="w-4 h-4 mr-2" />
-                Jual/Donasi
-              </Button>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 relative overflow-hidden">
+        {/* Ocean Background Effects */}
+        <div className="absolute inset-0 opacity-30 pointer-events-none">
+            <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-cyan-200/40 to-blue-300/40 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute top-1/2 right-0 w-80 h-80 bg-gradient-to-br from-teal-200/40 to-cyan-300/40 rounded-full blur-3xl animate-pulse delay-1000" />
+            <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-gradient-to-br from-blue-200/40 to-emerald-300/40 rounded-full blur-3xl animate-pulse delay-2000" />
         </div>
-      </header>
+        
+        <Navbar />
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * index }}
-            >
-              <Card className="text-center border-0 shadow-lg bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-4">
-                  <stat.icon className={`w-8 h-8 ${stat.color} mx-auto mb-2`} />
-                  <div className="text-2xl font-bold text-gray-800">{stat.value}</div>
-                  <div className="text-sm text-gray-600">{stat.label}</div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar Filters */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Search */}
-            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-lg">Pencarian</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    placeholder="Cari produk..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">Jenis</label>
-                    <Select value={filterType} onValueChange={setFilterType}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Semua</SelectItem>
-                        <SelectItem value="sell">Dijual</SelectItem>
-                        <SelectItem value="donate">Donasi</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">Urutkan</label>
-                    <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="newest">Terbaru</SelectItem>
-                        <SelectItem value="oldest">Terlama</SelectItem>
-                        <SelectItem value="price-low">Harga Terendah</SelectItem>
-                        <SelectItem value="price-high">Harga Tertinggi</SelectItem>
-                        <SelectItem value="rating">Rating Tertinggi</SelectItem>
-                        <SelectItem value="distance">Terdekat</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Categories */}
-            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-lg">Kategori</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {categories.map((category) => (
-                    <button
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.id)}
-                      className={`w-full text-left p-3 rounded-lg transition-colors flex items-center space-x-3 ${
-                        selectedCategory === category.id
-                          ? "bg-green-100 text-green-800 border border-green-200"
-                          : "hover:bg-gray-100 text-gray-700"
-                      }`}
-                    >
-                      <span className="text-lg">{category.icon}</span>
-                      <span className="font-medium">{category.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-3">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800">
-                  {selectedCategory === "all"
-                    ? "Semua Produk"
-                    : categories.find((c) => c.id === selectedCategory)?.name}
-                </h2>
-                <p className="text-gray-600">{filteredItems.length} produk ditemukan</p>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm">
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filter
-                </Button>
-              </div>
-            </div>
-
-            {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredItems.map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index }}
-                  whileHover={{ y: -5 }}
-                  className="group"
-                >
-                  <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm overflow-hidden">
-                    <div className="relative">
-                      <img
-                        src={item.image || "/placeholder.svg"}
-                        alt={item.title}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-
-                      {/* Badges */}
-                      <div className="absolute top-3 left-3 flex flex-col space-y-2">
-                        {item.isNew && <Badge className="bg-green-500 text-white">Baru</Badge>}
-                        {item.isUrgent && <Badge className="bg-red-500 text-white">Urgent</Badge>}
-                        {item.isFeatured && <Badge className="bg-purple-500 text-white">Featured</Badge>}
-                        {item.isPopular && <Badge className="bg-orange-500 text-white">Populer</Badge>}
-                      </div>
-
-                      {/* Type Badge */}
-                      <div className="absolute top-3 right-3">
-                        <Badge
-                          className={item.type === "donate" ? "bg-blue-500 text-white" : "bg-green-500 text-white"}
-                        >
-                          {item.type === "donate" ? "Donasi" : "Dijual"}
-                        </Badge>
-                      </div>
-
-                      {/* Quick Actions */}
-                      <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="flex space-x-2">
-                          <Button size="sm" variant="secondary" className="bg-white/90 backdrop-blur-sm">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button size="sm" variant="secondary" className="bg-white/90 backdrop-blur-sm">
-                            <Heart className="w-4 h-4" />
-                          </Button>
+        <header className="bg-white/80 backdrop-blur-xl border-b border-cyan-100/50 sticky top-[72px] z-40 shadow-lg">
+            <div className="container mx-auto px-4 py-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                        <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+                            <ShoppingCart className="w-6 h-6 text-white" />
                         </div>
-                      </div>
-                    </div>
-
-                    <CardContent className="p-4">
-                      <div className="space-y-3">
                         <div>
-                          <h3 className="font-semibold text-gray-800 line-clamp-1 group-hover:text-green-600 transition-colors">
-                            {item.title}
-                          </h3>
-                          <p className="text-sm text-gray-600 line-clamp-2 mt-1">{item.description}</p>
+                            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 bg-clip-text text-transparent">Pasar Komunitas</h1>
+                            <p className="text-sm text-cyan-700/80">Jual, beli, dan donasi dengan tetangga Anda</p>
                         </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                        <Button variant="outline" size="sm" className="rounded-lg border-cyan-300 text-cyan-700 hover:bg-cyan-50/80 hover:text-cyan-800">
+                            <Heart className="w-4 h-4 mr-2" />
+                            Wishlist
+                        </Button>
+                        <Button className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-blue-500/30 rounded-lg">
+                            <Plus className="w-4 h-4 mr-2" />
+                            Jual / Donasi
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-                        <div className="flex flex-wrap gap-1">
-                          {item.tags.map((tag, i) => (
-                            <Badge key={i} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="flex items-center space-x-2">
-                              <span className="text-lg font-bold text-green-600">{item.price}</span>
-                              {item.originalPrice && (
-                                <span className="text-sm text-gray-500 line-through">{item.originalPrice}</span>
-                              )}
-                            </div>
-                          </div>
-
-                          <div className="flex items-center space-x-1 text-sm text-gray-500">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span>{item.rating}</span>
-                            <span>({item.reviews})</span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between text-sm text-gray-500">
-                          <div className="flex items-center space-x-1">
-                            <Users className="w-4 h-4" />
-                            <span>{item.seller}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <MapPin className="w-4 h-4" />
-                            <span>{item.location}</span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between text-xs text-gray-400">
-                          <div className="flex items-center space-x-1">
-                            <Clock className="w-3 h-3" />
-                            <span>{item.timePosted}</span>
-                          </div>
-                        </div>
-
-                        <div className="flex space-x-2 pt-2">
-                          <Button className="flex-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600">
-                            {item.type === "donate" ? "Ambil" : "Beli"}
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <MessageCircle className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+        <main className="container mx-auto px-4 py-8 relative z-10">
+            {/* Stats Overview */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                    <Card className="text-center bg-gradient-to-br from-blue-800 via-cyan-600 to-teal-400 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                        <CardContent className="p-6"><Package className="w-10 h-10 mx-auto mb-3 drop-shadow-lg" /><div className="text-3xl font-bold drop-shadow-sm">1,247</div><div className="text-sm opacity-90 font-medium">Total Produk</div></CardContent>
+                    </Card>
                 </motion.div>
-              ))}
+                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                    <Card className="text-center bg-gradient-to-br from-blue-800 via-cyan-600 to-teal-400 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                        <CardContent className="p-6"><TrendingUp className="w-10 h-10 mx-auto mb-3 drop-shadow-lg" /><div className="text-3xl font-bold drop-shadow-sm">89</div><div className="text-sm opacity-90 font-medium">Transaksi Bulan Ini</div></CardContent>
+                    </Card>
+                </motion.div>
+                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                    <Card className="text-center bg-gradient-to-br from-blue-800 via-cyan-600 to-teal-400 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                        <CardContent className="p-6"><Users className="w-10 h-10 mx-auto mb-3 drop-shadow-lg" /><div className="text-3xl font-bold drop-shadow-sm">156</div><div className="text-sm opacity-90 font-medium">Penjual Aktif</div></CardContent>
+                    </Card>
+                </motion.div>
+                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+                    <Card className="text-center bg-gradient-to-br from-blue-800 via-cyan-600 to-teal-400 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                        <CardContent className="p-6"><Star className="w-10 h-10 mx-auto mb-3 drop-shadow-lg fill-yellow-300 text-yellow-300" /><div className="text-3xl font-bold drop-shadow-sm">4.8</div><div className="text-sm opacity-90 font-medium">Rating Rata-rata</div></CardContent>
+                    </Card>
+                </motion.div>
             </div>
 
-            {/* Load More */}
-            {filteredItems.length > 0 && (
-              <div className="text-center mt-8">
-                <Button variant="outline" size="lg">
-                  Muat Lebih Banyak
-                </Button>
-              </div>
-            )}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Sidebar Filters */}
+                <aside className="lg:col-span-1 space-y-6">
+                    <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-xl border-cyan-100/50 rounded-2xl">
+                        <CardHeader><CardTitle className="text-cyan-900">Filter & Cari</CardTitle></CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="relative"><Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-cyan-500 w-5 h-5" /><Input placeholder="Cari produk..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12 bg-blue-50 border-blue-200 placeholder:text-blue-600 focus:border-cyan-500 focus:ring-cyan-500 rounded-lg"/></div>
+                            <div className="space-y-4 pt-2">
+                                <div><label className="text-sm font-medium text-cyan-800 mb-2 block">Jenis</label><Select value={filterType} onValueChange={setFilterType}><SelectTrigger className="bg-blue-50 border-blue-200 text-blue-700 focus:border-cyan-500 focus:ring-cyan-500 rounded-lg"><SelectValue /></SelectTrigger><SelectContent className="bg-white/80 backdrop-blur-md border-cyan-100"><SelectItem value="all">Semua</SelectItem><SelectItem value="sell">Dijual</SelectItem><SelectItem value="donate">Donasi</SelectItem></SelectContent></Select></div>
+                                <div><label className="text-sm font-medium text-cyan-800 mb-2 block">Urutkan</label><Select value={sortBy} onValueChange={setSortBy}><SelectTrigger className="bg-blue-50 border-blue-200 text-blue-700 focus:border-cyan-500 focus:ring-cyan-500 rounded-lg"><SelectValue /></SelectTrigger><SelectContent className="bg-white/80 backdrop-blur-md border-cyan-100"><SelectItem value="newest">Terbaru</SelectItem><SelectItem value="price-low">Harga Terendah</SelectItem><SelectItem value="rating">Rating Tertinggi</SelectItem></SelectContent></Select></div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-xl border-cyan-100/50 rounded-2xl">
+                        <CardHeader><CardTitle className="text-cyan-900">Kategori</CardTitle></CardHeader>
+                        <CardContent>
+                            <div className="space-y-2">
+                                {categories.map((category) => (
+                                    <button key={category.id} onClick={() => setSelectedCategory(category.id)} className={`w-full text-left p-3 rounded-lg transition-all duration-300 flex items-center space-x-3 ${selectedCategory === category.id ? "bg-gradient-to-r from-cyan-100 to-blue-100 text-cyan-900 border border-cyan-200 shadow-sm font-bold" : "hover:bg-cyan-50/50 text-cyan-800"}`}>
+                                        <span className="text-lg">{category.icon}</span><span>{category.name}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </aside>
 
-            {/* Empty State */}
-            {filteredItems.length === 0 && (
-              <div className="text-center py-12">
-                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ShoppingCart className="w-12 h-12 text-gray-400" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Tidak ada produk ditemukan</h3>
-                <p className="text-gray-600 mb-4">
-                  Coba ubah filter pencarian atau kategori untuk menemukan produk yang Anda cari
-                </p>
-                <Button className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Jadi yang Pertama Jual/Donasi
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+                {/* Main Content */}
+                <section className="lg:col-span-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {filteredItems.map((item, index) => (
+                            <motion.div key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * index }} whileHover={{ y: -5 }} className="group">
+                                <Card className="border-0 shadow-lg hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-xl rounded-2xl overflow-hidden flex flex-col h-full">
+                                    <div className="relative">
+                                        <img src={item.image} alt={item.title} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                                        <div className="absolute top-3 left-3 flex flex-col space-y-2">
+                                            {item.isNew && <Badge className="bg-gradient-to-r from-green-400 to-teal-400 text-white border-0 shadow-md">Baru</Badge>}
+                                            {item.isUrgent && <Badge className="bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 shadow-md">Urgent</Badge>}
+                                            {item.isFeatured && <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 shadow-md">Featured</Badge>}
+                                            {item.isPopular && <Badge className="bg-gradient-to-r from-orange-400 to-amber-400 text-white border-0 shadow-md">Populer</Badge>}
+                                        </div>
+                                        <div className="absolute top-3 right-3"><Badge className={`text-white border-0 shadow-md ${item.type === "donate" ? "bg-gradient-to-r from-blue-500 to-cyan-500" : "bg-gradient-to-r from-purple-500 to-pink-500"}`}>{item.type === "donate" ? "Donasi" : "Dijual"}</Badge></div>
+                                    </div>
+                                    <CardContent className="p-4 flex flex-col flex-grow">
+                                        <h3 className="font-bold text-lg text-cyan-900 line-clamp-1 group-hover:text-blue-600 transition-colors">{item.title}</h3>
+                                        <p className="text-sm text-cyan-700/90 line-clamp-2 mt-1 flex-grow">{item.description}</p>
+                                        <div className="flex flex-wrap gap-1 mt-3">
+                                            {item.tags.map((tag, i) => (<Badge key={i} variant="outline" className="text-xs bg-cyan-50 text-cyan-800 border-cyan-200">{tag}</Badge>))}
+                                        </div>
+                                        <div className="flex items-center justify-between mt-4">
+                                            <div>
+                                                <div className="flex items-baseline space-x-2">
+                                                    <span className="text-xl font-bold text-blue-600">{item.price}</span>
+                                                    {item.originalPrice && <span className="text-sm text-gray-500 line-through">{item.originalPrice}</span>}
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center space-x-1 text-sm text-gray-500"><Star className="w-4 h-4 fill-yellow-400 text-yellow-400" /><span>{item.rating}</span><span className="text-xs">({item.reviews})</span></div>
+                                        </div>
+                                        <div className="border-t border-cyan-100/80 my-3"></div>
+                                        <div className="flex items-center justify-between text-sm text-cyan-800">
+                                            <div className="flex items-center space-x-1.5"><Users className="w-4 h-4" /><span>{item.seller}</span></div>
+                                            <div className="flex items-center space-x-1.5"><MapPin className="w-4 h-4" /><span>{item.location}</span></div>
+                                        </div>
+                                        <div className="flex space-x-2 pt-4 mt-auto">
+                                            <Button className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-blue-500/30 rounded-lg">
+                                                {item.type === "donate" ? "Ambil Gratis" : "Beli Sekarang"}
+                                            </Button>
+                                            <Button variant="outline" size="icon" className="rounded-lg border-cyan-300 text-cyan-700 hover:bg-cyan-50/80 hover:text-cyan-800">
+                                                <MessageCircle className="w-5 h-5" />
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        ))}
+                    </div>
+                    {/* Empty State */}
+                    {filteredItems.length === 0 && (
+                        <div className="text-center py-16 bg-cyan-50/50 rounded-2xl col-span-full">
+                            <div className="w-24 h-24 bg-white shadow-md rounded-full flex items-center justify-center mx-auto mb-4">
+                                <ShoppingCart className="w-12 h-12 text-cyan-400" />
+                            </div>
+                            <h3 className="text-xl font-semibold text-cyan-800 mb-2">Oops, tidak ada produk ditemukan!</h3>
+                            <p className="text-cyan-600 mb-4 max-w-md mx-auto">Coba ubah filter pencarian atau kategori untuk menemukan produk yang Anda cari.</p>
+                            <Button className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-blue-500/30 rounded-lg">
+                                <Plus className="w-4 h-4 mr-2" />
+                                Jadi Penjual Pertama
+                            </Button>
+                        </div>
+                    )}
+                </section>
+            </div>
+        </main>
     </div>
   )
 }

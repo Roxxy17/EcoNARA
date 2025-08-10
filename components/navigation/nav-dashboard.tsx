@@ -18,6 +18,7 @@ import {
   Menu,
   Landmark,
   Shield,
+  ShoppingCart, // Pastikan ini diimpor
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -46,8 +47,6 @@ export function Navbar() {
   const router = useRouter()
   const { userProfile, loadingUser, setUserProfile } = useUser()
 
-  console.log("userProfile", userProfile)
-
   // Ambil nama dan email user dengan fallback yang jelas
   const userName =
     userProfile?.nama && userProfile?.nama !== ""
@@ -58,7 +57,7 @@ export function Navbar() {
       ? userProfile.user_metadata.full_name
       : userProfile?.email
       ? userProfile.email
-      : "Pengguna";
+      : "Pengguna"
   const userEmail = userProfile?.email || userProfile?.user_metadata?.email || "email@example.com"
   const userInitial = userName.charAt(0).toUpperCase()
   const userRole = userProfile?.role
@@ -151,6 +150,20 @@ export function Navbar() {
       }
     }
 
+    if (userRole === "warga") {
+      const produkItemIndex = finalNavItems.findIndex((item) => item.label === "Produk")
+      if (produkItemIndex !== -1) {
+        const marketplaceItem = {
+          label: "Marketplace",
+          href: "/marketplace",
+          icon: ShoppingCart,
+          description: "Jelajahi produk dari komunitas.",
+        }
+        // Menggunakan unshift untuk menempatkan di awal dropdown
+        finalNavItems[produkItemIndex].items.unshift(marketplaceItem)
+      }
+    }
+
     navItemsToShow = finalNavItems.map((item) => {
       if (item.label === "Produk" && item.type === "dropdown") {
         const updatedItems = item.items.map((subItem) => {
@@ -184,7 +197,6 @@ export function Navbar() {
               <span className="font-black text-xl bg-gradient-to-r from-white via-cyan-100 to-blue-100 bg-clip-text text-transparent leading-tight tracking-tight">
                 EcoNara
               </span>
-              {/* Tampilkan nama user yang login */}
               <span className="text-xs text-cyan-100/90 font-semibold tracking-wider uppercase">
                 {userName}
               </span>
@@ -234,14 +246,16 @@ export function Navbar() {
                           <Link
                             href={subItem.href}
                             className={cn(
-                              "flex items-center w-full p-3 rounded-xl mx-2 my-1 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-all duration-300",
+                              "flex items-start w-full p-3 rounded-xl mx-2 my-1 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-all duration-300",
                               pathname.startsWith(subItem.href) && "bg-gradient-to-r from-cyan-50 to-blue-50 shadow-md"
                             )}
                           >
-                            {subItem.icon && <subItem.icon className="w-4 h-4 mr-2 text-cyan-600" />}
+                            <div className="flex-shrink-0 mr-3 mt-1">
+                                {subItem.icon && <subItem.icon className="w-5 h-5 text-cyan-600" />}
+                            </div>
                             <div>
                               <div className="text-sm font-semibold text-cyan-900">{subItem.label}</div>
-                              <div className="text-xs text-cyan-700">{subItem.description}</div>
+                              <div className="text-xs text-cyan-700 whitespace-normal">{subItem.description}</div>
                             </div>
                           </Link>
                         </DropdownMenuItem>
@@ -364,7 +378,7 @@ export function Navbar() {
             </SheetContent>
           </Sheet>
         </div>
-                                                                                                  
+                                                                        
         {/* Desktop User Section */}
         <div className="hidden lg:flex items-center space-x-3">
           {/* Notification Button */}
