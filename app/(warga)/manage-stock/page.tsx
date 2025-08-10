@@ -41,7 +41,6 @@ import {
   Package,
   PlusCircle,
   Trash2,
-  Loader2,
   Search,
   Filter,
   RefreshCw,
@@ -51,9 +50,8 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
-  Waves,
-  Fish,
-  Droplets,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
@@ -690,16 +688,16 @@ export default function ManageStockPage() {
                   onValueChange={(value) => handleSelectChange(value)}
                   value={newItem.category}
                 >
-                  <SelectTrigger className="w-full rounded-xl border-blue-400 focus:border-blue-600 bg-white text-blue-900">
-                    <SelectValue placeholder="Pilih Kategori" />
+                  <SelectTrigger className="w-full rounded-xl border-blue-400 focus:border-blue-600 bg-white text-black">
+                    <SelectValue placeholder="Pilih Kategori" className="text-black" />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl bg-white/95 backdrop-blur-xl">
-                    <SelectItem value="Bahan Pokok">🌾 Bahan Pokok</SelectItem>
-                    <SelectItem value="Makanan Instan">
+                  <SelectContent className="rounded-xl bg-white border border-gray-200">
+                    <SelectItem value="Bahan Pokok" className="text-black">🌾 Bahan Pokok</SelectItem>
+                    <SelectItem value="Makanan Instan" className="text-black">
                       🍜 Makanan Instan
                     </SelectItem>
-                    <SelectItem value="Donasi">❤️ Donasi</SelectItem>
-                    <SelectItem value="Lain-lain">📦 Lain-lain</SelectItem>
+                    <SelectItem value="Donasi" className="text-black">❤️ Donasi</SelectItem>
+                    <SelectItem value="Lain-lain" className="text-black">📦 Lain-lain</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -748,28 +746,97 @@ export default function ManageStockPage() {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-full justify-start text-left font-normal rounded-xl border-blue-400 focus:border-blue-600 bg-white text-blue-900",
-                        !newItem.added_date && "text-muted-foreground"
+                        "w-full justify-start text-left font-normal rounded-xl border-blue-400 focus:border-blue-600 bg-white text-black",
+                        !newItem.added_date && "text-gray-500"
                       )}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      <CalendarIcon className="mr-2 h-4 w-4 text-black" />
                       {newItem.added_date ? (
-                        format(newItem.added_date, "PPP", {
-                          locale: idLocale,
-                        })
+                        <span className="text-black">
+                          {format(newItem.added_date, "PPP", {
+                            locale: idLocale,
+                          })}
+                        </span>
                       ) : (
-                        <span>Pilih tanggal</span>
+                        <span className="text-gray-500">Pilih tanggal</span>
                       )}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 rounded-xl bg-white/95 backdrop-blur-xl">
-                    <Calendar
-                      mode="single"
-                      selected={newItem.added_date}
-                      onSelect={handleDateChange}
-                      initialFocus
-                      locale={idLocale}
-                    />
+                  <PopoverContent className="w-auto p-4 rounded-xl bg-white border border-gray-300 shadow-xl">
+                    <div className="space-y-4">
+                      {/* Header dengan dropdown */}
+                      <div className="flex items-center justify-between">
+                        <select 
+                          className="px-3 py-2 border border-gray-300 rounded-md text-black bg-white"
+                          value={newItem.added_date.getMonth()}
+                          onChange={(e) => {
+                            const newDate = new Date(newItem.added_date);
+                            newDate.setMonth(parseInt(e.target.value));
+                            setNewItem(prev => ({ ...prev, added_date: newDate }));
+                          }}
+                        >
+                          {Array.from({ length: 12 }, (_, i) => (
+                            <option key={i} value={i} className="text-black">
+                              {format(new Date(2023, i), "MMMM", { locale: idLocale })}
+                            </option>
+                          ))}
+                        </select>
+                        <select 
+                          className="px-3 py-2 border border-gray-300 rounded-md text-black bg-white ml-2"
+                          value={newItem.added_date.getFullYear()}
+                          onChange={(e) => {
+                            const newDate = new Date(newItem.added_date);
+                            newDate.setFullYear(parseInt(e.target.value));
+                            setNewItem(prev => ({ ...prev, added_date: newDate }));
+                          }}
+                        >
+                          {Array.from({ length: 11 }, (_, i) => 2020 + i).map(year => (
+                            <option key={year} value={year} className="text-black">
+                              {year}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      
+                      {/* Calendar Grid */}
+                      <Calendar
+                        mode="single"
+                        selected={newItem.added_date}
+                        onSelect={handleDateChange}
+                        locale={idLocale}
+                        className="rounded-xl bg-white p-0"
+                        style={{
+                          '--rdp-cell-size': '40px',
+                          '--rdp-accent-color': '#3b82f6',
+                          '--rdp-background-color': '#3b82f6',
+                          '--rdp-accent-color-dark': '#1e40af',
+                          color: 'black',
+                          backgroundColor: 'white'
+                        } as any}
+                        modifiersClassNames={{
+                          today: 'rdp-day_today',
+                          selected: 'rdp-day_selected',
+                          outside: 'rdp-day_outside',
+                          disabled: 'rdp-day_disabled'
+                        }}
+                        classNames={{
+                          months: "flex flex-col space-y-4",
+                          month: "space-y-4",
+                          caption: "flex justify-center pt-1 relative items-center text-black font-semibold text-base mb-4",
+                          table: "w-full border-collapse space-y-1",
+                          head_row: "flex mb-2",
+                          head_cell: "text-gray-600 rounded-md w-10 font-medium text-sm text-center",
+                          row: "flex w-full mt-2",
+                          cell: "relative p-0 text-center text-sm focus-within:relative focus-within:z-20",
+                          day: "h-10 w-10 p-0 font-medium text-black bg-transparent hover:bg-gray-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 aria-selected:bg-blue-500 aria-selected:text-white",
+                          day_selected: "bg-blue-500 text-white hover:bg-blue-600 focus:bg-blue-600",
+                          day_today: "bg-gray-100 text-black font-bold",
+                          day_outside: "text-gray-400 opacity-50",
+                          day_disabled: "text-gray-300 opacity-30 cursor-not-allowed",
+                          day_hidden: "invisible",
+                        }}
+                      />
+                    </div>
                   </PopoverContent>
                 </Popover>
               </div>
@@ -826,18 +893,18 @@ export default function ManageStockPage() {
                   onValueChange={setFilterCategory}
                   value={filterCategory}
                 >
-                  <SelectTrigger className="w-full md:w-[200px] rounded-xl border-blue-400 focus:border-blue-600 bg-white text-blue-900">
+                  <SelectTrigger className="w-full md:w-[200px] rounded-xl border-blue-400 focus:border-blue-600 bg-white text-black">
                     <Filter className="w-4 h-4 mr-2 text-green-500" />
-                    <SelectValue placeholder="Semua Kategori" />
+                    <SelectValue placeholder="Semua Kategori" className="text-black" />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl bg-white/95 backdrop-blur-xl">
-                    <SelectItem value="all">♻️ Semua Kategori</SelectItem>
-                    <SelectItem value="Bahan Pokok">🌾 Bahan Pokok</SelectItem>
-                    <SelectItem value="Makanan Instan">
+                  <SelectContent className="rounded-xl bg-white border border-gray-200">
+                    <SelectItem value="all" className="text-black">♻️ Semua Kategori</SelectItem>
+                    <SelectItem value="Bahan Pokok" className="text-black">🌾 Bahan Pokok</SelectItem>
+                    <SelectItem value="Makanan Instan" className="text-black">
                       🍜 Makanan Instan
                     </SelectItem>
-                    <SelectItem value="Donasi">❤️ Donasi</SelectItem>
-                    <SelectItem value="Lain-lain">📦 Lain-lain</SelectItem>
+                    <SelectItem value="Donasi" className="text-black">❤️ Donasi</SelectItem>
+                    <SelectItem value="Lain-lain" className="text-black">📦 Lain-lain</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -945,20 +1012,20 @@ export default function ManageStockPage() {
                               }
                               value={editingItem.category || ""}
                             >
-                              <SelectTrigger className="w-full rounded-lg border-blue-400 focus:border-blue-600 text-black">
-                                <SelectValue placeholder="Pilih Kategori" />
+                              <SelectTrigger className="w-full rounded-lg border-blue-400 focus:border-blue-600 bg-white text-black">
+                                <SelectValue placeholder="Pilih Kategori" className="text-black" />
                               </SelectTrigger>
-                              <SelectContent className="rounded-xl bg-white/95 backdrop-blur-xl">
-                                <SelectItem value="Bahan Pokok">
+                              <SelectContent className="rounded-xl bg-white border border-gray-200">
+                                <SelectItem value="Bahan Pokok" className="text-black">
                                   🌾 Bahan Pokok
                                 </SelectItem>
-                                <SelectItem value="Makanan Instan">
+                                <SelectItem value="Makanan Instan" className="text-black">
                                   🍜 Makanan Instan
                                 </SelectItem>
-                                <SelectItem value="Donasi">
+                                <SelectItem value="Donasi" className="text-black">
                                   ❤️ Donasi
                                 </SelectItem>
-                                <SelectItem value="Lain-lain">
+                                <SelectItem value="Lain-lain" className="text-black">
                                   📦 Lain-lain
                                 </SelectItem>
                               </SelectContent>
@@ -1010,31 +1077,100 @@ export default function ManageStockPage() {
                                 <Button
                                   variant={"outline"}
                                   className={cn(
-                                    "w-full justify-start text-left font-normal rounded-lg border-blue-400 focus:border-blue-600 text-black",
+                                    "w-full justify-start text-left font-normal rounded-lg border-blue-400 focus:border-blue-600 bg-white text-black",
                                     !editingItem.added_date &&
-                                      "text-muted-foreground"
+                                      "text-gray-500"
                                   )}
                                 >
-                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  <CalendarIcon className="mr-2 h-4 w-4 text-black" />
                                   {editingItem.added_date ? (
-                                    format(
-                                      new Date(editingItem.added_date),
-                                      "PPP",
-                                      { locale: idLocale }
-                                    )
+                                    <span className="text-black">
+                                      {format(
+                                        new Date(editingItem.added_date),
+                                        "PPP",
+                                        { locale: idLocale }
+                                      )}
+                                    </span>
                                   ) : (
-                                    <span>Pilih tanggal</span>
+                                    <span className="text-gray-500">Pilih tanggal</span>
                                   )}
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0 rounded-xl bg-white/95 backdrop-blur-xl">
-                                <Calendar
-                                  mode="single"
-                                  selected={new Date(editingItem.added_date)}
-                                  onSelect={handleEditDateChange}
-                                  initialFocus
-                                  locale={idLocale}
-                                />
+                              <PopoverContent className="w-auto p-4 rounded-xl bg-white border border-gray-300 shadow-xl">
+                                <div className="space-y-4">
+                                  {/* Header dengan dropdown */}
+                                  <div className="flex items-center justify-between">
+                                    <select 
+                                      className="px-3 py-2 border border-gray-300 rounded-md text-black bg-white"
+                                      value={new Date(editingItem.added_date).getMonth()}
+                                      onChange={(e) => {
+                                        const currentDate = new Date(editingItem.added_date);
+                                        currentDate.setMonth(parseInt(e.target.value));
+                                        handleEditDateChange(currentDate);
+                                      }}
+                                    >
+                                      {Array.from({ length: 12 }, (_, i) => (
+                                        <option key={i} value={i} className="text-black">
+                                          {format(new Date(2023, i), "MMMM", { locale: idLocale })}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <select 
+                                      className="px-3 py-2 border border-gray-300 rounded-md text-black bg-white ml-2"
+                                      value={new Date(editingItem.added_date).getFullYear()}
+                                      onChange={(e) => {
+                                        const currentDate = new Date(editingItem.added_date);
+                                        currentDate.setFullYear(parseInt(e.target.value));
+                                        handleEditDateChange(currentDate);
+                                      }}
+                                    >
+                                      {Array.from({ length: 11 }, (_, i) => 2020 + i).map(year => (
+                                        <option key={year} value={year} className="text-black">
+                                          {year}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                  
+                                  {/* Calendar Grid */}
+                                  <Calendar
+                                    mode="single"
+                                    selected={new Date(editingItem.added_date)}
+                                    onSelect={handleEditDateChange}
+                                    locale={idLocale}
+                                    className="rounded-xl bg-white p-0"
+                                    style={{
+                                      '--rdp-cell-size': '40px',
+                                      '--rdp-accent-color': '#3b82f6',
+                                      '--rdp-background-color': '#3b82f6',
+                                      '--rdp-accent-color-dark': '#1e40af',
+                                      color: 'black',
+                                      backgroundColor: 'white'
+                                    } as any}
+                                    modifiersClassNames={{
+                                      today: 'rdp-day_today',
+                                      selected: 'rdp-day_selected',
+                                      outside: 'rdp-day_outside',
+                                      disabled: 'rdp-day_disabled'
+                                    }}
+                                    classNames={{
+                                      months: "flex flex-col space-y-4",
+                                      month: "space-y-4",
+                                      caption: "flex justify-center pt-1 relative items-center text-black font-semibold text-base mb-4",
+                                      table: "w-full border-collapse space-y-1",
+                                      head_row: "flex mb-2",
+                                      head_cell: "text-gray-600 rounded-md w-10 font-medium text-sm text-center",
+                                      row: "flex w-full mt-2",
+                                      cell: "relative p-0 text-center text-sm focus-within:relative focus-within:z-20",
+                                      day: "h-10 w-10 p-0 font-medium text-black bg-transparent hover:bg-gray-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 aria-selected:bg-blue-500 aria-selected:text-white",
+                                      day_selected: "bg-blue-500 text-white hover:bg-blue-600 focus:bg-blue-600",
+                                      day_today: "bg-gray-100 text-black font-bold",
+                                      day_outside: "text-gray-400 opacity-50",
+                                      day_disabled: "text-gray-300 opacity-30 cursor-not-allowed",
+                                      day_hidden: "invisible",
+                                    }}
+                                  />
+                                </div>
                               </PopoverContent>
                             </Popover>
                           ) : (

@@ -6,9 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Sparkles, Camera, Clock, Users, Leaf, ChefHat, Plus, Trash2 } from "lucide-react" // ArrowLeft dihilangkan
-import Link from "next/link" // Link dipertahankan jika ada Link lain yang digunakan di masa depan
-import { Navbar } from "@/components/navigation/nav-dashboard" // Import Navbar
+import { Sparkles, Camera, Clock, Users, Leaf, ChefHat, Plus, Trash2, CheckCircle, Utensils, BookOpen, Heart } from "lucide-react"
+import Link from "next/link"
+import { Navbar } from "@/components/navigation/nav-dashboard"
 
 const sampleRecipes = [
   {
@@ -72,42 +72,103 @@ export default function FoodRescuePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-yellow-50">
-      <Navbar /> {/* Navbar ditambahkan di sini */}
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b sticky top-[56px] z-40"> {/* Sesuaikan top */}
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center space-x-4">
-            {/* Tombol "Kembali" telah dihapus */}
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 relative overflow-hidden">
+      {/* Background Effects - konsisten dengan page lain */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-cyan-200/40 to-blue-300/40 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/2 right-0 w-80 h-80 bg-gradient-to-br from-teal-200/40 to-cyan-300/40 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-gradient-to-br from-blue-200/40 to-emerald-300/40 rounded-full blur-3xl animate-pulse delay-2000" />
+      </div>
+
+      <Navbar />
+
+      {/* Enhanced Header */}
+      <header className="bg-white/80 backdrop-blur-xl border-b border-cyan-100/50 sticky top-[72px] z-40 shadow-lg">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-400 via-yellow-500 to-green-500 rounded-2xl flex items-center justify-center shadow-xl shadow-orange-500/25">
+                <ChefHat className="w-7 h-7 text-white" />
               </div>
-              {/* Desain judul yang divariasikan */}
               <div>
-                <h1 className="text-2xl font-extrabold text-gray-900 leading-tight">
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-green-600">
-                    Food Rescue AI
-                  </span>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 via-yellow-600 to-green-600 bg-clip-text text-transparent">
+                  Food Rescue AI
                 </h1>
-                <p className="text-sm text-gray-700 mt-0.5">Ubah bahan sisa jadi hidangan lezat</p>
+                <p className="text-sm text-cyan-700/80 flex items-center">
+                  <Sparkles className="w-4 h-4 mr-1" />
+                  Ubah bahan sisa jadi hidangan lezat dengan AI
+                </p>
               </div>
             </div>
+            <Badge className="bg-gradient-to-r from-orange-500 to-yellow-600 text-white shadow-lg">
+              <Utensils className="w-3 h-3 mr-1" />
+              AI Chef
+            </Badge>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 relative z-10">
+        {/* Stats Overview */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Card className="text-center bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <ChefHat className="w-7 h-7" />
+                </div>
+                <div className="text-3xl font-bold mb-1">248</div>
+                <div className="text-sm opacity-90">Resep Generated</div>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <Card className="text-center bg-gradient-to-br from-yellow-500 to-yellow-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Leaf className="w-7 h-7" />
+                </div>
+                <div className="text-3xl font-bold mb-1">85%</div>
+                <div className="text-sm opacity-90">Food Waste Reduced</div>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <Card className="text-center bg-gradient-to-br from-green-500 to-emerald-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Users className="w-7 h-7" />
+                </div>
+                <div className="text-3xl font-bold mb-1">1.2K</div>
+                <div className="text-sm opacity-90">Keluarga Terbantu</div>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+            <Card className="text-center bg-gradient-to-br from-cyan-500 to-blue-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Heart className="w-7 h-7" />
+                </div>
+                <div className="text-3xl font-bold mb-1">4.8</div>
+                <div className="text-sm opacity-90">Rating Rata-rata</div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Input Section */}
           <div className="space-y-6">
-            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+            <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm border border-cyan-100/50">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <ChefHat className="w-5 h-5 text-blue-500" />
+                <CardTitle className="flex items-center space-x-2 text-cyan-900">
+                  <ChefHat className="w-5 h-5 text-orange-600" />
                   <span>Input Bahan Makanan</span>
                 </CardTitle>
-                <CardDescription>Masukkan bahan makanan yang tersisa di rumah Anda</CardDescription>
+                <CardDescription className="text-cyan-700">
+                  Masukkan bahan makanan yang tersisa di rumah Anda
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
@@ -122,10 +183,15 @@ export default function FoodRescuePage() {
                         placeholder="Contoh: Wortel setengah layu, Nasi sisa kemarin..."
                         value={ingredient}
                         onChange={(e) => updateIngredient(index, e.target.value)}
-                        className="flex-1"
+                        className="flex-1 border-cyan-400 focus:border-cyan-600 bg-white text-cyan-900"
                       />
                       {ingredients.length > 1 && (
-                        <Button variant="outline" size="sm" onClick={() => removeIngredient(index)}>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => removeIngredient(index)}
+                          className="border-red-300 text-red-600 hover:bg-red-50"
+                        >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       )}
@@ -133,7 +199,11 @@ export default function FoodRescuePage() {
                   ))}
                 </div>
 
-                <Button variant="outline" onClick={addIngredient} className="w-full bg-transparent">
+                <Button 
+                  variant="outline" 
+                  onClick={addIngredient} 
+                  className="w-full border-cyan-400 text-cyan-700 hover:bg-cyan-50"
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   Tambah Bahan
                 </Button>
@@ -142,7 +212,7 @@ export default function FoodRescuePage() {
                   <Button
                     onClick={generateRecipe}
                     disabled={isGenerating || !ingredients.some((i) => i.trim())}
-                    className="flex-1 bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
+                    className="flex-1 bg-gradient-to-r from-orange-500 to-yellow-600 hover:from-orange-600 hover:to-yellow-700 text-white shadow-lg"
                   >
                     {isGenerating ? (
                       <>
@@ -156,7 +226,10 @@ export default function FoodRescuePage() {
                       </>
                     )}
                   </Button>
-                  <Button variant="outline">
+                  <Button 
+                    variant="outline"
+                    className="border-cyan-400 text-cyan-700 hover:bg-cyan-50"
+                  >
                     <Camera className="w-4 h-4" />
                   </Button>
                 </div>
@@ -164,19 +237,31 @@ export default function FoodRescuePage() {
             </Card>
 
             {/* Tips Card */}
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-blue-50">
+            <Card className="border-0 shadow-xl bg-gradient-to-br from-green-50/90 to-cyan-50/90 backdrop-blur-sm border border-green-200/50">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2 text-green-700">
-                  <Leaf className="w-5 h-5" />
+                <CardTitle className="flex items-center space-x-2 text-green-800">
+                  <Leaf className="w-5 h-5 text-green-600" />
                   <span>Tips Food Rescue</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="text-sm text-gray-700 space-y-2">
-                  <p>• Sayuran layu masih bisa diolah menjadi sup atau tumisan</p>
-                  <p>• Buah terlalu matang cocok untuk smoothie atau cake</p>
-                  <p>• Nasi sisa bisa dijadikan nasi goreng atau bubur</p>
-                  <p>• Roti keras bisa dibuat breadcrumb atau french toast</p>
+                <div className="text-sm text-green-700 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <p>Sayuran layu masih bisa diolah menjadi sup atau tumisan</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <p>Buah terlalu matang cocok untuk smoothie atau cake</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <p>Nasi sisa bisa dijadikan nasi goreng atau bubur</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <p>Roti keras bisa dibuat breadcrumb atau french toast</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -186,35 +271,41 @@ export default function FoodRescuePage() {
           <div className="space-y-6">
             {generatedRecipe ? (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+                <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm border border-cyan-100/50">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl text-gray-800">{generatedRecipe.title}</CardTitle>
-                      <Badge className="bg-green-100 text-green-800">AI Generated</Badge>
+                      <CardTitle className="text-xl text-cyan-900">{generatedRecipe.title}</CardTitle>
+                      <Badge className="bg-orange-100 text-orange-800 border border-orange-200">
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        AI Generated
+                      </Badge>
                     </div>
-                    <CardDescription>{generatedRecipe.description}</CardDescription>
+                    <CardDescription className="text-cyan-700">{generatedRecipe.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-3 gap-4">
-                      <div className="text-center p-3 bg-blue-50 rounded-lg">
+                      <div className="text-center p-3 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-200/50">
                         <Clock className="w-5 h-5 text-blue-600 mx-auto mb-1" />
                         <div className="text-sm font-medium text-blue-800">{generatedRecipe.cookTime}</div>
                       </div>
-                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                      <div className="text-center p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200/50">
                         <Users className="w-5 h-5 text-green-600 mx-auto mb-1" />
                         <div className="text-sm font-medium text-green-800">{generatedRecipe.difficulty}</div>
                       </div>
-                      <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                      <div className="text-center p-3 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl border border-yellow-200/50">
                         <Leaf className="w-5 h-5 text-yellow-600 mx-auto mb-1" />
                         <div className="text-sm font-medium text-yellow-800">{generatedRecipe.nutrition}</div>
                       </div>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Bahan yang Digunakan:</h4>
+                      <h4 className="font-semibold text-cyan-900 mb-3 flex items-center">
+                        <Utensils className="w-4 h-4 mr-2 text-orange-600" />
+                        Bahan yang Digunakan:
+                      </h4>
                       <div className="flex flex-wrap gap-2">
                         {generatedRecipe.ingredients.map((ingredient, index) => (
-                          <Badge key={index} variant="secondary">
+                          <Badge key={index} className="bg-cyan-100 text-cyan-800 border border-cyan-200">
                             {ingredient}
                           </Badge>
                         ))}
@@ -222,24 +313,29 @@ export default function FoodRescuePage() {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-800 mb-3">Langkah Memasak:</h4>
-                      <div className="space-y-2">
+                      <h4 className="font-semibold text-cyan-900 mb-3 flex items-center">
+                        <BookOpen className="w-4 h-4 mr-2 text-orange-600" />
+                        Langkah Memasak:
+                      </h4>
+                      <div className="space-y-3">
                         {generatedRecipe.steps.map((step, index) => (
-                          <div key={index} className="flex items-start space-x-3">
-                            <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                          <div key={index} className="flex items-start space-x-3 p-3 bg-gradient-to-r from-gray-50 to-cyan-50/50 rounded-lg border border-cyan-100/50">
+                            <div className="w-7 h-7 bg-gradient-to-br from-orange-500 to-yellow-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
                               {index + 1}
                             </div>
-                            <p className="text-gray-700 text-sm">{step}</p>
+                            <p className="text-cyan-800 text-sm leading-relaxed">{step}</p>
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    <div className="flex space-x-2 pt-4">
-                      <Button className="flex-1 bg-transparent" variant="outline">
+                    <div className="flex space-x-3 pt-4 border-t border-cyan-100">
+                      <Button className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg">
+                        <CheckCircle className="w-4 h-4 mr-2" />
                         Simpan Resep
                       </Button>
-                      <Button className="flex-1 bg-transparent" variant="outline">
+                      <Button className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white shadow-lg">
+                        <Heart className="w-4 h-4 mr-2" />
                         Bagikan
                       </Button>
                     </div>
@@ -247,28 +343,33 @@ export default function FoodRescuePage() {
                 </Card>
               </motion.div>
             ) : (
-              <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+              <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm border border-cyan-100/50">
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ChefHat className="w-8 h-8 text-gray-400" />
+                  <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <ChefHat className="w-10 h-10 text-orange-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Resep AI Siap Dibuat</h3>
-                  <p className="text-gray-600 mb-4">
-                    Masukkan bahan makanan yang tersisa, dan AI akan memberikan resep kreatif untuk mengurangi food
-                    waste
+                  <h3 className="text-xl font-bold text-cyan-900 mb-3">Resep AI Siap Dibuat</h3>
+                  <p className="text-cyan-700 mb-6">
+                    Masukkan bahan makanan yang tersisa, dan AI akan memberikan resep kreatif untuk mengurangi food waste
                   </p>
-                  <div className="text-sm text-gray-500">
-                    💡 Tip: Semakin detail bahan yang dimasukkan, semakin akurat resep yang dihasilkan
+                  <div className="inline-flex items-center space-x-2 text-sm font-medium text-orange-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-200">
+                    <Sparkles className="w-4 h-4" />
+                    <span>💡 Tip: Semakin detail bahan yang dimasukkan, semakin akurat resep yang dihasilkan</span>
                   </div>
                 </CardContent>
               </Card>
             )}
 
             {/* Sample Recipes */}
-            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+            <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm border border-cyan-100/50">
               <CardHeader>
-                <CardTitle className="text-lg">Resep Populer</CardTitle>
-                <CardDescription>Inspirasi dari komunitas ECONARA</CardDescription>
+                <CardTitle className="text-lg text-cyan-900 flex items-center">
+                  <BookOpen className="w-5 h-5 mr-2 text-orange-600" />
+                  Resep Populer
+                </CardTitle>
+                <CardDescription className="text-cyan-700">
+                  Inspirasi dari komunitas ECONARA
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {sampleRecipes.map((recipe, index) => (
@@ -277,22 +378,28 @@ export default function FoodRescuePage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 * index }}
-                    className="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="p-4 bg-gradient-to-r from-gray-50 to-cyan-50/50 rounded-xl cursor-pointer hover:from-cyan-50 hover:to-blue-50/50 transition-all duration-300 border border-cyan-100/50 hover:shadow-lg"
                     onClick={() => setGeneratedRecipe(recipe)}
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-medium text-gray-800">{recipe.title}</h4>
-                      <Badge variant="secondary" className="text-xs">
+                      <h4 className="font-medium text-cyan-900">{recipe.title}</h4>
+                      <Badge className="bg-green-100 text-green-800 border border-green-200 text-xs">
+                        <Clock className="w-3 h-3 mr-1" />
                         {recipe.cookTime}
                       </Badge>
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">{recipe.description}</p>
+                    <p className="text-sm text-cyan-700 mb-3">{recipe.description}</p>
                     <div className="flex flex-wrap gap-1">
                       {recipe.ingredients.slice(0, 3).map((ingredient, i) => (
-                        <Badge key={i} variant="outline" className="text-xs">
+                        <Badge key={i} variant="outline" className="text-xs border-cyan-300 text-cyan-600">
                           {ingredient}
                         </Badge>
                       ))}
+                      {recipe.ingredients.length > 3 && (
+                        <Badge variant="outline" className="text-xs border-cyan-300 text-cyan-600">
+                          +{recipe.ingredients.length - 3} lagi
+                        </Badge>
+                      )}
                     </div>
                   </motion.div>
                 ))}
