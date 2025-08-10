@@ -94,24 +94,24 @@ const categoryIcons = {
 const statusConfig = {
   tersedia: {
     icon: CheckCircle,
-    color: "from-emerald-400 to-teal-500",
-    bgColor: "bg-emerald-50",
-    textColor: "text-emerald-800",
-    borderColor: "border-emerald-200",
+    color: "linear-gradient(135deg, #10b981, #14b8a6)",
+    bgColor: '#f0fdf4',
+    textColor: '#166534',
+    borderColor: '#bbf7d0',
   },
   menipis: {
     icon: AlertTriangle,
-    color: "from-amber-400 to-orange-500",
-    bgColor: "bg-amber-50",
-    textColor: "text-amber-800",
-    borderColor: "border-amber-200",
+    color: "linear-gradient(135deg, #f59e0b, #f97316)",
+    bgColor: '#fffbeb',
+    textColor: '#92400e',
+    borderColor: '#fed7aa',
   },
   habis: {
     icon: X,
-    color: "from-red-400 to-pink-500",
-    bgColor: "bg-red-50",
-    textColor: "text-red-800",
-    borderColor: "border-red-200",
+    color: "linear-gradient(135deg, #ef4444, #ec4899)",
+    bgColor: '#fef2f2',
+    textColor: '#991b1b',
+    borderColor: '#fecaca',
   },
 };
 
@@ -519,28 +519,70 @@ export default function ManageStockPage() {
   }, [stockItems]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 relative overflow-hidden">
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 25%, #a7f3d0 75%, #cffafe 100%)'
+      }}
+    >
       <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-cyan-200/40 to-blue-300/40 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 right-0 w-80 h-80 bg-gradient-to-br from-teal-200/40 to-cyan-300/40 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-gradient-to-br from-blue-200/40 to-emerald-300/40 rounded-full blur-3xl animate-pulse delay-2000" />
+        <div 
+          className="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl animate-pulse"
+          style={{
+            background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.4), rgba(6, 182, 212, 0.4))'
+          }}
+        />
+        <div 
+          className="absolute top-1/2 right-0 w-80 h-80 rounded-full blur-3xl animate-pulse"
+          style={{
+            background: 'linear-gradient(135deg, rgba(20, 184, 166, 0.4), rgba(14, 165, 233, 0.4))',
+            animationDelay: '1s'
+          }}
+        />
+        <div 
+          className="absolute bottom-0 left-1/3 w-72 h-72 rounded-full blur-3xl animate-pulse"
+          style={{
+            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.4), rgba(16, 185, 129, 0.4))',
+            animationDelay: '2s'
+          }}
+        />
       </div>
 
       <Navbar />
 
       {/* Enhanced Header */}
-      <header className="bg-white/80 backdrop-blur-xl border-b border-cyan-100/50 sticky top-[72px] z-40 shadow-lg">
+      <header 
+        className="backdrop-blur-xl border-b sticky top-[72px] z-40 shadow-lg"
+        style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          borderColor: 'rgba(14, 165, 233, 0.5)'
+        }}
+      >
         <div className="container mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-400 via-blue-500 to-yellow-400 rounded-2xl flex items-center justify-center shadow-xl shadow-green-500/25">
+              <div 
+                className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl"
+                style={{
+                  background: 'linear-gradient(135deg, #22c55e, #3b82f6, #eab308)',
+                  boxShadow: '0 20px 25px -5px rgba(34, 197, 94, 0.25), 0 10px 10px -5px rgba(34, 197, 94, 0.04)'
+                }}
+              >
                 <Package className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-yellow-600 bg-clip-text text-transparent">
+                <h1 
+                  className="text-2xl font-bold"
+                  style={{
+                    backgroundImage: 'linear-gradient(90deg, #16a34a, #3b82f6, #eab308)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
                   Platform AI-powered Komunitas Pangan
                 </h1>
-                <p className="text-sm text-green-700/80 flex items-center">
+                <p className="text-sm flex items-center" style={{ color: '#16a34a' }}>
                   Menghubungkan komunitas untuk mengatasi food waste,
                   mengoptimalkan distribusi pangan, dan membangun ekonomi
                   sirkular.
@@ -548,11 +590,23 @@ export default function ManageStockPage() {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <Badge className="bg-gradient-to-r from-green-400 to-blue-500 text-white shadow-lg">
+              <Badge 
+                className="text-white shadow-lg border-0"
+                style={{
+                  background: 'linear-gradient(90deg, #22c55e, #3b82f6)'
+                }}
+              >
                 <Package className="w-3 h-3 mr-1" />
                 {stockStats.total} Item
               </Badge>
-              <Badge className="bg-green-100/80 text-green-800 backdrop-blur-sm">
+              <Badge 
+                className="shadow-lg border-0"
+                style={{
+                  backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                  color: '#166534',
+                  backdropFilter: 'blur(4px)'
+                }}
+              >
                 {stockStats.totalQuantity} Total Qty
               </Badge>
             </div>
@@ -568,7 +622,13 @@ export default function ManageStockPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card className="text-center bg-gradient-to-br from-green-400 via-blue-400 to-yellow-300 text-white border-0 shadow-xl shadow-green-500/25 hover:shadow-2xl hover:shadow-green-500/30 transition-all duration-300 hover:scale-105">
+            <Card 
+              className="text-center text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #22c55e, #3b82f6, #eab308)',
+                boxShadow: '0 20px 25px -5px rgba(34, 197, 94, 0.25), 0 10px 10px -5px rgba(34, 197, 94, 0.04)'
+              }}
+            >
               <CardContent className="p-6">
                 <CheckCircle className="w-10 h-10 mx-auto mb-3 drop-shadow-lg" />
                 <div className="text-3xl font-bold drop-shadow-sm">
@@ -577,7 +637,12 @@ export default function ManageStockPage() {
                 <div className="text-sm opacity-90 font-medium">
                   Pangan Tersedia
                 </div>
-                <div className="text-xs opacity-75 mt-2 bg-white/20 rounded-full px-2 py-1">
+                <div 
+                  className="text-xs opacity-75 mt-2 rounded-full px-2 py-1"
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)'
+                  }}
+                >
                   Siap Didistribusikan
                 </div>
               </CardContent>
@@ -589,7 +654,13 @@ export default function ManageStockPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Card className="text-center bg-gradient-to-br from-amber-400 via-orange-500 to-yellow-500 text-white border-0 shadow-xl shadow-amber-500/25 hover:shadow-2xl hover:shadow-amber-500/30 transition-all duration-300 hover:scale-105">
+            <Card 
+              className="text-center text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #f59e0b, #f97316, #eab308)',
+                boxShadow: '0 20px 25px -5px rgba(245, 158, 11, 0.25), 0 10px 10px -5px rgba(245, 158, 11, 0.04)'
+              }}
+            >
               <CardContent className="p-6">
                 <AlertTriangle className="w-10 h-10 mx-auto mb-3 drop-shadow-lg" />
                 <div className="text-3xl font-bold drop-shadow-sm">
@@ -598,7 +669,12 @@ export default function ManageStockPage() {
                 <div className="text-sm opacity-90 font-medium">
                   Pangan Menipis
                 </div>
-                <div className="text-xs opacity-75 mt-2 bg-white/20 rounded-full px-2 py-1">
+                <div 
+                  className="text-xs opacity-75 mt-2 rounded-full px-2 py-1"
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)'
+                  }}
+                >
                   Segera Optimalkan Distribusi
                 </div>
               </CardContent>
@@ -610,7 +686,13 @@ export default function ManageStockPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card className="text-center bg-gradient-to-br from-red-400 via-pink-500 to-rose-500 text-white border-0 shadow-xl shadow-red-500/25 hover:shadow-2xl hover:shadow-red-500/30 transition-all duration-300 hover:scale-105">
+            <Card 
+              className="text-center text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #ef4444, #ec4899, #f43f5e)',
+                boxShadow: '0 20px 25px -5px rgba(239, 68, 68, 0.25), 0 10px 10px -5px rgba(239, 68, 68, 0.04)'
+              }}
+            >
               <CardContent className="p-6">
                 <X className="w-10 h-10 mx-auto mb-3 drop-shadow-lg" />
                 <div className="text-3xl font-bold drop-shadow-sm">
@@ -619,7 +701,12 @@ export default function ManageStockPage() {
                 <div className="text-sm opacity-90 font-medium">
                   Pangan Habis
                 </div>
-                <div className="text-xs opacity-75 mt-2 bg-white/20 rounded-full px-2 py-1">
+                <div 
+                  className="text-xs opacity-75 mt-2 rounded-full px-2 py-1"
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)'
+                  }}
+                >
                   Perlu Donasi Segera
                 </div>
               </CardContent>
@@ -631,16 +718,28 @@ export default function ManageStockPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <Card className="text-center bg-gradient-to-br from-blue-300 via-green-200 to-yellow-200 text-blue-900 border-0 shadow-xl shadow-blue-300/25 hover:shadow-2xl hover:shadow-blue-300/30 transition-all duration-300 hover:scale-105">
+            <Card 
+              className="text-center border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #bfdbfe, #a7f3d0, #fef3c7)',
+                color: '#1e40af',
+                boxShadow: '0 20px 25px -5px rgba(59, 130, 246, 0.25), 0 10px 10px -5px rgba(59, 130, 246, 0.04)'
+              }}
+            >
               <CardContent className="p-6">
-                <Package className="w-10 h-10 mx-auto mb-3 text-blue-700 drop-shadow-sm" />
+                <Package className="w-10 h-10 mx-auto mb-3 drop-shadow-sm" style={{ color: '#1d4ed8' }} />
                 <div className="text-3xl font-bold drop-shadow-sm">
                   {stockStats.total}
                 </div>
                 <div className="text-sm opacity-90 font-medium">
                   Total Item Pangan
                 </div>
-                <div className="text-xs opacity-75 mt-2 bg-blue-500/20 rounded-full px-2 py-1">
+                <div 
+                  className="text-xs opacity-75 mt-2 rounded-full px-2 py-1"
+                  style={{
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)'
+                  }}
+                >
                   Semua Kategori
                 </div>
               </CardContent>
@@ -649,13 +748,21 @@ export default function ManageStockPage() {
         </div>
 
         {/* Form Tambah Stok Baru */}
-        <Card className="border-0 bg-gradient-to-br from-green-50/80 to-blue-50/80 backdrop-blur-sm shadow-lg">
+        <Card 
+          className="border-0 backdrop-blur-sm shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, rgba(240, 253, 244, 0.8), rgba(219, 234, 254, 0.8))',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'rgba(34, 197, 94, 0.2)'
+          }}
+        >
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2 text-green-900">
-              <PlusCircle className="w-5 h-5 text-green-600" />
+            <CardTitle className="flex items-center space-x-2" style={{ color: '#14532d' }}>
+              <PlusCircle className="w-5 h-5" style={{ color: '#16a34a' }} />
               <span>Tambah Item Pangan</span>
             </CardTitle>
-            <CardDescription className="text-green-700">
+            <CardDescription style={{ color: '#15803d' }}>
               Masukkan detail item baru untuk distribusi pangan komunitas
             </CardDescription>
           </CardHeader>
@@ -664,7 +771,8 @@ export default function ManageStockPage() {
               <div className="space-y-2">
                 <Label
                   htmlFor="name"
-                  className="text-sm font-semibold text-green-700"
+                  className="text-sm font-semibold"
+                  style={{ color: '#15803d' }}
                 >
                   Nama Pangan
                 </Label>
@@ -674,13 +782,19 @@ export default function ManageStockPage() {
                   value={newItem.name}
                   onChange={handleInputChange}
                   placeholder="Contoh: Beras Premium, Ikan Segar"
-                  className="rounded-xl border-blue-400 focus:border-blue-600 bg-white text-blue-900 placeholder-blue-400"
+                  className="rounded-xl"
+                  style={{
+                    borderColor: '#60a5fa',
+                    backgroundColor: '#ffffff',
+                    color: '#1e40af'
+                  }}
                 />
               </div>
               <div className="space-y-2">
                 <Label
                   htmlFor="category"
-                  className="text-sm font-semibold text-green-700"
+                  className="text-sm font-semibold"
+                  style={{ color: '#15803d' }}
                 >
                   Kategori
                 </Label>
@@ -688,7 +802,7 @@ export default function ManageStockPage() {
                   onValueChange={(value) => handleSelectChange(value)}
                   value={newItem.category}
                 >
-                  <SelectTrigger className="w-full rounded-xl border-blue-400 focus:border-blue-600 bg-white text-black">
+                  <SelectTrigger className="w-full rounded-xl" style={{ borderColor: '#60a5fa' }}>
                     <SelectValue placeholder="Pilih Kategori" className="text-black" />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl bg-white border border-gray-200">
@@ -704,7 +818,8 @@ export default function ManageStockPage() {
               <div className="space-y-2">
                 <Label
                   htmlFor="quantity"
-                  className="text-sm font-semibold text-green-700"
+                  className="text-sm font-semibold"
+                  style={{ color: '#15803d' }}
                 >
                   Jumlah
                 </Label>
@@ -715,13 +830,19 @@ export default function ManageStockPage() {
                   value={newItem.quantity}
                   onChange={handleInputChange}
                   placeholder="Contoh: 50"
-                  className="rounded-xl border-blue-400 focus:border-blue-600 bg-white text-blue-900 placeholder-blue-400"
+                  className="rounded-xl"
+                  style={{
+                    borderColor: '#60a5fa',
+                    backgroundColor: '#ffffff',
+                    color: '#1e40af'
+                  }}
                 />
               </div>
               <div className="space-y-2">
                 <Label
                   htmlFor="unit"
-                  className="text-sm font-semibold text-green-700"
+                  className="text-sm font-semibold"
+                  style={{ color: '#15803d' }}
                 >
                   Satuan
                 </Label>
@@ -731,13 +852,19 @@ export default function ManageStockPage() {
                   value={newItem.unit}
                   onChange={handleInputChange}
                   placeholder="Contoh: kg, liter, pcs"
-                  className="rounded-xl border-blue-400 focus:border-blue-600 bg-white text-blue-900 placeholder-blue-400"
+                  className="rounded-xl"
+                  style={{
+                    borderColor: '#60a5fa',
+                    backgroundColor: '#ffffff',
+                    color: '#1e40af'
+                  }}
                 />
               </div>
               <div className="space-y-2">
                 <Label
                   htmlFor="added_date"
-                  className="text-sm font-semibold text-green-700"
+                  className="text-sm font-semibold"
+                  style={{ color: '#15803d' }}
                 >
                   Tanggal Ditambahkan
                 </Label>
