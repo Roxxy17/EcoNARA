@@ -154,62 +154,135 @@ export default function LeaderboardPage() {
     }
   }
 
-  const getRankBg = (rank: number) => {
+  const getRankBgStyle = (rank: number): React.CSSProperties => {
     switch (rank) {
       case 1:
-        return "bg-gradient-to-r from-yellow-400 to-orange-500"
+        return {
+          background: 'linear-gradient(135deg, #fbbf24, #f59e0b, #ea580c)'
+        }
       case 2:
-        return "bg-gradient-to-r from-gray-300 to-gray-500"
+        return {
+          background: 'linear-gradient(135deg, #d1d5db, #9ca3af, #6b7280)'
+        }
       case 3:
-        return "bg-gradient-to-r from-amber-400 to-amber-600"
+        return {
+          background: 'linear-gradient(135deg, #f59e0b, #d97706, #ea580c)'
+        }
       default:
-        return "bg-gradient-to-r from-cyan-500 to-blue-600"
+        return {
+          background: 'linear-gradient(135deg, #06b6d4, #0891b2, #0e7490)'
+        }
     }
   }
 
-  const getRankCardBg = (rank: number) => {
+  const getRankCardStyle = (rank: number): React.CSSProperties => {
     switch (rank) {
       case 1:
-        return "bg-gradient-to-br from-yellow-400/20 via-orange-400/20 to-red-400/20 border-yellow-300"
+        return {
+          background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.15), rgba(234, 88, 12, 0.15))',
+          borderColor: '#fbbf24',
+          borderWidth: '2px',
+          borderStyle: 'solid',
+          boxShadow: '0 25px 50px -12px rgba(251, 191, 36, 0.25)'
+        }
       case 2:
-        return "bg-gradient-to-br from-gray-300/20 via-slate-400/20 to-gray-500/20 border-gray-300"
+        return {
+          background: 'linear-gradient(135deg, rgba(209, 213, 219, 0.15), rgba(156, 163, 175, 0.15), rgba(107, 114, 128, 0.15))',
+          borderColor: '#d1d5db',
+          borderWidth: '2px',
+          borderStyle: 'solid',
+          boxShadow: '0 25px 50px -12px rgba(156, 163, 175, 0.25)'
+        }
       case 3:
-        return "bg-gradient-to-br from-amber-400/20 via-orange-400/20 to-yellow-400/20 border-amber-300"
+        return {
+          background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.15), rgba(234, 88, 12, 0.15))',
+          borderColor: '#f59e0b',
+          borderWidth: '2px',
+          borderStyle: 'solid',
+          boxShadow: '0 25px 50px -12px rgba(245, 158, 11, 0.25)'
+        }
       default:
-        return "bg-white/90 border-cyan-100"
+        return {
+          background: 'rgba(255, 255, 255, 0.95)',
+          borderColor: 'rgba(6, 182, 212, 0.2)',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+        }
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 relative overflow-hidden">
-      {/* Background Effects - konsisten dengan page lain */}
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, #ecfeff 0%, #dbeafe 25%, #f0fdfa 75%, #ecfeff 100%)'
+      }}
+    >
+      {/* Background Effects */}
       <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-cyan-200/40 to-blue-300/40 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 right-0 w-80 h-80 bg-gradient-to-br from-teal-200/40 to-cyan-300/40 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-gradient-to-br from-blue-200/40 to-emerald-300/40 rounded-full blur-3xl animate-pulse delay-2000" />
+        <div 
+          className="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl animate-pulse"
+          style={{
+            background: 'linear-gradient(135deg, rgba(165, 243, 252, 0.6), rgba(59, 130, 246, 0.4))'
+          }}
+        />
+        <div 
+          className="absolute top-1/2 right-0 w-80 h-80 rounded-full blur-3xl animate-pulse"
+          style={{
+            background: 'linear-gradient(135deg, rgba(20, 184, 166, 0.4), rgba(6, 182, 212, 0.6))',
+            animationDelay: '1s'
+          }}
+        />
+        <div 
+          className="absolute bottom-0 left-1/3 w-72 h-72 rounded-full blur-3xl animate-pulse"
+          style={{
+            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(34, 197, 94, 0.4))',
+            animationDelay: '2s'
+          }}
+        />
       </div>
 
       <Navbar />
 
-      {/* Enhanced Header */}
-      <header className="bg-white/80 backdrop-blur-xl border-b border-cyan-100/50 sticky top-[72px] z-40 shadow-lg">
+      {/* Header */}
+      <header 
+        className="backdrop-blur-xl border-b sticky top-[72px] z-40 shadow-lg"
+        style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: 'rgba(6, 182, 212, 0.2)'
+        }}
+      >
         <div className="container mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-xl shadow-yellow-500/25">
+              <div 
+                className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl"
+                style={{
+                  background: 'linear-gradient(135deg, #fbbf24, #f59e0b, #ea580c)'
+                }}
+              >
                 <Trophy className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-yellow-600 via-orange-600 to-red-600 bg-clip-text text-transparent">
+                <h1 
+                  className="text-2xl font-bold"
+                  style={{ color: '#d97706' }}
+                >
                   Leaderboard Komunitas
                 </h1>
-                <p className="text-sm text-cyan-700/80 flex items-center">
+                <p className="text-sm flex items-center" style={{ color: '#0e7490' }}>
                   <Sparkles className="w-4 h-4 mr-1" />
                   Kompetisi ramah lingkungan untuk komunitas yang lebih hijau
                 </p>
               </div>
             </div>
-            <Badge className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white shadow-lg">
+            <Badge 
+              className="text-white shadow-lg border-0"
+              style={{
+                background: 'linear-gradient(90deg, #fbbf24, #f59e0b)'
+              }}
+            >
               <Crown className="w-3 h-3 mr-1" />
               Champions
             </Badge>
@@ -218,12 +291,20 @@ export default function LeaderboardPage() {
       </header>
 
       <div className="container mx-auto px-4 py-8 relative z-10">
-        {/* Enhanced Stats Overview */}
+        {/* Stats Overview */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <Card className="text-center bg-gradient-to-br from-yellow-500 to-orange-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+            <Card 
+              className="text-center text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #fbbf24, #f59e0b, #ea580c)'
+              }}
+            >
               <CardContent className="p-6">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div 
+                  className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"
+                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.25)' }}
+                >
                   <Trophy className="w-7 h-7" />
                 </div>
                 <div className="text-3xl font-bold mb-1">156</div>
@@ -231,10 +312,19 @@ export default function LeaderboardPage() {
               </CardContent>
             </Card>
           </motion.div>
+          
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="text-center bg-gradient-to-br from-green-500 to-emerald-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+            <Card 
+              className="text-center text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #22c55e, #16a34a, #15803d)'
+              }}
+            >
               <CardContent className="p-6">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div 
+                  className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"
+                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.25)' }}
+                >
                   <Leaf className="w-7 h-7" />
                 </div>
                 <div className="text-3xl font-bold mb-1">1.2K</div>
@@ -242,10 +332,19 @@ export default function LeaderboardPage() {
               </CardContent>
             </Card>
           </motion.div>
+          
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-            <Card className="text-center bg-gradient-to-br from-pink-500 to-purple-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+            <Card 
+              className="text-center text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #ec4899, #db2777, #be185d)'
+              }}
+            >
               <CardContent className="p-6">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div 
+                  className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"
+                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.25)' }}
+                >
                   <Heart className="w-7 h-7" />
                 </div>
                 <div className="text-3xl font-bold mb-1">89</div>
@@ -253,10 +352,19 @@ export default function LeaderboardPage() {
               </CardContent>
             </Card>
           </motion.div>
+          
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-            <Card className="text-center bg-gradient-to-br from-cyan-500 to-blue-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+            <Card 
+              className="text-center text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #06b6d4, #0891b2, #0e7490)'
+              }}
+            >
               <CardContent className="p-6">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div 
+                  className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"
+                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.25)' }}
+                >
                   <Zap className="w-7 h-7" />
                 </div>
                 <div className="text-3xl font-bold mb-1">24</div>
@@ -266,38 +374,58 @@ export default function LeaderboardPage() {
           </motion.div>
         </div>
 
-        {/* Enhanced Weekly Challenge Banner */}
+        {/* Weekly Challenge Banner */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <Card className="border-0 shadow-xl bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white overflow-hidden backdrop-blur-sm">
+          <Card 
+            className="border-0 shadow-xl text-white overflow-hidden backdrop-blur-sm"
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6, #ec4899, #f59e0b)'
+            }}
+          >
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-3">
-                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                    <div 
+                      className="w-8 h-8 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.25)' }}
+                    >
                       <Zap className="w-5 h-5" />
                     </div>
-                    <Badge className="bg-white/20 text-white border-0 shadow-lg">
+                    <Badge 
+                      className="text-white border-0 shadow-lg"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.25)' }}
+                    >
                       <Flame className="w-3 h-3 mr-1" />
                       Challenge Aktif
                     </Badge>
                   </div>
                   <h2 className="text-2xl font-bold mb-2">{weeklyChallenge.title}</h2>
-                  <p className="text-purple-100 mb-4 leading-relaxed">{weeklyChallenge.description}</p>
+                  <p className="opacity-90 mb-4 leading-relaxed">{weeklyChallenge.description}</p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                    <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-3">
+                    <div 
+                      className="flex items-center space-x-2 rounded-lg p-3"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
+                    >
                       <Users className="w-4 h-4" />
                       <span>{weeklyChallenge.participants} peserta</span>
                     </div>
-                    <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-3">
+                    <div 
+                      className="flex items-center space-x-2 rounded-lg p-3"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
+                    >
                       <Calendar className="w-4 h-4" />
                       <span>{weeklyChallenge.timeLeft}</span>
                     </div>
-                    <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-3">
+                    <div 
+                      className="flex items-center space-x-2 rounded-lg p-3"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
+                    >
                       <Award className="w-4 h-4" />
                       <span className="truncate">{weeklyChallenge.prize}</span>
                     </div>
@@ -316,16 +444,32 @@ export default function LeaderboardPage() {
                           initial={{ opacity: 0, x: 20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.1 * index }}
-                          className="flex items-center space-x-3 bg-white/20 rounded-xl p-3 backdrop-blur-sm border border-white/10"
+                          className="flex items-center space-x-3 rounded-xl p-3 backdrop-blur-sm"
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                            border: '1px solid rgba(255, 255, 255, 0.2)'
+                          }}
                         >
                           <div className="relative">
                             <Avatar className="w-8 h-8">
                               <AvatarImage src={participant.avatar || "/placeholder.svg"} />
-                              <AvatarFallback className="text-xs bg-white/20">
+                              <AvatarFallback 
+                                className="text-xs"
+                                style={{ 
+                                  backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                                  color: '#1f2937'
+                                }}
+                              >
                                 {participant.name.split(" ").map((n) => n[0]).join("")}
                               </AvatarFallback>
                             </Avatar>
-                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center text-xs font-bold text-gray-800">
+                            <div 
+                              className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"
+                              style={{ 
+                                backgroundColor: '#fbbf24',
+                                color: '#1f2937'
+                              }}
+                            >
                               {index + 1}
                             </div>
                           </div>
@@ -346,39 +490,63 @@ export default function LeaderboardPage() {
           </Card>
         </motion.div>
 
-        {/* Enhanced Filters */}
+        {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <Card className="flex-1 border-0 shadow-lg bg-white/90 backdrop-blur-sm border border-cyan-100/50">
+          <Card 
+            className="flex-1 border shadow-lg backdrop-blur-sm"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              borderColor: 'rgba(6, 182, 212, 0.2)'
+            }}
+          >
             <CardContent className="p-4">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
-                  <Calendar className="w-4 h-4 text-cyan-600" />
-                  <span className="text-sm font-medium text-cyan-800">Periode:</span>
+                  <Calendar className="w-4 h-4" style={{ color: '#0891b2' }} />
+                  <span className="text-sm font-medium" style={{ color: '#164e63' }}>Periode:</span>
                 </div>
                 <Select value={timeRange} onValueChange={setTimeRange}>
-                  <SelectTrigger className="border-cyan-400 focus:border-cyan-600 bg-white text-cyan-900">
+                  <SelectTrigger 
+                    className="bg-white"
+                    style={{
+                      borderColor: '#06b6d4',
+                      color: '#164e63'
+                    }}
+                  >
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-cyan-200">
-                    <SelectItem value="daily" className="text-cyan-900">Harian</SelectItem>
-                    <SelectItem value="weekly" className="text-cyan-900">Mingguan</SelectItem>
-                    <SelectItem value="monthly" className="text-cyan-900">Bulanan</SelectItem>
-                    <SelectItem value="yearly" className="text-cyan-900">Tahunan</SelectItem>
+                  <SelectContent 
+                    className="bg-white"
+                    style={{ borderColor: 'rgba(6, 182, 212, 0.2)' }}
+                  >
+                    <SelectItem value="daily" style={{ color: '#164e63' }}>Harian</SelectItem>
+                    <SelectItem value="weekly" style={{ color: '#164e63' }}>Mingguan</SelectItem>
+                    <SelectItem value="monthly" style={{ color: '#164e63' }}>Bulanan</SelectItem>
+                    <SelectItem value="yearly" style={{ color: '#164e63' }}>Tahunan</SelectItem>
                   </SelectContent>
                 </Select>
                 <div className="flex items-center space-x-2">
-                  <Target className="w-4 h-4 text-cyan-600" />
-                  <span className="text-sm font-medium text-cyan-800">Kategori:</span>
+                  <Target className="w-4 h-4" style={{ color: '#0891b2' }} />
+                  <span className="text-sm font-medium" style={{ color: '#164e63' }}>Kategori:</span>
                 </div>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="border-cyan-400 focus:border-cyan-600 bg-white text-cyan-900">
+                  <SelectTrigger 
+                    className="bg-white"
+                    style={{
+                      borderColor: '#06b6d4',
+                      color: '#164e63'
+                    }}
+                  >
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-cyan-200">
-                    <SelectItem value="all" className="text-cyan-900">Semua Kategori</SelectItem>
-                    <SelectItem value="food" className="text-cyan-900">Food Rescue</SelectItem>
-                    <SelectItem value="donation" className="text-cyan-900">Donasi</SelectItem>
-                    <SelectItem value="recycle" className="text-cyan-900">Daur Ulang</SelectItem>
+                  <SelectContent 
+                    className="bg-white"
+                    style={{ borderColor: 'rgba(6, 182, 212, 0.2)' }}
+                  >
+                    <SelectItem value="all" style={{ color: '#164e63' }}>Semua Kategori</SelectItem>
+                    <SelectItem value="food" style={{ color: '#164e63' }}>Food Rescue</SelectItem>
+                    <SelectItem value="donation" style={{ color: '#164e63' }}>Donasi</SelectItem>
+                    <SelectItem value="recycle" style={{ color: '#164e63' }}>Daur Ulang</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -387,19 +555,33 @@ export default function LeaderboardPage() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 bg-white/90 backdrop-blur-sm border border-cyan-100/50 shadow-lg rounded-xl p-1">
-            <TabsTrigger value="individual" className="text-cyan-700 data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500 data-[state=active]:to-orange-500 data-[state=active]:text-white rounded-lg">
+          <TabsList 
+            className="grid w-full grid-cols-2 backdrop-blur-sm shadow-lg rounded-xl p-1"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              borderColor: 'rgba(6, 182, 212, 0.2)',
+              borderWidth: '1px',
+              borderStyle: 'solid'
+            }}
+          >
+            <TabsTrigger 
+              value="individual" 
+              className="rounded-lg text-cyan-700 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-300 data-[state=active]:to-amber-500"
+            >
               <Trophy className="w-4 h-4 mr-2" />
               Individu
             </TabsTrigger>
-            <TabsTrigger value="community" className="text-cyan-700 data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500 data-[state=active]:to-orange-500 data-[state=active]:text-white rounded-lg">
+            <TabsTrigger 
+              value="community" 
+              className="rounded-lg text-cyan-700 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-300 data-[state=active]:to-amber-500"
+            >
               <Users className="w-4 h-4 mr-2" />
               Komunitas
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="individual" className="space-y-6">
-            {/* Enhanced Top 3 Podium */}
+            {/* Top 3 Podium */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -413,25 +595,40 @@ export default function LeaderboardPage() {
                 transition={{ delay: 0.2 }}
                 className="text-center"
               >
-                <Card className={`border-0 shadow-xl ${getRankCardBg(2)} pt-8 backdrop-blur-sm hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
+                <Card 
+                  className="border shadow-xl pt-8 backdrop-blur-sm hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                  style={getRankCardStyle(2)}
+                >
                   <CardContent className="p-6">
                     <div className="relative mb-4">
-                      <Avatar className="w-20 h-20 mx-auto border-4 border-gray-400 shadow-lg">
+                      <Avatar 
+                        className="w-20 h-20 mx-auto shadow-lg"
+                        style={{ border: '4px solid #d1d5db' }}
+                      >
                         <AvatarImage src={individualLeaderboard[1].avatar || "/placeholder.svg"} />
-                        <AvatarFallback className="text-lg font-bold bg-gradient-to-br from-gray-200 to-gray-300">
+                        <AvatarFallback 
+                          className="text-lg font-bold"
+                          style={{
+                            background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                            color: '#374151'
+                          }}
+                        >
                           {individualLeaderboard[1].name.split(" ").map((n) => n[0]).join("")}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center shadow-lg">
+                      <div 
+                        className="absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
+                        style={getRankBgStyle(2)}
+                      >
                         <Medal className="w-4 h-4 text-white" />
                       </div>
                     </div>
-                    <h3 className="font-bold text-cyan-900 mb-1">{individualLeaderboard[1].name}</h3>
-                    <p className="text-sm text-cyan-700 mb-2 flex items-center justify-center">
+                    <h3 className="font-bold mb-1" style={{ color: '#164e63' }}>{individualLeaderboard[1].name}</h3>
+                    <p className="text-sm mb-2 flex items-center justify-center" style={{ color: '#0e7490' }}>
                       <MapPin className="w-3 h-3 mr-1" />
                       {individualLeaderboard[1].location}
                     </p>
-                    <p className="text-2xl font-bold text-gray-700 mb-2">{individualLeaderboard[1].points.toLocaleString()}</p>
+                    <p className="text-2xl font-bold mb-2" style={{ color: '#6b7280' }}>{individualLeaderboard[1].points.toLocaleString()}</p>
                     <div className="flex justify-center space-x-1 mb-2">
                       {individualLeaderboard[1].badges.map((badge, i) => (
                         <span key={i} className="text-lg">{badge}</span>
@@ -439,7 +636,7 @@ export default function LeaderboardPage() {
                     </div>
                     <div className="flex items-center justify-center space-x-1 text-sm">
                       <Flame className="w-3 h-3 text-orange-500" />
-                      <span className="text-cyan-700">{individualLeaderboard[1].streak} hari</span>
+                      <span style={{ color: '#0e7490' }}>{individualLeaderboard[1].streak} hari</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -452,27 +649,44 @@ export default function LeaderboardPage() {
                 transition={{ delay: 0.1 }}
                 className="text-center"
               >
-                <Card className={`border-0 shadow-2xl ${getRankCardBg(1)} pt-6 backdrop-blur-sm transform scale-105 hover:scale-110 transition-all duration-300`}>
+                <Card 
+                  className="border shadow-2xl pt-6 backdrop-blur-sm transform scale-105 hover:scale-110 transition-all duration-300"
+                  style={getRankCardStyle(1)}
+                >
                   <CardContent className="p-6">
                     <div className="relative mb-4">
                       <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-                        <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-xl animate-pulse">
+                        <div 
+                          className="w-12 h-12 rounded-full flex items-center justify-center shadow-xl animate-pulse"
+                          style={{
+                            background: 'linear-gradient(135deg, #fbbf24, #f59e0b)'
+                          }}
+                        >
                           <Crown className="w-6 h-6 text-white" />
                         </div>
                       </div>
-                      <Avatar className="w-24 h-24 mx-auto border-4 border-yellow-500 shadow-xl">
+                      <Avatar 
+                        className="w-24 h-24 mx-auto shadow-xl"
+                        style={{ border: '4px solid #fbbf24' }}
+                      >
                         <AvatarImage src={individualLeaderboard[0].avatar || "/placeholder.svg"} />
-                        <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-yellow-200 to-orange-300">
+                        <AvatarFallback 
+                          className="text-xl font-bold"
+                          style={{
+                            background: 'linear-gradient(135deg, #fef3c7, #fde68a)',
+                            color: '#92400e'
+                          }}
+                        >
                           {individualLeaderboard[0].name.split(" ").map((n) => n[0]).join("")}
                         </AvatarFallback>
                       </Avatar>
                     </div>
-                    <h3 className="font-bold text-cyan-900 mb-1 text-lg">{individualLeaderboard[0].name}</h3>
-                    <p className="text-sm text-cyan-700 mb-2 flex items-center justify-center">
+                    <h3 className="font-bold mb-1 text-lg" style={{ color: '#164e63' }}>{individualLeaderboard[0].name}</h3>
+                    <p className="text-sm mb-2 flex items-center justify-center" style={{ color: '#0e7490' }}>
                       <MapPin className="w-3 h-3 mr-1" />
                       {individualLeaderboard[0].location}
                     </p>
-                    <p className="text-3xl font-bold text-yellow-700 mb-2">{individualLeaderboard[0].points.toLocaleString()}</p>
+                    <p className="text-3xl font-bold mb-2" style={{ color: '#d97706' }}>{individualLeaderboard[0].points.toLocaleString()}</p>
                     <div className="flex justify-center space-x-1 mb-2">
                       {individualLeaderboard[0].badges.map((badge, i) => (
                         <span key={i} className="text-xl">{badge}</span>
@@ -480,7 +694,7 @@ export default function LeaderboardPage() {
                     </div>
                     <div className="flex items-center justify-center space-x-1 text-sm">
                       <Flame className="w-3 h-3 text-orange-500" />
-                      <span className="text-cyan-700 font-semibold">{individualLeaderboard[0].streak} hari</span>
+                      <span className="font-semibold" style={{ color: '#0e7490' }}>{individualLeaderboard[0].streak} hari</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -493,25 +707,40 @@ export default function LeaderboardPage() {
                 transition={{ delay: 0.3 }}
                 className="text-center"
               >
-                <Card className={`border-0 shadow-xl ${getRankCardBg(3)} pt-8 backdrop-blur-sm hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
+                <Card 
+                  className="border shadow-xl pt-8 backdrop-blur-sm hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                  style={getRankCardStyle(3)}
+                >
                   <CardContent className="p-6">
                     <div className="relative mb-4">
-                      <Avatar className="w-20 h-20 mx-auto border-4 border-amber-500 shadow-lg">
+                      <Avatar 
+                        className="w-20 h-20 mx-auto shadow-lg"
+                        style={{ border: '4px solid #f59e0b' }}
+                      >
                         <AvatarImage src={individualLeaderboard[2].avatar || "/placeholder.svg"} />
-                        <AvatarFallback className="text-lg font-bold bg-gradient-to-br from-amber-200 to-yellow-300">
+                        <AvatarFallback 
+                          className="text-lg font-bold"
+                          style={{
+                            background: 'linear-gradient(135deg, #fef3c7, #fde68a)',
+                            color: '#92400e'
+                          }}
+                        >
                           {individualLeaderboard[2].name.split(" ").map((n) => n[0]).join("")}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
+                      <div 
+                        className="absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
+                        style={getRankBgStyle(3)}
+                      >
                         <Medal className="w-4 h-4 text-white" />
                       </div>
                     </div>
-                    <h3 className="font-bold text-cyan-900 mb-1">{individualLeaderboard[2].name}</h3>
-                    <p className="text-sm text-cyan-700 mb-2 flex items-center justify-center">
+                    <h3 className="font-bold mb-1" style={{ color: '#164e63' }}>{individualLeaderboard[2].name}</h3>
+                    <p className="text-sm mb-2 flex items-center justify-center" style={{ color: '#0e7490' }}>
                       <MapPin className="w-3 h-3 mr-1" />
                       {individualLeaderboard[2].location}
                     </p>
-                    <p className="text-2xl font-bold text-amber-700 mb-2">{individualLeaderboard[2].points.toLocaleString()}</p>
+                    <p className="text-2xl font-bold mb-2" style={{ color: '#d97706' }}>{individualLeaderboard[2].points.toLocaleString()}</p>
                     <div className="flex justify-center space-x-1 mb-2">
                       {individualLeaderboard[2].badges.map((badge, i) => (
                         <span key={i} className="text-lg">{badge}</span>
@@ -519,26 +748,32 @@ export default function LeaderboardPage() {
                     </div>
                     <div className="flex items-center justify-center space-x-1 text-sm">
                       <Flame className="w-3 h-3 text-orange-500" />
-                      <span className="text-cyan-700">{individualLeaderboard[2].streak} hari</span>
+                      <span style={{ color: '#0e7490' }}>{individualLeaderboard[2].streak} hari</span>
                     </div>
                   </CardContent>
                 </Card>
               </motion.div>
             </motion.div>
 
-            {/* Enhanced Full Leaderboard */}
+            {/* Full Leaderboard */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm border border-cyan-100/50">
+              <Card 
+                className="border shadow-xl backdrop-blur-sm"
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  borderColor: 'rgba(6, 182, 212, 0.2)'
+                }}
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2 text-cyan-900">
+                  <CardTitle className="flex items-center space-x-2" style={{ color: '#164e63' }}>
                     <Trophy className="w-5 h-5 text-yellow-500" />
                     <span>Peringkat Lengkap</span>
                   </CardTitle>
-                  <CardDescription className="text-cyan-700">
+                  <CardDescription style={{ color: '#0e7490' }}>
                     Kompetisi point bulanan untuk komunitas yang lebih hijau
                   </CardDescription>
                 </CardHeader>
@@ -551,21 +786,27 @@ export default function LeaderboardPage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
                         whileHover={{ x: 5, scale: 1.01 }}
-                        className={`flex items-center space-x-4 p-5 rounded-xl transition-all duration-300 border backdrop-blur-sm ${
-                          user.rank <= 3
-                            ? `${getRankCardBg(user.rank)} shadow-lg hover:shadow-xl`
-                            : "bg-white/80 hover:bg-white/90 border-cyan-100 hover:border-cyan-200 shadow-md hover:shadow-lg"
-                        }`}
+                        className="flex items-center space-x-4 p-5 rounded-xl transition-all duration-300 border backdrop-blur-sm shadow-md hover:shadow-lg"
+                        style={user.rank <= 3 ? getRankCardStyle(user.rank) : {
+                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                          borderColor: 'rgba(6, 182, 212, 0.15)'
+                        }}
                       >
                         <div className="flex items-center space-x-3">
                           <div
-                            className={`w-12 h-12 ${getRankBg(user.rank)} rounded-full flex items-center justify-center text-white font-bold shadow-lg`}
+                            className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shadow-lg"
+                            style={getRankBgStyle(user.rank)}
                           >
                             {user.rank <= 3 ? getRankIcon(user.rank) : `#${user.rank}`}
                           </div>
                           <Avatar className="w-12 h-12 shadow-md">
                             <AvatarImage src={user.avatar || "/placeholder.svg"} />
-                            <AvatarFallback className="bg-gradient-to-br from-cyan-100 to-blue-200">
+                            <AvatarFallback 
+                              style={{
+                                background: 'linear-gradient(135deg, #ecfeff, #cffafe)',
+                                color: '#164e63'
+                              }}
+                            >
                               {user.name.split(" ").map((n) => n[0]).join("")}
                             </AvatarFallback>
                           </Avatar>
@@ -574,8 +815,8 @@ export default function LeaderboardPage() {
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-2">
                             <div>
-                              <h3 className="font-bold text-cyan-900 text-lg">{user.name}</h3>
-                              <div className="flex items-center space-x-4 text-sm text-cyan-600">
+                              <h3 className="font-bold text-lg" style={{ color: '#164e63' }}>{user.name}</h3>
+                              <div className="flex items-center space-x-4 text-sm" style={{ color: '#0891b2' }}>
                                 <div className="flex items-center space-x-1">
                                   <MapPin className="w-3 h-3" />
                                   <span>{user.location}</span>
@@ -587,7 +828,7 @@ export default function LeaderboardPage() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-2xl font-bold text-cyan-900">{user.points.toLocaleString()}</p>
+                              <p className="text-2xl font-bold" style={{ color: '#164e63' }}>{user.points.toLocaleString()}</p>
                               <div className="flex items-center space-x-1 justify-end">
                                 {Number.parseInt(user.change) > 0 ? (
                                   <TrendingUp className="w-4 h-4 text-green-500" />
@@ -614,15 +855,24 @@ export default function LeaderboardPage() {
                               ))}
                             </div>
                             <div className="flex space-x-4 text-xs">
-                              <div className="flex items-center space-x-1 bg-green-50 px-2 py-1 rounded-full">
+                              <div 
+                                className="flex items-center space-x-1 px-2 py-1 rounded-full"
+                                style={{ backgroundColor: 'rgba(34, 197, 94, 0.15)' }}
+                              >
                                 <Leaf className="w-3 h-3 text-green-500" />
                                 <span className="text-green-700 font-medium">{user.stats.foodSaved}kg</span>
                               </div>
-                              <div className="flex items-center space-x-1 bg-pink-50 px-2 py-1 rounded-full">
+                              <div 
+                                className="flex items-center space-x-1 px-2 py-1 rounded-full"
+                                style={{ backgroundColor: 'rgba(236, 72, 153, 0.15)' }}
+                              >
                                 <Heart className="w-3 h-3 text-pink-500" />
                                 <span className="text-pink-700 font-medium">{user.stats.donations}</span>
                               </div>
-                              <div className="flex items-center space-x-1 bg-blue-50 px-2 py-1 rounded-full">
+                              <div 
+                                className="flex items-center space-x-1 px-2 py-1 rounded-full"
+                                style={{ backgroundColor: 'rgba(59, 130, 246, 0.15)' }}
+                              >
                                 <Recycle className="w-3 h-3 text-blue-500" />
                                 <span className="text-blue-700 font-medium">{user.stats.recycled}kg</span>
                               </div>
@@ -639,13 +889,19 @@ export default function LeaderboardPage() {
 
           <TabsContent value="community" className="space-y-6">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm border border-cyan-100/50">
+              <Card 
+                className="border shadow-xl backdrop-blur-sm"
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  borderColor: 'rgba(6, 182, 212, 0.2)'
+                }}
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2 text-cyan-900">
+                  <CardTitle className="flex items-center space-x-2" style={{ color: '#164e63' }}>
                     <Users className="w-5 h-5 text-blue-500" />
                     <span>Peringkat Komunitas</span>
                   </CardTitle>
-                  <CardDescription className="text-cyan-700">
+                  <CardDescription style={{ color: '#0e7490' }}>
                     Kompetisi antar RT dalam program sustainability
                   </CardDescription>
                 </CardHeader>
@@ -658,26 +914,23 @@ export default function LeaderboardPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
                         whileHover={{ y: -2, scale: 1.01 }}
-                        className={`p-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border backdrop-blur-sm ${
-                          community.rank === 1
-                            ? getRankCardBg(1)
-                            : community.rank === 2
-                              ? getRankCardBg(2)
-                              : community.rank === 3
-                                ? getRankCardBg(3)
-                                : "bg-white/90 border-cyan-100 hover:border-cyan-200"
-                        }`}
+                        className="p-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border backdrop-blur-sm"
+                        style={community.rank <= 3 ? getRankCardStyle(community.rank) : {
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          borderColor: 'rgba(6, 182, 212, 0.2)'
+                        }}
                       >
                         <div className="flex items-center justify-between mb-6">
                           <div className="flex items-center space-x-4">
                             <div
-                              className={`w-16 h-16 ${getRankBg(community.rank)} rounded-xl flex items-center justify-center text-white shadow-lg`}
+                              className="w-16 h-16 rounded-xl flex items-center justify-center text-white shadow-lg"
+                              style={getRankBgStyle(community.rank)}
                             >
                               {getRankIcon(community.rank)}
                             </div>
                             <div>
-                              <h3 className="text-xl font-bold text-cyan-900">{community.name}</h3>
-                              <div className="flex items-center space-x-6 text-sm text-cyan-600 mt-1">
+                              <h3 className="text-xl font-bold" style={{ color: '#164e63' }}>{community.name}</h3>
+                              <div className="flex items-center space-x-6 text-sm mt-1" style={{ color: '#0891b2' }}>
                                 <div className="flex items-center space-x-1">
                                   <Users className="w-4 h-4" />
                                   <span>{community.members} anggota</span>
@@ -690,7 +943,7 @@ export default function LeaderboardPage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-3xl font-bold text-cyan-900">{community.points.toLocaleString()}</p>
+                            <p className="text-3xl font-bold" style={{ color: '#164e63' }}>{community.points.toLocaleString()}</p>
                             <div className="flex items-center space-x-1 justify-end">
                               <TrendingUp className="w-4 h-4 text-green-500" />
                               <span className="text-sm font-medium text-green-600">{community.change}</span>
@@ -699,17 +952,35 @@ export default function LeaderboardPage() {
                         </div>
 
                         <div className="grid grid-cols-3 gap-4 mb-6">
-                          <div className="text-center p-4 bg-green-50/80 rounded-xl border border-green-200/50 backdrop-blur-sm">
+                          <div 
+                            className="text-center p-4 rounded-xl backdrop-blur-sm"
+                            style={{
+                              backgroundColor: 'rgba(34, 197, 94, 0.15)',
+                              border: '1px solid rgba(34, 197, 94, 0.25)'
+                            }}
+                          >
                             <Leaf className="w-6 h-6 text-green-600 mx-auto mb-2" />
                             <p className="text-lg font-bold text-green-800">{community.stats.totalFood}kg</p>
                             <p className="text-xs text-green-600 font-medium">Makanan Diselamatkan</p>
                           </div>
-                          <div className="text-center p-4 bg-pink-50/80 rounded-xl border border-pink-200/50 backdrop-blur-sm">
+                          <div 
+                            className="text-center p-4 rounded-xl backdrop-blur-sm"
+                            style={{
+                              backgroundColor: 'rgba(236, 72, 153, 0.15)',
+                              border: '1px solid rgba(236, 72, 153, 0.25)'
+                            }}
+                          >
                             <Heart className="w-6 h-6 text-pink-600 mx-auto mb-2" />
                             <p className="text-lg font-bold text-pink-800">{community.stats.totalDonations}</p>
                             <p className="text-xs text-pink-600 font-medium">Total Donasi</p>
                           </div>
-                          <div className="text-center p-4 bg-blue-50/80 rounded-xl border border-blue-200/50 backdrop-blur-sm">
+                          <div 
+                            className="text-center p-4 rounded-xl backdrop-blur-sm"
+                            style={{
+                              backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                              border: '1px solid rgba(59, 130, 246, 0.25)'
+                            }}
+                          >
                             <Recycle className="w-6 h-6 text-blue-600 mx-auto mb-2" />
                             <p className="text-lg font-bold text-blue-800">{community.stats.totalRecycled}kg</p>
                             <p className="text-xs text-blue-600 font-medium">Sampah Didaur Ulang</p>
@@ -717,13 +988,21 @@ export default function LeaderboardPage() {
                         </div>
 
                         <div>
-                          <h4 className="font-semibold text-cyan-800 mb-3 flex items-center">
+                          <h4 className="font-semibold mb-3 flex items-center" style={{ color: '#164e63' }}>
                             <Award className="w-4 h-4 mr-2 text-yellow-500" />
                             Pencapaian:
                           </h4>
                           <div className="flex flex-wrap gap-2">
                             {community.achievements.map((achievement, i) => (
-                              <Badge key={i} className="bg-cyan-100 text-cyan-800 border border-cyan-200">
+                              <Badge 
+                                key={i} 
+                                className="border"
+                                style={{
+                                  backgroundColor: 'rgba(165, 243, 252, 1)',
+                                  color: '#164e63',
+                                  borderColor: 'rgba(6, 182, 212, 0.25)'
+                                }}
+                              >
                                 <Sparkles className="w-3 h-3 mr-1" />
                                 {achievement}
                               </Badge>
