@@ -71,21 +71,29 @@ export default function LoginPage() {
   const { theme = "default" } = useTheme()
   const [mounted, setMounted] = useState(false)
 
-  // Ambil warna sesuai theme
   const themeColor = themeColorMap[theme] || themeColorMap["default"]
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Cek user login
+  // Cek user login, dan redirect jika sudah login
   useEffect(() => {
     async function getUser() {
       const { data } = await supabase.auth.getUser()
       setUser(data?.user ?? null)
+      if (data?.user) {
+        const userRole = data.user.user_metadata?.role
+        if (userRole === "admin") {
+          router.replace("/admin")
+        } else {
+          router.replace("/dashboard")
+        }
+      }
     }
     getUser()
-  }, [supabase])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [supabase, router])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -103,30 +111,31 @@ export default function LoginPage() {
       return
     }
 
-    router.refresh()
+    // Redirect langsung setelah login berhasil
     const user = data?.user
     setUser(user)
     const userRole = user?.user_metadata?.role
 
     if (userRole === "admin") {
-      router.push("/admin")
+      router.replace("/admin")
     } else {
-      router.push("/dashboard")
+      router.replace("/dashboard")
     }
 
     setIsLoading(false)
   }
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-    setEmail("")
-    setPassword("")
-    router.refresh()
-  }
-
   // Jangan render sebelum mounted agar theme konsisten (hindari hydration error)
   if (!mounted) return null
+
+  // Jika user sudah login, jangan render apapun (atau bisa tampilkan loading)
+  if (user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span className="text-lg text-slate-400">Mengalihkan ke dashboard...</span>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4">
@@ -159,99 +168,75 @@ export default function LoginPage() {
             </span>
           </div>
           <p className="text-muted-foreground text-lg">
-            {user ? `Selamat datang, ${user.user_metadata?.name || user.email}` : "Masuk ke akun Anda"}
+            Masuk ke akun Anda
           </p>
         </div>
 
         <Card className="border-0 shadow-2xl ring-1 ring-white/10 bg-background/80 backdrop-blur-lg">
           <CardHeader>
-            <CardTitle className="text-2xl">
-              {user ? "Akun Anda" : "Masuk"}
-            </CardTitle>
+            <CardTitle className="text-2xl">Masuk</CardTitle>
             <CardDescription className="text-base">
-              {user
-                ? "Anda sudah login. Silakan lanjutkan ke dashboard atau logout."
-                : "Masukkan email dan password Anda untuk melanjutkan"}
+              Masukkan email dan password Anda untuk melanjutkan
             </CardDescription>
           </CardHeader>
           <CardContent className="p-8">
-            {user ? (
-              <div className="space-y-6">
-                <Button
-                  className={`w-full bg-gradient-to-r ${themeColor.button} ${themeColor.buttonHover} py-3 text-base font-semibold transition-colors duration-200 rounded-lg`}
-                  onClick={() => router.push("/dashboard")}
-                >
-                  Ke Dashboard
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full py-3 text-base font-semibold rounded-lg"
-                  onClick={handleLogout}
-                >
-                  Keluar
-                </Button>
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="nama@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  autoComplete="username"
+                  className="text-base py-3"
+                />
               </div>
-            ) : (
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
                   <Input
-                    id="email"
-                    type="email"
-                    placeholder="nama@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
-                    autoComplete="username"
-                    className="text-base py-3"
+                    autoComplete="current-password"
+                    className="text-base py-3 pr-12"
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <div className="relative">
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      autoComplete="current-password"
-                      className="text-base py-3 pr-12"
-                    />
-                    <button
-                      type="button"
-                      tabIndex={-1}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
-                      onClick={() => setShowPassword((v) => !v)}
-                    >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                  </div>
-                </div>
-                {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button
-                  className={`w-full bg-gradient-to-r ${themeColor.button} ${themeColor.buttonHover} py-3 text-base font-semibold transition-colors duration-200 rounded-lg`}
-                  type="submit"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Memproses..." : "Masuk"}
-                </Button>
-              </form>
-            )}
-            {!user && (
-              <div className="mt-8 text-center">
-                <p className="text-base text-muted-foreground">
-                  Belum punya akun?{" "}
-                  <Link
-                    href="/register"
-                    className={`bg-gradient-to-r ${themeColor.register} ${themeColor.registerHover} bg-clip-text text-transparent font-semibold hover:underline transition-colors`}
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                    onClick={() => setShowPassword((v) => !v)}
                   >
-                    Daftar di sini
-                  </Link>
-                </p>
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
               </div>
-            )}
+              {error && <p className="text-sm text-red-500">{error}</p>}
+              <Button
+                className={`w-full bg-gradient-to-r ${themeColor.button} ${themeColor.buttonHover} py-3 text-base font-semibold transition-colors duration-200 rounded-lg`}
+                type="submit"
+                disabled={isLoading}
+              >
+                {isLoading ? "Memproses..." : "Masuk"}
+              </Button>
+            </form>
+            <div className="mt-8 text-center">
+              <p className="text-base text-muted-foreground">
+                Belum punya akun?{" "}
+                <Link
+                  href="/register"
+                  className={`bg-gradient-to-r ${themeColor.register} ${themeColor.registerHover} bg-clip-text text-transparent font-semibold hover:underline transition-colors`}
+                >
+                  Daftar di sini
+                </Link>
+              </p>
+            </div>
           </CardContent>
         </Card>
       </motion.div>

@@ -13,11 +13,22 @@ import { Footer } from "@/components/sections/footer";
 import { PerformanceIndicator } from "@/components/ui/performance-indicator";
 import { ThemeSelector } from "@/components/ui/theme-selector";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import SplashScreen  from "@/components/ui/splash-screen";
 
 export default function HomePage() {
   const { performanceLevel, capabilities, isLoading } = useDevicePerformance();
   const { theme = "default" } = useTheme();
   const backgroundVariant = theme as "default" | "aurora" | "geometric" | "nebula" | "night";
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+
+    const timer = setTimeout(() => setMounted(true), 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!mounted) return <SplashScreen />;
 
   const animationSettings = {
     duration:

@@ -33,6 +33,7 @@ import { AdaptiveBackground } from "@/components/background/adaptive-background"
 import { PerformanceIndicator } from "@/components/ui/performance-indicator";
 import { ThemeSelector } from "@/components/ui/theme-selector";
 import { Navbar } from "@/components/navigation/navbar";
+import { Footer } from "@/components/sections/footer";
 import { useTheme } from "next-themes";
 
 const contactMethods = [
@@ -131,10 +132,18 @@ export default function ContactPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Semua hooks di atas, baru pengecekan mounted di bawah
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     setIsPageLoaded(true);
   }, []);
+
+  if (!mounted) return null;
 
   const animationSettings = {
     duration:
@@ -693,6 +702,9 @@ export default function ContactPage() {
             </div>
           </section>
         </motion.div>
+
+        {/* Tambahkan Footer di bawah */}
+        <Footer />
       </motion.div>
     </AnimatePresence>
   );
