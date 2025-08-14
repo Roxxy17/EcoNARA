@@ -1,13 +1,13 @@
-// FoodRescuePage.js (file Anda yang sudah ada)
+// FoodRescuePage.js
 "use client"
 
-import { useState, useEffect } from "react" // Import useEffect
-import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
+import { AnimatePresence, motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Sparkles, Camera, Clock, Users, Leaf, ChefHat, Plus, Trash2, CheckCircle, Utensils, BookOpen, Heart, Bookmark } from "lucide-react" // Import Bookmark
+import { Sparkles, Camera, Clock, Users, Leaf, ChefHat, Plus, Trash2, CheckCircle, Utensils, BookOpen, Heart, Bookmark, ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { Navbar } from "@/components/navigation/nav-dashboard"
 
@@ -43,7 +43,7 @@ const sampleRecipes = [
       "Sajikan segera",
     ],
   },
-]
+];
 
 export default function FoodRescuePage() {
   const [ingredients, setIngredients] = useState([""])
@@ -54,11 +54,12 @@ export default function FoodRescuePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState("");
 
-  // State untuk daftar resep yang disimpan pengguna
   const [myRecipes, setMyRecipes] = useState([]);
   const [isLoadingRecipes, setIsLoadingRecipes] = useState(true);
+  
+  // State untuk melacak resep mana yang sedang dibuka
+  const [expandedRecipeId, setExpandedRecipeId] = useState(null);
 
-  // Fungsi untuk mengambil resep yang disimpan
   const fetchMyRecipes = async () => {
     setIsLoadingRecipes(true);
     try {
@@ -68,20 +69,24 @@ export default function FoodRescuePage() {
         setMyRecipes(data);
       } else {
         console.error("Gagal mengambil resep:", data.error);
-        setMyRecipes([]); // Set ke array kosong jika gagal
+        setMyRecipes([]);
       }
     } catch (error) {
       console.error("Terjadi kesalahan saat fetch resep:", error);
-      setMyRecipes([]); // Set ke array kosong jika ada error
+      setMyRecipes([]);
     } finally {
       setIsLoadingRecipes(false);
     }
   };
 
-  // Gunakan useEffect untuk mengambil resep saat komponen pertama kali dimuat
   useEffect(() => {
     fetchMyRecipes();
   }, []);
+
+  // Fungsi untuk handle klik buka/tutup resep
+  const handleToggleRecipe = (recipeId) => {
+    setExpandedRecipeId(prevId => (prevId === recipeId ? null : recipeId));
+  };
 
   const addIngredient = () => setIngredients([...ingredients, ""])
   const removeIngredient = (index) => setIngredients(ingredients.filter((_, i) => i !== index))
@@ -145,7 +150,6 @@ export default function FoodRescuePage() {
       }
 
       setSaveStatus("Resep berhasil disimpan! ✅");
-      // Setelah berhasil menyimpan, panggil lagi fungsi fetch untuk memperbarui daftar
       await fetchMyRecipes(); 
     } catch (error) {
       console.error("Gagal menyimpan resep:", error.message);
@@ -158,7 +162,6 @@ export default function FoodRescuePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 relative overflow-hidden">
-      {/* Background Effects */}
       <div className="absolute inset-0 opacity-30 pointer-events-none">
         <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-cyan-200/40 to-blue-300/40 rounded-full blur-3xl animate-pulse" />
         <div className="absolute top-1/2 right-0 w-80 h-80 bg-gradient-to-br from-teal-200/40 to-cyan-300/40 rounded-full blur-3xl animate-pulse delay-1000" />
@@ -186,7 +189,6 @@ export default function FoodRescuePage() {
 
       <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {/* Stats Overview Cards */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}><Card className="text-center bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"><CardContent className="p-6"><div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3"><ChefHat className="w-7 h-7" /></div><div className="text-3xl font-bold mb-1">248</div><div className="text-sm opacity-90">Resep Generated</div></CardContent></Card></motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}><Card className="text-center bg-gradient-to-br from-yellow-500 to-yellow-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"><CardContent className="p-6"><div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3"><Leaf className="w-7 h-7" /></div><div className="text-3xl font-bold mb-1">85%</div><div className="text-sm opacity-90">Food Waste Reduced</div></CardContent></Card></motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}><Card className="text-center bg-gradient-to-br from-green-500 to-emerald-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"><CardContent className="p-6"><div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3"><Users className="w-7 h-7" /></div><div className="text-3xl font-bold mb-1">1.2K</div><div className="text-sm opacity-90">Keluarga Terbantu</div></CardContent></Card></motion.div>
@@ -194,7 +196,6 @@ export default function FoodRescuePage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Input Section */}
           <div className="space-y-6">
             <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm border border-cyan-100/50">
               <CardHeader><CardTitle className="flex items-center space-x-2 text-cyan-900"><ChefHat className="w-5 h-5 text-orange-600" /><span>Input Bahan Makanan</span></CardTitle><CardDescription className="text-cyan-700">Masukkan bahan makanan yang tersisa di rumah Anda</CardDescription></CardHeader>
@@ -209,7 +210,6 @@ export default function FoodRescuePage() {
               </CardContent>
             </Card>
 
-            {/* ===== KARTU BARU: RESEP TERSIMPAN ANDA ===== */}
             <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm border border-cyan-100/50">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2 text-cyan-900">
@@ -217,25 +217,76 @@ export default function FoodRescuePage() {
                   <span>Resep Tersimpan Anda</span>
                 </CardTitle>
                 <CardDescription className="text-cyan-700">
-                  Lihat kembali resep-resep yang sudah Anda simpan.
+                  Klik untuk melihat detail resep yang sudah Anda simpan.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {isLoadingRecipes ? (
                   <div className="text-center text-cyan-700 p-4">Memuat resep...</div>
                 ) : myRecipes.length > 0 ? (
-                  <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
-                    {myRecipes.map((recipe) => (
-                      <motion.div
-                        key={recipe.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-cyan-50 transition-colors duration-200 border border-gray-200/80"
-                      >
-                        <h4 className="font-medium text-cyan-900">{recipe.title}</h4>
-                        <p className="text-sm text-cyan-700 truncate">{recipe.description}</p>
-                      </motion.div>
-                    ))}
+                  <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
+                    <AnimatePresence>
+                      {myRecipes.map((recipe) => (
+                        <motion.div 
+                          key={recipe.id}
+                          layout
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0 }}
+                          className="p-3 bg-gray-50 rounded-xl border border-gray-200/80"
+                        >
+                          <div 
+                            className="flex justify-between items-center cursor-pointer"
+                            onClick={() => handleToggleRecipe(recipe.id)}
+                          >
+                            <div className="flex-1 pr-4">
+                              <h4 className="font-medium text-cyan-900">{recipe.title}</h4>
+                              <p className="text-sm text-cyan-700 truncate">{recipe.description}</p>
+                            </div>
+                            <ChevronDown className={`w-5 h-5 text-cyan-600 transition-transform duration-300 ${expandedRecipeId === recipe.id ? "rotate-180" : ""}`} />
+                          </div>
+
+                          {expandedRecipeId === recipe.id && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                              animate={{ opacity: 1, height: 'auto', marginTop: '1rem' }}
+                              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                              transition={{ duration: 0.3, ease: "easeInOut" }}
+                              className="space-y-4 border-t border-gray-200 pt-4"
+                            >
+                              <div className="grid grid-cols-3 gap-2 text-xs">
+                                <div className="text-center p-2 bg-blue-50 rounded-lg border border-blue-100"><Clock className="w-4 h-4 text-blue-600 mx-auto mb-1" /><div className="font-medium text-blue-800">{recipe.cook_time || 'N/A'}</div></div>
+                                <div className="text-center p-2 bg-green-50 rounded-lg border border-green-100"><Users className="w-4 h-4 text-green-600 mx-auto mb-1" /><div className="font-medium text-green-800">{recipe.difficulty || 'N/A'}</div></div>
+                                <div className="text-center p-2 bg-yellow-50 rounded-lg border border-yellow-100"><Leaf className="w-4 h-4 text-yellow-600 mx-auto mb-1" /><div className="font-medium text-yellow-800">{recipe.nutrition || 'N/A'}</div></div>
+                              </div>
+                              
+                              {recipe.ingredients && recipe.ingredients.length > 0 && (
+                                <div>
+                                  <h5 className="font-semibold text-cyan-900 text-sm mb-2">Bahan:</h5>
+                                  <div className="flex flex-wrap gap-2">
+                                    {recipe.ingredients.map((ing, i) => (<Badge key={i} className="bg-cyan-100 text-cyan-800 border border-cyan-200">{ing}</Badge>))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {recipe.cara_pembuatan && recipe.cara_pembuatan.length > 0 && (
+                                <div>
+                                  <h5 className="font-semibold text-cyan-900 text-sm mb-2">Langkah:</h5>
+                                  <div className="space-y-2">
+                                    {recipe.cara_pembuatan.map((step, index) => (
+                                      <div key={index} className="flex items-start space-x-2">
+                                        <div className="w-5 h-5 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{index + 1}</div>
+                                        <p className="text-cyan-800 text-sm">{step}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </motion.div>
+                          )}
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
                   </div>
                 ) : (
                   <div className="text-center text-gray-500 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-300">
@@ -245,11 +296,8 @@ export default function FoodRescuePage() {
                 )}
               </CardContent>
             </Card>
-            {/* =========================================== */}
-
           </div>
 
-          {/* Result Section */}
           <div className="space-y-6">
             {generatedRecipe ? (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
@@ -274,8 +322,8 @@ export default function FoodRescuePage() {
                     </div>
                     <div className="flex flex-col space-y-2 pt-4 border-t border-cyan-100">
                       <div className="flex space-x-3">
-                         <Button onClick={handleSaveRecipe} disabled={isSaving || !generatedRecipe} className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg">{isSaving ? (<><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>Menyimpan...</>) : (<><CheckCircle className="w-4 h-4 mr-2" />Simpan Resep</>)}</Button>
-                         <Button className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white shadow-lg"><Heart className="w-4 h-4 mr-2" />Bagikan</Button>
+                        <Button onClick={handleSaveRecipe} disabled={isSaving || !generatedRecipe} className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg">{isSaving ? (<><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>Menyimpan...</>) : (<><CheckCircle className="w-4 h-4 mr-2" />Simpan Resep</>)}</Button>
+                        <Button className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white shadow-lg"><Heart className="w-4 h-4 mr-2" />Bagikan</Button>
                       </div>
                       {saveStatus && (<p className="text-center text-sm text-gray-600 pt-2">{saveStatus}</p>)}
                     </div>
